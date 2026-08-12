@@ -59,3 +59,7 @@ that is what the enterprise evidence bundle is for.
 ## Licence
 
 Apache-2.0. See [LICENSE](LICENSE).
+
+## Repository ownership
+
+This repository is owned by the GitHub organization `net-kotobase` as `net-kotobase/docs`. Reusable language and storage contracts remain in `kotoba-lang`.
