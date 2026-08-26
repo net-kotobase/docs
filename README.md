@@ -16,6 +16,7 @@ link to pages the public cannot open.
 | [DATA-HANDLING.md](DATA-HANDLING.md) | Data classes, public boundaries, retention and deletion limits |
 | [SUPPLY-CHAIN.md](SUPPLY-CHAIN.md) | Dependency and toolchain release gates, provenance and SBOM |
 | [OBSIDIAN.md](OBSIDIAN.md) | Obsidian vault import and conflict-safe two-way sync |
+| [BISCUIT-AUTH-QUERY-BENCHMARK.md](BISCUIT-AUTH-QUERY-BENCHMARK.md) | Production EIP-4361, Biscuit, transaction, and query correctness and latency evidence |
 | [terms.md](terms.md) | Terms of service |
 
 ## What this repository is not
