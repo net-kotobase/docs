@@ -51,7 +51,7 @@ claim contract (初期):
 |---|---|---|---|---|
 | K-Q1 | query | warm query p50 187ms の内訳は edge/network ではなく Worker CPU + Biscuit verify が支配的 (Biscuit verify 単体は測定済み p50 18.65ms なので、残り ~170ms は query 実行 + edge)。engine の query 実行 path を hand-profilable な形で local 実行して内訳を実測する | open | bench 2026-09-03: 未測定 — host busy (load1 17.50 / 1min, 閾値 7.5 超過のため local profiling を実施せず終了)。次回 quiet-host 時に再試行 |
 | K-Q2 | query | 同一測定法での再測 (2026-08-26 との比較) で p50 が再現するか — 測定の再現性を先に確立する (基準線の固定) | executed (再現せず) | rank 2026-09-03: falsify 実測 2 run (753.41/908.69ms, p95 884/1668) で基準線 187.35ms は不再現 → 判定確定。後続は K-Q1 (退行切り分け) へ |
-| K-W1 | worker | live smoke 4xx 2% の内訳は path 固有 (bot traffic) であり、 Worker のバグではない — /api/funnel と status code 分布の実測で反証する | open | bench 2026-09-03: production GET 実測 (kotobase.net, n=30/path, 100ms 間隔, host load1 15.91 は production HTTP 実測のため gate 外): / /signup /api/funnel は全 30/30=200 (p50 32/28/77ms) — smoke 対象 path は健全。4xx は path 固有で決定的: /login 404 30/30, /api/status 404 30/30, /wp-login.php /.env /xmlrpc.php 404 30/30, /admin 401 30/30 — ランダム/断続的な Worker エラーではなく特定 path の恒常応答。bot 起源説と整合 (判定は rank に委ねる)。falsify 2026-09-03 独立再現 (production GET, n=10/path, 200ms 間隔, host load1 17.75 は production HTTP 実測のため gate 外): code 分布が bench と完全一致 — / /api/funnel 200 10/10, /login /api/status /wp-login.php 404 10/10, /admin 401 10/10。bot 起源説の反証は不成立 (仮説どおり path 固有恒常応答) |
+| K-W1 | worker | live smoke 4xx 2% の内訳は path 固有 (bot traffic) であり、 Worker のバグではない — /api/funnel と status code 分布の実測で反証する | executed (仮説どおり) | bench 2026-09-03: production GET 実測 (kotobase.net, n=30/path, 100ms 間隔, host load1 15.91 は production HTTP 実測のため gate 外): / /signup /api/funnel は全 30/30=200 (p50 32/28/77ms) — smoke 対象 path は健全。4xx は path 固有で決定的: /login 404 30/30, /api/status 404 30/30, /wp-login.php /.env /xmlrpc.php 404 30/30, /admin 401 30/30 — ランダム/断続的な Worker エラーではなく特定 path の恒常応答。bot 起源説と整合 (判定は rank に委ねる)。falsify 2026-09-03 独立再現 (production GET, n=10/path, 200ms 間隔, host load1 17.75 は production HTTP 実測のため gate 外): code 分布が bench と完全一致 — / /api/funnel 200 10/10, /login /api/status /wp-login.php 404 10/10, /admin 401 10/10。bot 起源説の反証は不成立 (仮説どおり path 固有恒常応答) |
 | K-W2 | worker | search.kotobase.net の in-memory projection は起動後初回リクエストで cold penalty を持つ — /search?q= の初回 vs 2回目 latency 実測 | refuted (初回 1 回説) | falsify 2026-09-03: n=20 で cold 群 7/20, isolate 単位で再発 — 詳細は population 直下の注記 |
 | K-S1 | storage | KOTOBASE_PACK_WRITES 有効 (testnet) は write path を測定劣化させない — engine の local test で pack on/off 比較 | open | — |
 | K-S2 | storage | 1 commit CID 構造の map/git/search 統合読み出しは、同一 CID への反復読み出しで KV キャッシュに乗り p50 が改善する — 同一 CID 反復 vs 初回の実測 | open | — |
@@ -73,14 +73,15 @@ claim contract (初期):
 
 | K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | open | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定 |
 
-rank (期待 gain × 確率, 2026-09-03 第2回):
+rank (期待 gain × 確率, 2026-09-03 第3回):
 1. K-Q1 — K-Q2 の実測で +566〜721ms の退行が query path 側と帰属確定。
-   退行の切り分けは現状最大の既知 gain (~170ms 課題を含む)。確率中〜高。
-2. K-Z1 — 実測済み penalty (~35% に +0.8–1.8s)。gain 大だが query 退行を優先。
-3. K-S1 — claim contract の storage 判定に必要。中。
-4. K-W1 — 4xx 2% は影響小だが安価。
-5. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
-( K-Q2 は executed — 再現性検証の役割を完了 )
+   退行の切り分けは現状最大の既知 gain (~170ms 課題を含む)。ただし local
+   profiling は host load gate により 2 連続で未実施 — quiet-host 待ち。
+2. K-Z1 — 実測済み penalty (~35% に +0.8–1.8s)。基準線は bench+falsify の
+   2 系統で確定済み。host busy 中も production HTTP で追加 n 積めることが可能。
+3. K-S1 — claim contract の storage 判定に必要。中 (local gate の影響を受ける)。
+4. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
+( K-Q2 / K-W1 / K-W2 は判定済みのため rank 外 )
 
 ※ falsify 2026-09-03: K-W2 反証実測 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo)。二峰性: warm ~40–90ms 群 13/20, cold 0.85–1.8s 群 7/20 (TTFB≈total, connect は常に ~8ms)。cold penalty ≈ +0.8–1.8s は実在するが「起動後初回の 1 回」ではなく isolate 単位で再発するパターン — 仮説の機構は部分的に支持・単発初回説は棄却寄り。status 判定は rank に委ねる。
 
@@ -99,3 +100,13 @@ rank (期待 gain × 確率, 2026-09-03 第2回):
   (falsify 注記)。rank 更新: K-Q1 > K-Z1 > K-S1 > K-W1 > K-S2 (K-Q1 を最上位へ —
   退行の切り分けが最大既知 gain)。K-Q2 は済みのため rank 外。
   NEXT: K-Q1 (query path 退行の切り分け。2026-08-26 以降の gateway→backend 差分の特定が最初の一手)。
+- 2026-09-03: rank 第3回。新規 evidence は K-W1 の bench (n=30/path) + falsify
+  (n=10/path, code 分布完全一致) 双方の production 実測のみ。これを取り込み
+  K-W1 → **executed (仮説どおり)**: 4xx は /login /api/status /wp-login.php /
+  /.env /xmlrpc.php 404, /admin 401 の path 固有恒常応答で Worker バグではない。
+  機能している smoke 対象 path は全 200 で健全。rank 更新: K-Q1 > K-Z1 > K-S1 >
+  K-S2 (K-W1 を rank 外へ)。host load1 12.16 は依然 gate (7.5) 超過のため
+  K-Q1/K-S1 の local 実測は見込み薄 — gate 外で進められる K-Z1 の基準線 n 追加を
+  優先して指定する。
+  NEXT: K-Z1 (production HTTP で gate 外に実行可能。warm-up 前基準線の n を
+  積んで導入前後比較の統計的土台を固める)。
