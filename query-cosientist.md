@@ -73,12 +73,15 @@ claim contract (初期):
 
 | K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | open | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後。falsify 2026-09-03 第2回: before 基準線 n 追加 (同測定法 n=20, 別接続 curl, Tokyo, PR #4 は main 未マージで warm-up 未 deploy のまま): cold 群 7/20 (TTFB 0.90–1.87s), warm 群 13/20 (44–85ms), 全 200 — bench/falsify 初回の 7/20 を再現し基準線は 3 試行で安定。導入後比較の統計的土台は十分 |
 
-rank (期待 gain × 確率, 2026-09-03 第3回):
+rank (期待 gain × 確率, 2026-09-04 第4回):
 1. K-Q1 — K-Q2 の実測で +566〜721ms の退行が query path 側と帰属確定。
-   退行の切り分けは現状最大の既知 gain (~170ms 課題を含む)。ただし local
-   profiling は host load gate により 2 連続で未実施 — quiet-host 待ち。
-2. K-Z1 — 実測済み penalty (~35% に +0.8–1.8s)。基準線は bench+falsify の
-   2 系統で確定済み。host busy 中も production HTTP で追加 n 積めることが可能。
+   退行の切り分けは現状最大の既知 gain。ただし local profiling は host load gate
+   により 3 連続で未実施 (2026-09-04 00:59 時点 load1 38.70 でさらに悪化) —
+   quiet-host 待ち。production HTTP で gate 外に進められる手がかり収集
+   (時間帯を変えた K-Q2 harness 再実行による load 相関の確認) は可能。
+2. K-Z1 — before 基準線が bench+falsify 計 3 試行 (各 n=20, cold 群 7/20 ずつ)
+   で安定し統計的土台は完成。残るのは PR #4 の merge/deploy 後の after 計測のみ。
+   deploy 前の基準線 n 追加は不要 (5 試行×7/20 で十分)。
 3. K-S1 — claim contract の storage 判定に必要。中 (local gate の影響を受ける)。
 4. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
 ( K-Q2 / K-W1 / K-W2 は判定済みのため rank 外 )
@@ -115,3 +118,12 @@ rank (期待 gain × 確率, 2026-09-03 第3回):
   (in-process /search 実行) + crons */5。build 成功、fetch path 未変更。
   before 基準線は bench+falsify で確定済み (cold 7/20)。after 計測は deploy 後。
   K-Q1 は host load gate (load1 ~15-17 > 7.5) により local profiling 未実施。
+- 2026-09-04: rank 第4回。falsify の K-Z1 before 基準線第3試行 (n=20, cold 7/20,
+  0.90–1.87s) を取り込み — 基準線は 3 試行 (bench 1 + falsify 2, 各 7/20) で安定。
+  status 遷移なし (K-Z1 after 計測は PR #4 merge/deploy 前のため不可能)。
+  rank 更新: 順位変動なし (K-Q1 > K-Z1 > K-S1 > K-S2) だが K-Z1 の notes 更新 —
+  deploy 前の基準線 n 追加は不要と明記。host load1 38.70 で gate 超過がさらに
+  悪化しており、K-Q1/K-S1 の local 実測は見込み薄。gate 外で進められる K-Q1 の
+  手がかり収集を優先指定する。
+  NEXT: K-Q1 (K-Q2 harness を時間帯を変えて再実行し、退行が host/edge 負荷に
+  相関するかを production 実測で確認する — gate 外で可能な退行切り分けの一手)。
