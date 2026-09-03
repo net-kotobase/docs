@@ -71,7 +71,7 @@ claim contract (初期):
   evidence: 反復実測で cold penalty (+0.8–1.8s) は isolate 単位で再発し「初回 1 回」ではない
   (n=20, cold 群 7/20)。機構 (cold penalty の存在) は部分的に支持 → 下記 K-Z1 に合成。
 
-| K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | open | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定 |
+| K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | open | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後 |
 
 rank (期待 gain × 確率, 2026-09-03 第3回):
 1. K-Q1 — K-Q2 の実測で +566〜721ms の退行が query path 側と帰属確定。
@@ -110,3 +110,8 @@ rank (期待 gain × 確率, 2026-09-03 第3回):
   優先して指定する。
   NEXT: K-Z1 (production HTTP で gate 外に実行可能。warm-up 前基準線の n を
   積んで導入前後比較の統計的土台を固める)。
+- 2026-09-03: cosientist 第1回。K-Z1 を実装 (evidence ありのため):
+  search-origin PR #4 (bot/cosient-20260903-kz1-warmup) — scheduled handler
+  (in-process /search 実行) + crons */5。build 成功、fetch path 未変更。
+  before 基準線は bench+falsify で確定済み (cold 7/20)。after 計測は deploy 後。
+  K-Q1 は host load gate (load1 ~15-17 > 7.5) により local profiling 未実施。
