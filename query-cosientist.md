@@ -50,7 +50,7 @@ claim contract (初期):
 | ID | 軸 | hypothesis | status | evidence |
 |---|---|---|---|---|
 | K-Q1 | query | warm query p50 187ms の内訳は edge/network ではなく Worker CPU + Biscuit verify が支配的 (Biscuit verify 単体は測定済み p50 18.65ms なので、残り ~170ms は query 実行 + edge)。engine の query 実行 path を hand-profilable な形で local 実行して内訳を実測する | open | — |
-| K-Q2 | query | 同一測定法での再測 (2026-08-26 との比較) で p50 が再現するか — 測定の再現性を先に確立する (基準線の固定) | open | — |
+| K-Q2 | query | 同一測定法での再測 (2026-08-26 との比較) で p50 が再現するか — 測定の再現性を先に確立する (基準線の固定) | executed (再現せず) | rank 2026-09-03: falsify 実測 2 run (753.41/908.69ms, p95 884/1668) で基準線 187.35ms は不再現 → 判定確定。後続は K-Q1 (退行切り分け) へ |
 | K-W1 | worker | live smoke 4xx 2% の内訳は path 固有 (bot traffic) であり、 Worker のバグではない — /api/funnel と status code 分布の実測で反証する | open | — |
 | K-W2 | worker | search.kotobase.net の in-memory projection は起動後初回リクエストで cold penalty を持つ — /search?q= の初回 vs 2回目 latency 実測 | refuted (初回 1 回説) | falsify 2026-09-03: n=20 で cold 群 7/20, isolate 単位で再発 — 詳細は population 直下の注記 |
 | K-S1 | storage | KOTOBASE_PACK_WRITES 有効 (testnet) は write path を測定劣化させない — engine の local test で pack on/off 比較 | open | — |
@@ -73,13 +73,14 @@ claim contract (初期):
 
 | K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | open | — |
 
-rank (期待 gain × 確率, 2026-09-03 初回):
-1. K-Q2 — 全軸の基準線固定。最安で不確実性最大の削減。
-2. K-Z1 — 実測済み penalty が大きく (~35% のリクエストに +0.8–1.8s)、機構は部分的支持済み。gain 大。
-3. K-Q1 — ~170ms 未特定分は gain 大だが K-Q2 の基準線が先。
-4. K-S1 — claim contract の storage 判定に必要。中。
-5. K-W1 — 4xx 2% は影響小だが安価。
-6. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
+rank (期待 gain × 確率, 2026-09-03 第2回):
+1. K-Q1 — K-Q2 の実測で +566〜721ms の退行が query path 側と帰属確定。
+   退行の切り分けは現状最大の既知 gain (~170ms 課題を含む)。確率中〜高。
+2. K-Z1 — 実測済み penalty (~35% に +0.8–1.8s)。gain 大だが query 退行を優先。
+3. K-S1 — claim contract の storage 判定に必要。中。
+4. K-W1 — 4xx 2% は影響小だが安価。
+5. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
+( K-Q2 は executed — 再現性検証の役割を完了 )
 
 ※ falsify 2026-09-03: K-W2 反証実測 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo)。二峰性: warm ~40–90ms 群 13/20, cold 0.85–1.8s 群 7/20 (TTFB≈total, connect は常に ~8ms)。cold penalty ≈ +0.8–1.8s は実在するが「起動後初回の 1 回」ではなく isolate 単位で再発するパターン — 仮説の機構は部分的に支持・単発初回説は棄却寄り。status 判定は rank に委ねる。
 
@@ -92,3 +93,9 @@ rank (期待 gain × 確率, 2026-09-03 初回):
   取り込み K-W2 → refuted (初回 1 回説)。機構の部分的支持を K-Z1 (isolate warm-up で
   cold 群出現率低減) に合成して新規登録。rank: K-Q2 > K-Z1 > K-Q1 > K-S1 > K-W1 > K-S2。
   NEXT: K-Q2 (基準線固定が最安で、以降の全比較の前提になる)。
+- 2026-09-03: rank 第2回。falsify の K-Q2 実測 (2 run: warm p50 753.41/908.69ms,
+  200 全成功, 同一 harness) を取り込み K-Q2 → **executed (基準線は再現せず,
+  +3.5〜3.9 倍退行が実在)**。auth plane の増分は軽微で退行は query path 側に帰属
+  (falsify 注記)。rank 更新: K-Q1 > K-Z1 > K-S1 > K-W1 > K-S2 (K-Q1 を最上位へ —
+  退行の切り分けが最大既知 gain)。K-Q2 は済みのため rank 外。
+  NEXT: K-Q1 (query path 退行の切り分け。2026-08-26 以降の gateway→backend 差分の特定が最初の一手)。
