@@ -56,6 +56,17 @@ claim contract (初期):
 | K-S1 | storage | KOTOBASE_PACK_WRITES 有効 (testnet) は write path を測定劣化させない — engine の local test で pack on/off 比較 | open | — |
 | K-S2 | storage | 1 commit CID 構造の map/git/search 統合読み出しは、同一 CID への反復読み出しで KV キャッシュに乗り p50 が改善する — 同一 CID 反復 vs 初回の実測 | open | — |
 
+※ falsify 2026-09-03 (K-Q2 反証実測, 再現性の検証): 2026-08-26 の harness
+  (biscuit-auth-query-bench/authn/scripts/live_biscuit_query_bench.mjs, 同一測定法:
+  n=30 sequential + 3 warmup 除外, nearest-rank, Node fetch 接続再利用, NRT colo,
+  ephemeral EOA --provision) で 2 回実行。warm query p50 753.41ms / 908.69ms
+  (p95 884/1668, min 696/773, 200 全成功, colo NRT) — 基準線 187.35ms は
+  **再現せず +3.5〜3.9 倍の退行**。Biscuit issuance p50 39.49→58.68/45.71ms、
+  verify p50 18.65→32.98/27.70ms と軽微な増加だが、~700ms 増分は auth plane では
+  説明できず query 実行 path (gateway → backend) 側に帰属。K-Q1 の内訳調査は
+  この退行の切り分け (2026-08-26 以降の query path 変更差分) から始めるべき。
+  測定 JSON は /tmp/kq2-run.json, /tmp/kq2-run2.json (secret 不含)。
+
 ※ rank 2026-09-03: K-W2 を **refuted (起動後初回の 1 回説)** として判定。
   evidence: 反復実測で cold penalty (+0.8–1.8s) は isolate 単位で再発し「初回 1 回」ではない
   (n=20, cold 群 7/20)。機構 (cold penalty の存在) は部分的に支持 → 下記 K-Z1 に合成。
