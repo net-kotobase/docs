@@ -49,7 +49,11 @@ claim contract (初期):
 
 | ID | 軸 | hypothesis | status | evidence |
 |---|---|---|---|---|
-| K-Q1 | query | warm query p50 187ms の内訳は edge/network ではなく Worker CPU + Biscuit verify が支配的 (Biscuit verify 単体は測定済み p50 18.65ms なので、残り ~170ms は query 実行 + edge)。engine の query 実行 path を hand-profilable な形で local 実行して内訳を実測する | open | bench 2026-09-03: 未測定 — host busy (load1 17.50 / 1min, 閾値 7.5 超過のため local profiling を実施せず終了)。次回 quiet-host 時に再試行。bench 2026-09-04: NEXT (rank 第4回) に従い K-Q2 harness を時間帯を変えて production 再実行 (live_biscuit_query_bench.mjs --provision, 同一測定法 n=30+3 warmup 除外, nearest-rank, Node fetch 接続再利用, 2026-09-04 01:15 JST 深夜帯, host load1 17.93 は production HTTP 実測のため gate 外): warm query p50 1016.34ms / p95 1481.05ms (min 857.11, 200 全成功, colo NRT) — 第3試行で 3 試行中最低 (753.41/908.69 → 1016.34)。深夜帯でも退行は存続し時間帯/負荷に相関せず、むしろ増悪。auth plane は軽微 (issuance p50 50.79ms, verify p50 27.64ms) で退行は引き続き query path 側に帰属。測定 JSON は /tmp/kq2-run3.json (secret 不含) |
+| K-Q1 | query | warm query p50 187ms の内訳は edge/network ではなく Worker CPU + Biscuit verify が支配的 (Biscuit verify 単体は測定済み p50 18.65ms なので、残り ~170ms は query 実行 + edge)。engine の query 実行 path を hand-profilable な形で local 実行して内訳を実測する | open | bench 2026-09-03: 未測定 — host busy (load1 17.50 / 1min, 閾値 7.5 超過のため local profiling を実施せず終了)。次回 quiet-host 時に再試行。bench 2026-09-04: NEXT (rank 第4回) に従い K-Q2 harness を時間帯を変えて production 再実行 (live_biscuit_query_bench.mjs --provision, 同一測定法 n=30+3 warmup 除外, nearest-rank, Node fetch 接続再利用, 2026-09-04 01:15 JST 深夜帯, host load1 17.93 は production HTTP 実測のため gate 外): warm query p50 1016.34ms / p95 1481.05ms (min 857.11, 200 全成功, colo NRT) — 第3試行で 3 試行中最低 (753.41/908.69 → 1016.34)。深夜帯でも退行は存続し時間帯/負荷に相関せず、むしろ増悪。auth plane は軽微 (issuance p50 50.79ms, verify p50 27.64ms) で退行は引き続き query path 側に帰属。測定 JSON は /tmp/kq2-run3.json (secret 不含)。rank 2026-09-04 第5回: 深夜帯
+  (01:15 JST, host 負荷と無関係な production 実測) でむしろ増悪したため
+  「退行は時間帯/host 負荷に相関する」説は棄却 — 恒常的な query path 退行と
+  判定し、切れ手は harness 再実行から 2026-08-26 以降の gateway→backend 変更差分の
+  特定へ移す |
 | K-Q2 | query | 同一測定法での再測 (2026-08-26 との比較) で p50 が再現するか — 測定の再現性を先に確立する (基準線の固定) | executed (再現せず) | rank 2026-09-03: falsify 実測 2 run (753.41/908.69ms, p95 884/1668) で基準線 187.35ms は不再現 → 判定確定。後続は K-Q1 (退行切り分け) へ |
 | K-W1 | worker | live smoke 4xx 2% の内訳は path 固有 (bot traffic) であり、 Worker のバグではない — /api/funnel と status code 分布の実測で反証する | executed (仮説どおり) | bench 2026-09-03: production GET 実測 (kotobase.net, n=30/path, 100ms 間隔, host load1 15.91 は production HTTP 実測のため gate 外): / /signup /api/funnel は全 30/30=200 (p50 32/28/77ms) — smoke 対象 path は健全。4xx は path 固有で決定的: /login 404 30/30, /api/status 404 30/30, /wp-login.php /.env /xmlrpc.php 404 30/30, /admin 401 30/30 — ランダム/断続的な Worker エラーではなく特定 path の恒常応答。bot 起源説と整合 (判定は rank に委ねる)。falsify 2026-09-03 独立再現 (production GET, n=10/path, 200ms 間隔, host load1 17.75 は production HTTP 実測のため gate 外): code 分布が bench と完全一致 — / /api/funnel 200 10/10, /login /api/status /wp-login.php 404 10/10, /admin 401 10/10。bot 起源説の反証は不成立 (仮説どおり path 固有恒常応答) |
 | K-W2 | worker | search.kotobase.net の in-memory projection は起動後初回リクエストで cold penalty を持つ — /search?q= の初回 vs 2回目 latency 実測 | refuted (初回 1 回説) | falsify 2026-09-03: n=20 で cold 群 7/20, isolate 単位で再発 — 詳細は population 直下の注記 |
@@ -73,15 +77,14 @@ claim contract (初期):
 
 | K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | open | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後。falsify 2026-09-03 第2回: before 基準線 n 追加 (同測定法 n=20, 別接続 curl, Tokyo, PR #4 は main 未マージで warm-up 未 deploy のまま): cold 群 7/20 (TTFB 0.90–1.87s), warm 群 13/20 (44–85ms), 全 200 — bench/falsify 初回の 7/20 を再現し基準線は 3 試行で安定。導入後比較の統計的土台は十分 |
 
-rank (期待 gain × 確率, 2026-09-04 第4回):
-1. K-Q1 — K-Q2 の実測で +566〜721ms の退行が query path 側と帰属確定。
-   退行の切り分けは現状最大の既知 gain。ただし local profiling は host load gate
-   により 3 連続で未実施 (2026-09-04 00:59 時点 load1 38.70 でさらに悪化) —
-   quiet-host 待ち。production HTTP で gate 外に進められる手がかり収集
-   (時間帯を変えた K-Q2 harness 再実行による load 相関の確認) は可能。
-2. K-Z1 — before 基準線が bench+falsify 計 3 試行 (各 n=20, cold 群 7/20 ずつ)
-   で安定し統計的土台は完成。残るのは PR #4 の merge/deploy 後の after 計測のみ。
-   deploy 前の基準線 n 追加は不要 (5 試行×7/20 で十分)。
+rank (期待 gain × 確率, 2026-09-04 第5回):
+1. K-Q1 — bench の深夜帯 run3 (p50 1016.34ms, 3 試行中最低) を取り込み
+   「退行は時間帯/host 負荷に相関する」説を棄却: 恒常的な query path 退行と判定。
+   退行の切り分けは最大の既知 gain のまま。harness 再実行による負荷相関の確認は
+   完了済み (棄却された) ので、次の一手は 2026-08-26 以降の gateway→backend
+   変更差分の特定。local profiling は host load gate のまま quiet-host 待ち。
+2. K-Z1 — before 基準線 3 試行で安定。残るは PR #4 merge/deploy 後の after 計測
+   のみで、deploy 前に falsify/bench ができることはない。
 3. K-S1 — claim contract の storage 判定に必要。中 (local gate の影響を受ける)。
 4. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
 ( K-Q2 / K-W1 / K-W2 は判定済みのため rank 外 )
@@ -127,3 +130,13 @@ rank (期待 gain × 確率, 2026-09-04 第4回):
   手がかり収集を優先指定する。
   NEXT: K-Q1 (K-Q2 harness を時間帯を変えて再実行し、退行が host/edge 負荷に
   相関するかを production 実測で確認する — gate 外で可能な退行切り分けの一手)。
+- 2026-09-04: rank 第5回。bench の K-Q1 深夜帯 run3 (01:15 JST, p50 1016.34ms,
+  200 全成功) を取り込み — 3 試行中最低で、深夜帯でも退行が存続・増悪したため
+  「時間帯/host 負荷に相関する」説を棄却。K-Q1 は open のまま、notes に
+  恒常的 query path 退行と判定を追記。status 遷移なし (新規 evidence による
+  transition 要件を満たす測定はなし)。rank 順位変動なし (K-Q1 > K-Z1 > K-S1 >
+  K-S2) だが K-Q1 の切れ手を harness 再実行 (負荷相関は棄却済み) から
+  2026-08-26 以降の gateway→backend 変更差分の特定へ更新。K-Z1 は deploy 前に
+  falsify/bench ができることがないため降格気味、K-S1/K-S2 は local gate 次第。
+  NEXT: K-Q1 (production gate 外で可能な残りの切れ手は 2026-08-26 以降の
+  gateway→backend 変更差分の特定 — リポジトリ diff / deploy 履歴の調査)。
