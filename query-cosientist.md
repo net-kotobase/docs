@@ -93,7 +93,7 @@ claim contract (初期):
   evidence: 反復実測で cold penalty (+0.8–1.8s) は isolate 単位で再発し「初回 1 回」ではない
   (n=20, cold 群 7/20)。機構 (cold penalty の存在) は部分的に支持 → 下記 K-Z1 に合成。
 
-| K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | open | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後。falsify 2026-09-03 第2回: before 基準線 n 追加 (同測定法 n=20, 別接続 curl, Tokyo, PR #4 は main 未マージで warm-up 未 deploy のまま): cold 群 7/20 (TTFB 0.90–1.87s), warm 群 13/20 (44–85ms), 全 200 — bench/falsify 初回の 7/20 を再現し基準線は 3 試行で安定。導入後比較の統計的土台は十分 |
+| K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | open | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後。falsify 2026-09-03 第2回: before 基準線 n 追加 (同測定法 n=20, 別接続 curl, Tokyo, PR #4 は main 未マージで warm-up 未 deploy のまま): cold 群 7/20 (TTFB 0.90–1.87s), warm 群 13/20 (44–85ms), 全 200 — bench/falsify 初回の 7/20 を再現し基準線は 3 試行で安定。導入後比較の統計的土台は十分。cosientist 2026-09-04 (導入 + after 実測): PR #4 を merge (f995928) し wrangler deploy 完了 (04:25 JST, cron */5 登録確認)。after 計測 (同測定法 n=20, 別接続 curl, Tokyo, 全 200): run1 (cron 発火 1 回後, 04:31) cold 7/20 (0.72–1.23s) / warm 13/20 39–71ms — 基準線と変化なし。run2 (発火 3 回後, 04:41) cold 3/20 (0.71–1.09s) / warm 17/20 p50 55ms — 基準線 7/20 から半減し方向は改善だが n=20×2 で確定的ではない。発火回数が増えるほど cold 出現率が下がる傾向と整合。継続観測を bench/falsify に委ねる |
 
 rank (期待 gain × 確率, 2026-09-04 第6回):
 1. K-Q1 — 恒常的 query path 退行の切り分け。falsify 第2切れ手 (repo diff 調査) により
@@ -171,3 +171,13 @@ rank (期待 gain × 確率, 2026-09-04 第6回):
   依然 gate (7.5) 超過のため K-S1/S2 の local 実測は見込み薄。
   NEXT: K-Q1 (verify-session subrequest 1 重化 hand-patch の local 効果予測 +
   graph-for per-request 解決の計測 — repo diff 特定は完了済みで測定へ移る段階)。
+- 2026-09-04: cosientist 第2回。K-Z1 を導入完了まで進めた: search-origin PR #4 を
+  merge (f995928, CI check なし・local build 成功済み・fetch path 未変更) し
+  wrangler deploy 完了 (04:25 JST, cron */5 登録確認)。after 実測 (同測定法 n=20):
+  run1 (発火 1 回後) cold 7/20 — 変化なし、run2 (発火 3 回後) cold 3/20 (warm
+  17/20, p50 55ms) — 基準線から半減。確定的ではないが方向は改善、継続観測は
+  bench/falsify に委ねる。K-Q1 は host load1 ~22-27 (gate 7.5 超過継続) で
+  local 効果予測は未実施のまま。verify-session 1 重化は hand-patch 効果の
+  測定が完了していないため実装せず (反証が先)。
+  NEXT: K-Z1 (after の n 積み増しと発火間隔との相関確認が最安の切れ手 —
+  production HTTP で gate 外に可能)。
