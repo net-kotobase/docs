@@ -53,7 +53,23 @@ claim contract (初期):
   (01:15 JST, host 負荷と無関係な production 実測) でむしろ増悪したため
   「退行は時間帯/host 負荷に相関する」説は棄却 — 恒常的な query path 退行と
   判定し、切れ手は harness 再実行から 2026-08-26 以降の gateway→backend 変更差分の
-  特定へ移す |
+  特定へ移す。falsify 2026-09-04 (第2切れ手: 2026-08-26 以降の query path 差分特定,
+  repo diff 調査): (a) gateway (control-plane kotobase-api-gateway-cljs) の /api read
+  path 差分 8/26 fe7d58cd → 9/3 6ed504d7~1 は serial subrequest を 1 つも追加しない
+  (audit receipt の header copy + /api/payment-* write endpoint 追加のみ) — gateway 差分
+  では +4x を説明できない。(b) backend: engine repo は 8/24 以降 commit なし, cypher/lake
+  の ayatori query bridge 入れ替え (8/30) は作者実測で byte-identical, kotobase-peer
+  bump (subject-index prune, 9/3 19:02) は falsify run1-2 (19:28 commit) より後 —
+  window 内に query 実行 path の計測可能なコード変更は見つからず、退行の起源は
+  コード差分より infra/データ側 (graph-for の graph CID 解決や KV 依存のデータ成長) が
+  有力。(c) 新規に潜在 regressor を 1 件特定: 6ed504d7 (#600, 9/3 20:53, x402 read gate)
+  は route-datomic-ingress で resolve-viewer を呼んだ後 2-arity client-api/handle を
+  呼ぶため viewer が 2 重解決され、Biscuit 認証済み /api POST read が request あたり
+  authn verify-session serial subrequest を 2 回発する (client_api.cljc:511-525)。
+  bench run3 (01:15 9/4, p50 1016.34ms) はこの後だが falsify run1-2 (753/909ms) より後
+  のため base 退行の原因ではなく run3 の増悪分 (+~110ms) の説明候補。
+  次の切れ手: verify-session subrequest を 1 重化する hand-patch 効果の local 予測と、
+  graph-for per-request 解決の計測 |
 | K-Q2 | query | 同一測定法での再測 (2026-08-26 との比較) で p50 が再現するか — 測定の再現性を先に確立する (基準線の固定) | executed (再現せず) | rank 2026-09-03: falsify 実測 2 run (753.41/908.69ms, p95 884/1668) で基準線 187.35ms は不再現 → 判定確定。後続は K-Q1 (退行切り分け) へ |
 | K-W1 | worker | live smoke 4xx 2% の内訳は path 固有 (bot traffic) であり、 Worker のバグではない — /api/funnel と status code 分布の実測で反証する | executed (仮説どおり) | bench 2026-09-03: production GET 実測 (kotobase.net, n=30/path, 100ms 間隔, host load1 15.91 は production HTTP 実測のため gate 外): / /signup /api/funnel は全 30/30=200 (p50 32/28/77ms) — smoke 対象 path は健全。4xx は path 固有で決定的: /login 404 30/30, /api/status 404 30/30, /wp-login.php /.env /xmlrpc.php 404 30/30, /admin 401 30/30 — ランダム/断続的な Worker エラーではなく特定 path の恒常応答。bot 起源説と整合 (判定は rank に委ねる)。falsify 2026-09-03 独立再現 (production GET, n=10/path, 200ms 間隔, host load1 17.75 は production HTTP 実測のため gate 外): code 分布が bench と完全一致 — / /api/funnel 200 10/10, /login /api/status /wp-login.php 404 10/10, /admin 401 10/10。bot 起源説の反証は不成立 (仮説どおり path 固有恒常応答) |
 | K-W2 | worker | search.kotobase.net の in-memory projection は起動後初回リクエストで cold penalty を持つ — /search?q= の初回 vs 2回目 latency 実測 | refuted (初回 1 回説) | falsify 2026-09-03: n=20 で cold 群 7/20, isolate 単位で再発 — 詳細は population 直下の注記 |
