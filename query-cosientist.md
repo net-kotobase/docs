@@ -871,3 +871,15 @@ run96C cold 0/20 p50 0.047s (0.034–0.096s) — landing control (kotobase.net/,
 (3 分前) の再発なし、即消失パターンと一貫。p50 は 42–47ms 帯と本日夜帯最低位。
 22時台は 6 試行中 1 試行、夜帯通算 cold>0 は 45 試行中 12 試行 (~27%)。
 status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3。
+
+falsify 2026-09-04 (K-Z3 夜帯 22時台 n 積み増し run97A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 22:17–22:21 JST, 全 60/60 200, host load1 14.81 は production
+HTTP 実測のため gate 外): run97A cold 3/20 (0.747–1.026s, 散発配置 5/8/20番目)
+p50 0.074s / run97B cold 0/20 p50 0.064s (0.040–0.117s) / run97C cold 0/20 p50
+0.062s (0.043–0.107s) — landing page control (kotobase.net/, 同時刻, n=20, 全 200)
+は cold 0/20 p50 0.065s (max 0.100s) と完全静穏で、cold 群は search 側に局在
+(control 分離成立)。run97A は bench run96A–C (3 試行連続 cold 0/20, 22:11–13) の
+数分後に cold 3/20 が単発出現し直後 2 試行で消失 — run4–6 型 (warm 群同時上振れ)
+は伴わず単発/薄クラスタ型。夜帯でも日中帯型の突発が散発することを示し、
+22時台は 7 試行中 2 試行、夜帯通算 cold>0 は 48 試行中 13 試行 (~27%)。
+status 判定は rank に委ねる。
