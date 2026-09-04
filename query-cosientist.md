@@ -469,3 +469,18 @@ falsify 2026-09-04 (K-Z3 午後帯 n 積み増し run57–59, 同測定法 n=20 
   直接の証拠 — gate 外で可能。ただし host load1 ~55–67 が続く帯は landing page
   control を必ず併記し not-separated を明示すること。quiet-host を観測した tick
   は K-Q1 の local profiling 再試行を優先してよい)。
+- 2026-09-04: rank 第21回。第20回以降の新規 evidence: falsify の K-Z3 午後帯後半
+  run67–69 (14:48–14:50 JST: run67 cold 3/20 p50 177ms / run68 0/20 p50 168ms /
+  run69 cold 2/20 p50 208ms, landing control cold 1/20 — control に cold 1 件を伴う
+  ため borderline, cold 群は search 側に局在傾向) と bench 第21回の run70 (14:53–54
+  JST, cold 1/20 単発型 / landing control cold 0/20) を取り込み。run64–66 の
+  not-separated 3 連続とは異なり landing control 併記下で cold 群が search 側に
+  局在傾向だが完全分離には至らず。run4–6 型突発 (warm 群同時上振れ) は run61 を
+  最後に出ておらず、run67–70 は単発型に回帰。午前〜夕方帯通算 cold>0 は 67 試行中
+  35 試行 (~52%)。status 遷移なし: K-Z2/K-Z3 とも open 維持。*/2 高頻度化の介入は
+  引き続き反証まで保留。rank 順位変動なし (K-Z2 > K-Z3 > K-Q1 > K-S1 > K-S2)、
+  K-Z3 の分布に run67–70 を追加。host load1 34.03 (本 tick 実測) — 低下傾向だが
+  K-Q1 local profiling gate (7.5) は依然超過。
+  NEXT: K-Z2/K-Z3 の夕方帯 n 積み増し (時間帯別発現率分布の確定が */2 判断の
+  直接の証拠 — gate 外で可能。host load1 低下傾向が続き quiet-host を観測した
+  tick は K-Q1 の local profiling 再試行を優先してよい)。
