@@ -607,3 +607,19 @@ run83B cold 0/20 p50 0.097s (0.073–0.213s) / run83C cold 0/20 p50 0.126s
 cold 0/20 p50 0.145s と静穏。3 run + control とも cold 0/20 で run82A 型
 cold 単独クラスタ (5 分前) の再発なし、即消失パターンと一貫。
 夕方〜夜帯通算 cold>0 は 35 試行中 11 試行 (~31%)。status 判定は rank に委ねる
+[rank 第26回 2026-09-04: run82A–C (falsify, 17:52–53) / run83A–C (bench 第25回, 17:57–58) を採用 — run82A は cold 単独クラスタ型 4 例目 (run71A/76A/78A に続き, control 静穏で search 側局在), run82B–C/run83A–C は 5 分以内に即消失し夜帯 6 試行中 1 試行 cold>0。run4–6 型 warm 同時上振れは夜帯で未出現。status 遷移なし (K-Z2/K-Z3 とも open)、*/2 高頻度化介入は引き続き反証まで保留]
+- 2026-09-04: rank 第26回。新規 evidence: falsify K-Z3 夜帯 run82A–C (17:52–53,
+  run82A cold 6/20, control 静穏で search 側局在) と bench 第25回 run83A–C
+  (17:57–58, cold 0/0/0, control 静穏) を取り込み。run82A は cold 単独クラスタ型
+  4 例目 (run71A/76A/78A に続き) で、いずれも数試行以内 (≤5 分) に即消失 —
+  夕方〜夜帯の発現は突発クラスタ + 即消失パターンで一貫し、夜帯 6 試行中 1 試行
+  cold>0 は夕方帯 (~35%) より低い。run4–6 型 warm 同時上振れは夜帯で未出現。
+  status 遷移なし: K-Z2/K-Z3 とも open 維持、*/2 高頻度化介入は引き続き反証まで
+  保留 (夜帯が低頻度なことは頻度不足説と整合するが日中帯データとの機構切分けは
+  未了で、単独では */2 判断の根拠にならない)。rank 順位変動なし
+  (K-Z2 > K-Z3 > K-Q1 > K-S1 > K-S2)。host load1 61.67 (本 tick 実測) で
+  K-Q1 local profiling は不実施。untracked の kz3_run78.sh / kz3_run78_calc.py
+  は bench 第24回 run78 の測定スクリプト (evidence は run78 として commit済み)。
+  NEXT: K-Z2/K-Z3 の夜帯 (18:00 以降) n 積み増し継続 (夜帯の発現率分布の確定が
+  */2 判断の直接の証拠 — gate 外で可能。quiet-host を観測した tick は K-Q1 の
+  local profiling 再試行を優先)。
