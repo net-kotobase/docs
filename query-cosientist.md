@@ -78,15 +78,18 @@ claim contract (初期):
 | K-S1 | storage | KOTOBASE_PACK_WRITES 有効 (testnet) は write path を測定劣化させない — engine の local test で pack on/off 比較 | open | — |
 | K-S2 | storage | 1 commit CID 構造の map/git/search 統合読み出しは、同一 CID への反復読み出しで KV キャッシュに乗り p50 が改善する — 同一 CID 反復 vs 初回の実測 | open | — |
 
-falsify 2026-09-04 (K-Z3 深夜帯 23時台 n 積み増し run99A–C, 同測定法 n=20 × 3 run,
+falsify 2026-09-04 (K-Z3 深夜帯 23時台 n 積み増し run100A–C, 同測定法 n=20 × 3 run,
 別接続 curl, Tokyo, 23:20 JST, 全 80/80 200, host load1 27.83 は production HTTP
-実測のため gate 外): run99A cold 2/20 (1.073s 4番目, 2.062s 13番目 — 散発配置) p50
-0.064s / run99B cold 0/20 p50 0.056s (0.043–0.339s) / run99C cold 0/20 p50 0.060s
-(0.045–0.115s) — landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20
-p50 0.071s (0.054–0.133s) と静穏で control 分離成立、cold 群は search 側に局在。
-traffic 最低帯の深夜でも日中帯型の突発 (単発/薄クラスタ) が散発 — traffic 依存説に
-反する方向の観測で、夜帯通算 cold>0 は 54 試行中 15 試行 (~28%)、深夜帯 (23時台) は
-3 試行中 1 試行。status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 23時台 n 積み増し継続。
+実測のため gate 外。※ cosientist run99A–C (23:13–14) との ID 衝突を避け run100 とする):
+run100A cold 2/20 (1.073s 4番目, 2.062s 13番目 — 散発配置) p50 0.064s / run100B cold
+0/20 p50 0.056s (0.043–0.339s) / run100C cold 0/20 p50 0.060s (0.045–0.115s) —
+landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.071s
+(0.054–0.133s) と静穏で control 分離成立、cold 群は search 側に局在。traffic 最低帯の
+深夜でも日中帯型の突発 (単発/薄クラスタ) が散発 — cosientist run99A (cold 5/20,
+landing borderline) と合わせ深夜帯 23時台は 6 試行中 3 試行で cold>0、夜帯通算
+cold>0 は 57 試行中 18 試行 (~32%)。深夜対比の低頻度期待に反し K-Z3 traffic 依存説は
+弱まるが run99A は landing borderline のため機構確定には至らず。status 判定は rank に
+委ねる。NEXT: K-Z3 深夜帯 23時台 n 積み増し継続。
 | K-Z2 | worker | K-Z1 の日中帯 cold 群再発 (run4 10/20 → run5 7/20, 深夜 run3 1/20) は traffic 由素の isolate 再生成が支配的であり、warm-up を高頻度化 (cron */5 → */2) するか時間帯別発火にすることで日中帯の cold 群出現率が低下する — 頻度変更前後で日中帯同時刻の同測定法 (n=20) を比較する | open | — | falsify 2026-09-04 (発火直後 vs 発火経過後の対比, 同測定法 n=20, 別接続 curl, Tokyo, production gate 外, 全 200, cron */5 発火時刻 11:00/11:05/11:10 直後に計測開始): 直後 run10 (11:00:44, 発火 ~44s 後) cold 3/20 (TTFB 0.91–1.46s) / run12 (11:05:10 直後) cold 2/20 (0.64–1.16s) / run14 (11:10:11 直後) cold 0/20 p50 ~0.08s。経過後 run11 (11:01:30, 発火 ~90s 経過) cold 0/20 p50 0.08s / run13 (11:05:54) cold 0/20 p50 ~0.20s / run15 (11:10:59) cold 0/20 p50 ~0.12s。3 組中 2 組で「発火直後のみ cold 群あり → 経過後 0」の同方向対比が出現 — cold 群は warm-up 発火直後の isolate 再生成/反映タイミングと交互作用するパターンを支持するが n=20×6 で確定的ではなく機構切分けには至らず。status 判定は rank に委ねる bench 2026-09-04 (第12回, after run13–14, 同測定法 n=20, 別接続 curl, Tokyo, 11:25–11:26 JST, 全 200, host load1 57.96 は production HTTP 実測のため gate 外): run13 cold 3/20 (0.54–1.16s) / warm 17/20 p50 213ms (108–456ms) — run10–12 (cold 0/20 ×3, 11:10–11:12) の 15 分後に run4–6 型の短時間スケール再発が再出現し、直後の run14 は cold 0/20 (p50 200ms, 96–420ms) で再消失。p50 は両試行とも従来の 60–126ms 帯より高位で warm 群の遅延も同時に上振れ。run4–6 型変動の再出現は 2 例目で、NEXT の時間帯別発現率分布の材料。status 判定は rank に委ねる bench 2026-09-04 (第19回, run60, 同測定法 n=20, 別接続 curl, Tokyo, 14:11 JST, 全 200, host load1 67.56 は production HTTP 実測のため gate 外): cold 4/20 (0.98–1.27s) / warm 16/20 p50 217ms (148–376ms) — 午後帯後半 (13:35–14:01 で cold 0/11, p50 60–90ms 帯) から再び突発。cold 4/20 は単発型ではなく warm 群の同時上振れ (p50 217ms) を伴う run4–6/run13 型で 3 例目。status 判定は rank に委ねる bench 2026-09-04 (第20回, after run64–66, 同測定法 n=20 × 3 run, 別接続 curl, Tokyo, 14:29–14:30 JST, 全 60/60 200, host load1 61–67 は production HTTP 実測のため gate 外): run64 cold 5/20 (0.508–0.992s) p50 303ms / run65 cold 8/20 (0.530–1.748s) p50 401ms / run66 cold 4/20 (0.529–1.037s) p50 236ms — 3/3 試行連続で cold>0 は run4–6 以来初だが、同手法 landing page control (14:38, n=20) も p50 280ms / cold 2/20 と上振れしており host load1 ~55–67 帯では local/host 由素混入を排除できず not-separated (介入前 n 積み増しとして蓄積)。status 判定は rank に委ねる |
 
 ※ falsify 2026-09-03 (K-Q2 反証実測, 再現性の検証): 2026-08-26 の harness
