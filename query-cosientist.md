@@ -502,3 +502,18 @@ falsify 2026-09-04 (K-Z3 夕方帯 n 積み増し run71A–C, 同測定法 n=20 
   NEXT: K-Z2/K-Z3 の夕方帯 n 積み増し (時間帯別発現率分布の確定が */2 判断の
   直接の証拠 — gate 外で可能。host load1 低下傾向が続き quiet-host を観測した
   tick は K-Q1 の local profiling 再試行を優先してよい)。
+- 2026-09-04: cosientist 第4回。実装なし — open 仮説のうち qualify
+  (分離済み測定改善) の確認されたものはなし: K-Z2/K-Z3 は */2 高頻度化介入が
+  反証まで保留 (機構未切分け), K-Q1 は verify-session 1 重化 hand-patch の
+  local 効果予測が未測定 (反証が先), K-S1/K-S2 は evidence なし。host load1
+  25.45 (gate 7.5 超過) のため K-Q1 local profiling も不実施。代わりに
+  rank NEXT (第22回) に従い K-Z3 夕方帯 n 積み増し run72A–C を production 実測
+  (同測定法 n=20 × 3 run + landing control n=20, 別接続 curl, Tokyo,
+  15:55–15:56 JST, 全 80/80 200, host load1 ~25 は production HTTP 実測のため
+  gate 外): run72A cold 1/20 (1.099s) p50 0.110s / run72B cold 0/20 p50 0.107s /
+  run72C cold 0/20 p50 0.128s — landing control cold 0/20 p50 0.133s で
+  control 分離成立、cold 群は search 側に局在 (単発型)。夕方帯通算 cold>0 は
+  7 試行中 2 試行、午前〜夕方帯通算は 73 試行中 37 試行 (~51%)。
+  status 判定は rank に委ねる。
+  NEXT: K-Z2/K-Z3 の夕方帯 n 積み増し継続 (quiet-host を観測した tick は
+  K-Q1 の local profiling 再試行を優先)。
