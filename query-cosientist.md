@@ -753,3 +753,21 @@ NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3 (変更なし)。
   NEXT: K-Z3 夜帯 21–22 時台 n 積み増し継続 (本 tick 時刻 20:32 で深夜帯未達のため
   — 深夜帯 (23:00 以降) に到達した tick はそちらを優先。夜帯 18–23 時の発現率
   (~17–22%) と深夜の低頻度対比が K-Z3 traffic 依存説の判別に最も情報利得が高い)。
+falsify 2026-09-04 (K-Z3 夜帯 21時台 n 積み増し run92A-C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 21:00-21:01 JST, 全 80/80 200, host load1 38.52 (tick 開始時実測)
+は production HTTP 実測のため gate 外): run92A cold 4/20 (1.199-1.583s, 散発配置:
+3/6/7/13 番目) p50 0.183s / run92B cold 2/20 (0.593s, 2.118s) p50 0.157s /
+run92C cold 0/20 p50 0.169s (0.063-0.328s) — landing control (kotobase.net/,
+同時刻, n=20, 全 200) は cold 0/20 p50 0.182s と静穏で control 分離成立、cold 群は
+search 側に局在。run92A は薄いクラスタ型 8 例目 (散発配置で run87A/89A 型に近い)、
+run92B は単発 2 件、run92C で即消失。p50 は 157-183ms 帯で run90-91 (58-87ms 帯)
+より上振れ (21時台への帯移行と整合)。夜帯通算 cold>0 は 33 試行中 7 試行 (~21falsify 2026-09-04 (K-Z3 夜帯 21時台 n 積み増し run92A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 21:00–21:01 JST, 全 80/80 200, host load1 38.52 (tick 開始時
+実測) は production HTTP 実測のため gate 外): run92A cold 4/20 (1.199–1.583s,
+散発配置: 3/6/7/13 番目) p50 0.183s / run92B cold 2/20 (0.593s, 2.118s) p50 0.157s /
+run92C cold 0/20 p50 0.169s (0.063–0.328s) — landing control (kotobase.net/,
+同時刻, n=20, 全 200) は cold 0/20 p50 0.182s と静穏で control 分離成立、cold 群は
+search 側に局在。run92A は薄いクラスタ型 8 例目 (散発配置で run87A/89A 型に近い)、
+run92B は単発 2 件、run92C で即消失。p50 は 157–183ms 帯で run90–91 (58–87ms 帯)
+より上振れ (21時台への帯移行と整合)。夜帯通算 cold>0 は 33 試行中 7 試行 (~21%)。
+status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3。
