@@ -112,6 +112,8 @@ rank (期待 gain × 確率, 2026-09-04 第10回):
 
 | K-Z3 | worker | K-Z1/K-Z2 の日中帯短時間スケール再発 (run4–6, run13–16: cold 群と warm 群の遅延上振れが同時に出る突発パターン, 10:41–11:47 JST の 14 試行中 5 試行で cold>0) は時間帯依存の traffic 変動に追従する — 午前/午後/夕方の複数時間帯で同測定法 (n=20) の発現率とタイミング分布を確定し、*/2 高頻度化の要否判断の直接の証拠とする | open | — |
 
+ bench 2026-09-04 (第14回, K-Z3 午後開始帯 after run21, 同測定法 n=20, 別接続 curl, Tokyo, 11:58 JST, 全 200, host load1 48.03 は production HTTP 実測のため gate 外): cold 0/20 (max TTFB 0.388s) / warm 20/20, p50 0.146s (0.055–0.388s) — 11:47 以降も run4–6 型再発なし (午前〜昼帯通算 cold>0 は 18 試行中 6 試行)。p50 は 130–160ms 帯を維持。status 判定は rank に委ねる |
+
 ※ falsify 2026-09-03: K-W2 反証実測 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo)。二峰性: warm ~40–90ms 群 13/20, cold 0.85–1.8s 群 7/20 (TTFB≈total, connect は常に ~8ms)。cold penalty ≈ +0.8–1.8s は実在するが「起動後初回の 1 回」ではなく isolate 単位で再発するパターン — 仮説の機構は部分的に支持・単発初回説は棄却寄り。status 判定は rank に委ねる。
 
 ## Iteration log
@@ -285,7 +287,7 @@ rank (期待 gain × 確率, 2026-09-04 第10回):
   141ms (45–453ms) / run16 cold 1/20 (0.92s) / warm 19/20 p50 133ms (63–252ms) —
   run4–6 型の短時間スケール再発の 3 例目 (run13 が 11:25, run15 が 11:38)。
   発現は突発的で消失も速く、cold 群と warm 群の遅延上振れが同時に出るパターンは
-  status 判定は rank に委ねる falsify 2026-09-04 (after run17, 同測定法 n=20, 別接続 curl, Tokyo, 11:46–11:47 JST, 全 200, host load1 36.01 は production HTTP 実測のため gate 外): cold 0/20 (max TTFB 0.34s), p50 0.139s (0.063–0.342s) — 午前帯 (10:41–11:47) の 14 試行中 cold>0 は 5 試行、本試行は発現なし。p50 は bench run15–16 と同程度の 100–140ms 帯。status 判定は rank に委ねる |
+  status 判定は rank に委ねる falsify 2026-09-04 (after run17, 同測定法 n=20, 別接続 curl, Tokyo, 11:46–11:47 JST, 全 200, host load1 36.01 は production HTTP 実測のため gate 外): cold 0/20 (max TTFB 0.34s), p50 0.139s (0.063–0.342s) — 午前帯 (10:41–11:47) の 14 試行中 cold>0 は 5 試行、本試行は発現なし。p50 は bench run15–16 と同程度の 100–140ms 帯。status 判定は rank に委ねる cosientist 2026-09-04 (昼過ぎ帯観測, 同測定法 n=20 × 3 run, 別接続 curl, Tokyo, 11:50–11:54 JST, 全 200, host load1 48–52 は production HTTP 実測のため gate 外): run18 cold 1/20 (1.13s) / warm 19/20 p50 ~0.136s (0.057–0.338s) / run19 cold 0/20 p50 0.163s (0.067–0.337s) / run20 cold 0/20 p50 0.131s (0.069–0.309s) — 午前帯 run15–17 と同水準で、11:38 (run15) を最後に run4–6 型の短時間スケール再発は出ず (cold>0 は run18 の 1 のみ)。warm 群 p50 は 130–160ms 帯で 60–126ms 帯より高位のまま。NEXT の時間帯別発現率分布 (午前 5/14 → 昼過ぎ 1/3 試行) に蓄積。status 判定は rank に委ねる |
 - 2026-09-04: rank 第10回。bench の after run13–16 (11:25–11:41 JST: run13 cold 3/20,
   run14 0/20, run15 3/20, run16 1/20) と falsify の after run17 (11:46, cold 0/20)、
   および K-Z2 の発火直後 vs 経過後対比 (run10–15: 直後 run10 3/20 / run12 2/20 /
