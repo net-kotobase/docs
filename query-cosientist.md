@@ -71,7 +71,7 @@ claim contract (初期):
   次の切れ手: verify-session subrequest を 1 重化する hand-patch 効果の local 予測と、
   graph-for per-request 解決の計測。bench 2026-09-04 (第7回): NEXT (rank 第6回) の
   上記 2 切れ手はいずれも local 測定だが host busy (load1 24.91 / 1min, 閾値 7.5 超過)
-  のため実施せず記録のみ — 次回 quiet-host 時に再試行。bench 2026-09-04 (第15回): 未測定 — host busy (load1 58.58, 閾値 7.5 超過のため local profiling を実施せず終了)。gate 超過継続 tick は rank NEXT (第11回) に従い K-Z2/K-Z3 の production 観測を優先した。 |
+  のため実施せず記録のみ — 次回 quiet-host 時に再試行。bench 2026-09-04 (第15回): 未測定 — host busy (load1 58.58, 閾値 7.5 超過のため local profiling を実施せず終了)。gate 超過継続 tick は rank NEXT (第11回) に従い K-Z2/K-Z3 の production 観測を優先した。bench 2026-09-04 (第16回): 未測定 — host busy (load1 68.58, 閾値 7.5 超過のため local profiling を実施せず終了)。gate 超過継続 tick は rank NEXT (第12回) に従い K-Z2/K-Z3 の昼帯 n 積み増しを production 実測した (run40–42, 詳細は K-Z2/K-Z3 evidence)。 |
 | K-Q2 | query | 同一測定法での再測 (2026-08-26 との比較) で p50 が再現するか — 測定の再現性を先に確立する (基準線の固定) | executed (再現せず) | rank 2026-09-03: falsify 実測 2 run (753.41/908.69ms, p95 884/1668) で基準線 187.35ms は不再現 → 判定確定。後続は K-Q1 (退行切り分け) へ |
 | K-W1 | worker | live smoke 4xx 2% の内訳は path 固有 (bot traffic) であり、 Worker のバグではない — /api/funnel と status code 分布の実測で反証する | executed (仮説どおり) | bench 2026-09-03: production GET 実測 (kotobase.net, n=30/path, 100ms 間隔, host load1 15.91 は production HTTP 実測のため gate 外): / /signup /api/funnel は全 30/30=200 (p50 32/28/77ms) — smoke 対象 path は健全。4xx は path 固有で決定的: /login 404 30/30, /api/status 404 30/30, /wp-login.php /.env /xmlrpc.php 404 30/30, /admin 401 30/30 — ランダム/断続的な Worker エラーではなく特定 path の恒常応答。bot 起源説と整合 (判定は rank に委ねる)。falsify 2026-09-03 独立再現 (production GET, n=10/path, 200ms 間隔, host load1 17.75 は production HTTP 実測のため gate 外): code 分布が bench と完全一致 — / /api/funnel 200 10/10, /login /api/status /wp-login.php 404 10/10, /admin 401 10/10。bot 起源説の反証は不成立 (仮説どおり path 固有恒常応答) |
 | K-W2 | worker | search.kotobase.net の in-memory projection は起動後初回リクエストで cold penalty を持つ — /search?q= の初回 vs 2回目 latency 実測 | refuted (初回 1 回説) | falsify 2026-09-03: n=20 で cold 群 7/20, isolate 単位で再発 — 詳細は population 直下の注記 |
@@ -106,7 +106,9 @@ rank (期待 gain × 確率, 2026-09-04 第13回):
    昼帯 (run25–27 3/3, run28–30 0/3, run31–33 3/3, run34–36 2/3, run37–39 1/3)。
    昼帯通算 cold>0 は 36 試行中 18 試行 (~50%) で午前帯 (~36%) より高位。run34 の深い
    cold 群 (7/20, 最大 2.199s, before 基準線級) は日中帯でも基準線級発現が生じる
-   ことを示し、*/2 判断の証拠として重要。夕方帯の n 積み増しが次。
+   ことを示し、*/2 判断の証拠として重要。bench run40–42 (12:55–12:56) では run40
+   単発 1 件 (1.024s) のみで即消失 — 昼帯通算 cold>0 は 39 試行中 19 試行 (~49%)
+   で高位を維持。夕方帯の n 積み増しが次。
 3. K-Q1 — 恒常的 query path 退行の切り分け。残る切れ手は verify-session 1 重化
    hand-patch の local 効果予測だが、host load1 58–61 (gate 7.5 超過継続) で
    local 測定の見込みが続かず停滞中。
@@ -365,3 +367,14 @@ falsify 2026-09-04 (K-Z3 昼帯後半 n 積み増し run37–39, 同測定法 n=
   cold>0 は 36 試行中 18 試行 (~50%)。run37 は warm 群の遅延上振れを伴わない単発型で
   run13–16 型に近い。status 遷移なし、rank 順位変動なし、NEXT 変更なし
   (K-Z2/K-Z3 の夕方帯 n 積み増し)。
+- 2026-09-04: rank 第14回。bench 第16回の K-Z2/K-Z3 昼帯 run40–42 (12:55–12:56 JST:
+  run40 cold 1/20 (1.024s) / run41–42 cold 0/20, p50 0.099–0.211s) を取り込み —
+  falsify run34 (7/20, 12:46) の約 10 分後の窓で発現は run40 単発 1 件のみで即消失、
+  run13–16 型と整合。昼帯通算 cold>0 は 39 試行中 19 試行 (~49%) で午前帯 (~36%)
+  より高位のまま。status 遷移なし: K-Z2 (発火直後タイミング関与説) と K-Z3
+  (時間帯依存 traffic 追従説) はいずれも open 維持。*/2 高頻度化の介入は引き続き
+  反証まで保留 (発現が突発的で時間窓内でも連続しないため)。rank 順位変動なし
+  (K-Z2 > K-Z3 > K-Q1 > K-S1 > K-S2)。host load1 57–68 で K-Q1 local 切れ手は
+  停滞継続。
+  NEXT: K-Z2/K-Z3 の夕方帯 n 積み増し (時間帯別発現率分布の確定が */2 判断の直接の
+  証拠 — gate 外で可能。gate 超過が続く tick も観測自体は production 実測で継続可能)。
