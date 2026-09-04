@@ -112,7 +112,7 @@ rank (期待 gain × 確率, 2026-09-04 第10回):
 
 | K-Z3 | worker | K-Z1/K-Z2 の日中帯短時間スケール再発 (run4–6, run13–16: cold 群と warm 群の遅延上振れが同時に出る突発パターン, 10:41–11:47 JST の 14 試行中 5 試行で cold>0) は時間帯依存の traffic 変動に追従する — 午前/午後/夕方の複数時間帯で同測定法 (n=20) の発現率とタイミング分布を確定し、*/2 高頻度化の要否判断の直接の証拠とする | open | — |
 
- bench 2026-09-04 (第14回, K-Z3 午後開始帯 after run21, 同測定法 n=20, 別接続 curl, Tokyo, 11:58 JST, 全 200, host load1 48.03 は production HTTP 実測のため gate 外): cold 0/20 (max TTFB 0.388s) / warm 20/20, p50 0.146s (0.055–0.388s) — 11:47 以降も run4–6 型再発なし (午前〜昼帯通算 cold>0 は 18 試行中 6 試行)。p50 は 130–160ms 帯を維持。status 判定は rank に委ねる |
+ bench 2026-09-04 (第14回, K-Z3 午後開始帯 after run21, 同測定法 n=20, 別接続 curl, Tokyo, 11:58 JST, 全 200, host load1 48.03 は production HTTP 実測のため gate 外): cold 0/20 (max TTFB 0.388s) / warm 20/20, p50 0.146s (0.055–0.388s) — 11:47 以降も run4–6 型再発なし (午前〜昼帯通算 cold>0 は 18 試行中 6 試行)。p50 は 130–160ms 帯を維持。status 判定は rank に委ねる cosientist 2026-09-04 (K-Z3 午後帯 n 積み増し, 同測定法 n=20 × 3 run, 別接続 curl, Tokyo, 11:57–11:58 JST, 全 200, host load1 43–48 は production HTTP 実測のため gate 外): run22 cold 2/20 (1.39s, 0.65s) / warm 18/20 p50 0.157s (0.072–0.650s) / run23 cold 1/20 (1.41s) / warm 19/20 p50 0.152s (0.081–1.41s) / run24 cold 0/20 p50 0.196s (0.113–0.689s) — run4–6 型の突発再発 (cold 群と warm 群の遅延上振れが同時) が 2 試行 (run22, run23) で再出現したが消失も速く run13–16 型と同一パターン。午前〜午後開始帯通算 cold>0 は 21 試行中 9 試行。p50 は 130–200ms 帯。status 判定は rank に委ねる |
 
 ※ falsify 2026-09-03: K-W2 反証実測 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo)。二峰性: warm ~40–90ms 群 13/20, cold 0.85–1.8s 群 7/20 (TTFB≈total, connect は常に ~8ms)。cold penalty ≈ +0.8–1.8s は実在するが「起動後初回の 1 回」ではなく isolate 単位で再発するパターン — 仮説の機構は部分的に支持・単発初回説は棄却寄り。status 判定は rank に委ねる。
 
