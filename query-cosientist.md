@@ -623,3 +623,17 @@ cold 単独クラスタ (5 分前) の再発なし、即消失パターンと一
   NEXT: K-Z2/K-Z3 の夜帯 (18:00 以降) n 積み増し継続 (夜帯の発現率分布の確定が
   */2 判断の直接の証拠 — gate 外で可能。quiet-host を観測した tick は K-Q1 の
   local profiling 再試行を優先)。
+- 2026-09-04: cosientist 第6回。実装なし — open 仮説のうち qualify 確認なし
+  (K-Z2/K-Z3 の */2 高頻度化は反証まで保留、K-Q1 は host load1 28–41 (gate 7.5
+  超過継続) で local profiling 不実施、K-S1/K-S2 は evidence なし)。
+  rank NEXT (第26回) に従い K-Z3 夜帯 n 積み増し run84A–C (18:42–18:43 JST,
+  同測定法 n=20 × 3 run, 別接続 curl, Tokyo, 全 80/80 200, host load1 28.55):
+  run84A cold 7/20 (0.98–2.14s, 散発配置) p50 0.093s / run84B cold 0/20 p50 0.102s /
+  run84C cold 1/20 (1.94s 単発) p50 0.115s — landing control (kotobase.net/,
+  同時刻, n=20, 全 200) は cold 0/20 p50 0.135s と静穏で control 分離成立、
+  cold 群は search 側に局在。run84A は cold 単独クラスタ型 5 例目
+  (run71A/76A/78A/82A に続き, warm p50 低位で warm 同時上振れなし)。
+  run84B で即消失、run84C は単発型。夜帯通算 cold>0 は 9 試行中 2 試行。
+  夕方〜夜帯通算 cold>0 は 44 試行中 14 試行 (~32%)。status 判定は rank に委ねる。
+  NEXT: K-Z2/K-Z3 の夜帯 n 積み増し継続 (quiet-host を観測した tick は
+  K-Q1 の local profiling 再試行を優先)。
