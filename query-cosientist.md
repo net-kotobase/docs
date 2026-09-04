@@ -78,6 +78,8 @@ claim contract (初期):
 | K-S1 | storage | KOTOBASE_PACK_WRITES 有効 (testnet) は write path を測定劣化させない — engine の local test で pack on/off 比較 | open | — |
 | K-S2 | storage | 1 commit CID 構造の map/git/search 統合読み出しは、同一 CID への反復読み出しで KV キャッシュに乗り p50 が改善する — 同一 CID 反復 vs 初回の実測 | open | — |
 
+| K-Z2 | worker | K-Z1 の日中帯 cold 群再発 (run4 10/20 → run5 7/20, 深夜 run3 1/20) は traffic 由素の isolate 再生成が支配的であり、warm-up を高頻度化 (cron */5 → */2) するか時間帯別発火にすることで日中帯の cold 群出現率が低下する — 頻度変更前後で日中帯同時刻の同測定法 (n=20) を比較する | open | — |
+
 ※ falsify 2026-09-03 (K-Q2 反証実測, 再現性の検証): 2026-08-26 の harness
   (biscuit-auth-query-bench/authn/scripts/live_biscuit_query_bench.mjs, 同一測定法:
   n=30 sequential + 3 warmup 除外, nearest-rank, Node fetch 接続再利用, NRT colo,
@@ -105,6 +107,8 @@ rank (期待 gain × 確率, 2026-09-04 第7回):
    (gate 7.5 超過) で local 測定の見込みが続かず停滞中。
 3. K-S1 — claim contract の storage 判定に必要。中 (local gate の影響を受ける)。
 4. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
+5. K-Z2 — K-Z1 の日中帯再発の機構切分け (warm-up 間隔 vs traffic 由素 isolate 再生成)。
+   production gate 外で測定可能なため実効順位は K-Q1 の停滞次第で最上位。
 ( K-Q2 / K-W1 / K-W2 / K-Z1 は判定済みのため rank 外 )
 
 ※ falsify 2026-09-03: K-W2 反証実測 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo)。二峰性: warm ~40–90ms 群 13/20, cold 0.85–1.8s 群 7/20 (TTFB≈total, connect は常に ~8ms)。cold penalty ≈ +0.8–1.8s は実在するが「起動後初回の 1 回」ではなく isolate 単位で再発するパターン — 仮説の機構は部分的に支持・単発初回説は棄却寄り。status 判定は rank に委ねる。
@@ -202,3 +206,19 @@ rank (期待 gain × 確率, 2026-09-04 第7回):
   (0.79–1.69s) / warm 10/20 p50 43ms — run3 (1/20) から悪化し単調減少は崩れた。
   日中帯 traffic による isolate 再生成の可能性が高いが機構は未切分け。
   executed 判定の確定度は下がる。NEXT: K-Z1 (n 積み増し継続 + 時間帯比較)。
+- 2026-09-04: bench 第9回。K-Z1 after run5 を実測 (同測定法 n=20, 10:41 JST,
+  production HTTP のため host load1 35.71 の gate 外): cold 7/20 (0.94–1.86s) /
+  warm 13/20 p50 128ms — run4 (10/20) からやや低下だが基準線 7/20 と同等で
+  run3 (1/20, 深夜) の水準は日中帯で維持できず。日中帯再発が 2 連続で確定。
+- 2026-09-04: rank 第8回。bench の K-Z1 after run5 (cold 7/20, 10:41 JST) を取り込み。
+  status 遷移なし — K-Z1 executed (仮説どおり) は維持: 単調減少の崩れは
+  日中帯のみで一貫 (深夜 run2 3/20 → run3 1/20, 日中 run4 10/20 → run5 7/20) であり、
+  warm-up の効果 (深夜帯で cold 群 ~35% → ~5%) は反証されていない。日中帯再発は
+  warm-up 間隔 (cron */5) に対する traffic 由素 isolate 再生成が説明候補で、
+  これは K-Z1 の反証ではなく時間帯条件の限界 → 新仮説 K-Z2 (高頻度 warm-up による
+  日中帯再発低減) に切り出して登録。rank 更新: K-Z1 は rank 外維持、
+  K-Z2 を新規追加 (K-Q1 > K-Z2 > K-S1 > K-S2 — K-Q1 は host load gate
+  (load1 ~24, 閾値 7.5 超過継続) で local 切れ手が停滞中のため、gate 外で
+  進行可能な K-Z2 が実効順位で K-Q1 に匹敵)。
+  NEXT: K-Z2 (production gate 外で測定可能な唯一の open 切れ手。日中帯の
+  after run5 直後時刻に n 積み増しを取り、時間帯別 cold 群出現率の確定度を上げる)。
