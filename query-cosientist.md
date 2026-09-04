@@ -599,3 +599,11 @@ landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.09
 型の cold 単独クラスタ型 (warm p50 66ms と低位で warm 同時上振れなし,
 run4–6 型要件なし) で 4 例目。run82B で即消失、run82C の cold 1 件は単発型。
 夕方〜夜帯通算 cold>0 は 32 試行中 11 試行。status 判定は rank に委ねる
+bench 2026-09-04 (第25回, K-Z3 夜帯 n 積み増し run83A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 17:57–17:58 JST, 全 80/80 200, host load1 28.51 は production
+HTTP 実測のため gate 外): run83A cold 0/20 p50 0.131s (0.066–0.300s) /
+run83B cold 0/20 p50 0.097s (0.073–0.213s) / run83C cold 0/20 p50 0.126s
+(0.068–0.211s) — landing control (kotobase.net/, 同時刻, n=20, 全 200) は
+cold 0/20 p50 0.145s と静穏。3 run + control とも cold 0/20 で run82A 型
+cold 単独クラスタ (5 分前) の再発なし、即消失パターンと一貫。
+夕方〜夜帯通算 cold>0 は 35 試行中 11 試行 (~31%)。status 判定は rank に委ねる
