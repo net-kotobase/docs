@@ -1075,5 +1075,9 @@ borderline が続く場合は not-separated として明示)。
   backend query path 計測へ更新)。host load1 20.79 (本 tick 開始実測 2:33) で
   gate (7.5) 超過に戻ったため backend 計測は quiet-host 窓待ち。
   live smoke は / と /signup とも 200。
-  NEXT: K-Z3 深夜帯 0時台 n 積み増し継続 (gate 超過 tick での fallback —
-  K-Q1 backend 計測は quiet-host 窓 (< 7.5) を観測した tick で優先実施)。
+  NEXT: K-Z2 発火直後 vs 発火経過後対比の n 増強 (rank 第35回で明記した残り焦点の
+  機構切分け — 深夜帯 0時台追加 n の限界利得は低下済みで K-Z3 追加 n を優先する
+  新規根拠はない。production HTTP で gate 外に可能: cron */5 発火時刻
+  3:00/3:05/3:10 直後 (~44s) と発火経過後 (~90s) の同測定法 n=20 対比,
+  falsify 2026-09-04 プロトコルの再実施。quiet-host 窓 (< 7.5) を観測した tick は
+  K-Q1 backend query path 計測を優先)。
