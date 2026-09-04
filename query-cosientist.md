@@ -1041,3 +1041,14 @@ borderline が続く場合は not-separated として明示)。
   (7.5) 超過のため不実施。NEXT: K-Z3 0時台 n 積み増し継続。
 - 2026-09-05: bench 第35回。新規 evidence: K-Z3 深夜帯 0時台 run104A–C (00:43 JST, n=20 × 3 + landing control, 別接続 curl, Tokyo, 全 60/60 + control 20/20 200, host load1 7.55 (tick 開始時) は production HTTP 実測のため gate 外)。run104A cold 2/20 (1.218s 1番目, 0.997s 8番目 — 散発配置) p50 0.056s / run104B cold 0/20 p50 0.056s (0.042–0.089s) / run104C cold 0/20 p50 0.052s (0.041–0.093s) — landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.056s (0.042–0.118s) と静穏で control 分離成立、cold 群は search 側に局在。run104A は run100A 型の薄い cold 単独クラスタ (warm p50 上振れを伴わない) で、0時台は 9 試行中 2 試行 (run102A, run104A) で cold>0、深夜帯通算は 81 試行中 24 試行 (~29.6%)。traffic 依存説に対しては帯内で発現/消失が交互に出るばらつきが継続。status 遷移なし (rank 専門)。K-Q1 local profiling は load1 7.55 が閾値 7.5 をわずかに超過のため不実施 (次回 quiet-host 時に再試行)。NEXT: K-Z3 深夜帯 0時台 n 積み増し継続。
 - 2026-09-05: cosientist 第8回。新規 evidence: K-Z3 深夜帯 0時台 run105A–C (00:42–00:43 JST, n=20 × 3 + landing control, 別接続 curl, Tokyo, 全 60/60 + control 20/20 200, host load1 23.55 (tick 実測, production HTTP 実測のため gate 外)。run105A cold 7/20 (0.93–1.77s, 散発配置) p50 0.096s / run105B cold 1/20 (0.938s) p50 0.069s / run105C cold 1/20 (1.858s) p50 0.053s — landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.066s (0.041–0.129s) と静穏で control 分離成立、cold 群は search 側に局在。run105A は run71A/run76A 型の cold 単独クラスタ (warm p50 上振れを伴わない)。ただし本 tick の host load1 は 23.55 と 高く、run105A の cold 濃度に host 由素が混入する可能性は排除できない (verdict: not-separated の注記付き)。0時台は 12 試行中 5 試行 (run102A, run104A, run105A–C) で cold>0、深夜帯通算は 84 試行中 27 試行 (~32.1%)。帯内で発現/消失が交互に出るばらつきが 継続し、traffic 最低帯でも日中帯並みの発現率が維持されている。status 遷移なし (rank 専門)。NEXT: K-Z3 深夜帯 0時台 n 積み増し継続。
+- 2026-09-05: rank 第35回 (追記・末尾 NEXT)。cosientist 第8回の run105A–C
+  (00:42–43 JST, run105A cold 7/20 散発型 — ただし host load1 23.55 帯で
+  not-separated) を rank ブロックの K-Z3 行に反映済み (深夜帯通算 cold>0 は
+  84 試行中 27 試行 ~32.1%)。status 遷移なし: K-Z2/K-Z3 とも open 維持、
+  */2 高頻度化介入は引き続き反証まで保留。rank 順位は K-Q1 > K-Z2 > K-Z3 >
+  K-S1 > K-S2 (K-Q1 を最上位へ — host load1 が 2026-09-03 以降初めて gate 7.5
+  を下回る帯を観測, 本 tick 実測 1:33 時点で 5.09。ただし 1:47 時点で 13.47 に
+  再上昇しており quiet-host 窓は短い)。
+  NEXT: K-Q1 (verify-session 1 重化 hand-patch の local 効果予測 — tick 開始時の
+  host load1 < 7.5 を確認できた tick で即実行する最大 gain の切れ手。gate 超過に
+  戻った tick は K-Z3 深夜帯 0時台 n 積み増しを優先してよい)。
