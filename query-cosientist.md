@@ -771,3 +771,15 @@ search 側に局在。run92A は薄いクラスタ型 8 例目 (散発配置で 
 run92B は単発 2 件、run92C で即消失。p50 は 157–183ms 帯で run90–91 (58–87ms 帯)
 より上振れ (21時台への帯移行と整合)。夜帯通算 cold>0 は 33 試行中 7 試行 (~21%)。
 status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3。
+
+bench 2026-09-04 (K-Z3 夜帯 21時台 n 積み増し run93A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 21:15–21:16 JST, 全 80/80 200, host load1 40.35 (tick 開始時
+実測) は production HTTP 実測のため gate 外): run93A cold 2/20 (1.119s 2番目,
+1.229s 11番目 — 非連続の散発配置) p50 0.264s / run93B cold 1/20 (1.214s 先頭)
+p50 0.200s / run93C cold 0/20 p50 0.160s (0.070–0.355s) — landing control
+(kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.175s と静穏で
+control 分離成立、cold 群は search 側に局在。run93A は散発配置の薄クラスタ型
+9 例目、run93B は先頭単発 1 件、run93C で即消失。p50 は 160–264ms 帯で
+run92 (157–183ms 帯) と同等の 21時台レベル。夜帯通算 cold>0 は 36 試行中
+9 試行 (25%)。status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 (23:00 以降)
+n=20 × 3。
