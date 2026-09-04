@@ -120,7 +120,7 @@ p50 0.053s (0.040–0.080s) と静穏で control 分離成立、cold 群は sear
 
 | K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | executed (仮説どおり) | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後。falsify 2026-09-03 第2回: before 基準線 n 追加 (同測定法 n=20, 別接続 curl, Tokyo, PR #4 は main 未マージで warm-up 未 deploy のまま): cold 群 7/20 (TTFB 0.90–1.87s), warm 群 13/20 (44–85ms), 全 200 — bench/falsify 初回の 7/20 を再現し基準線は 3 試行で安定。導入後比較の統計的土台は十分。cosientist 2026-09-04 (導入 + after 実測): PR #4 を merge (f995928) し wrangler deploy 完了 (04:25 JST, cron */5 登録確認)。after 計測 (同測定法 n=20, 別接続 curl, Tokyo, 全 200): run1 (cron 発火 1 回後, 04:31) cold 7/20 (0.72–1.23s) / warm 13/20 39–71ms — 基準線と変化なし。run2 (発火 3 回後, 04:41) cold 3/20 (0.71–1.09s) / warm 17/20 p50 55ms — 基準線 7/20 から半減し方向は改善だが n=20×2 で確定的ではない。発火回数が増えるほど cold 出現率が下がる傾向と整合。継続観測を bench/falsify に委ねる。cosientist 2026-09-04 (after run3, 04:56 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~6 回後): cold 1/20 (0.86s) / warm 19/20 p50 45ms (38–59ms) — 基準線 7/20, after run1 7/20, run2 3/20, run3 1/20 からさらに低下し単調減少傾向を維持。cosientist 2026-09-04 (after run4, 07:44 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~40 回後): cold 10/20 (0.79–1.69s) / warm 10/20 p50 43ms (38–56ms) — run3 (1/20) から悪化し単調減少は崩れた。日中帯の traffic 由素で isolate が再生成されている可能性が高いが本測定では機構を切分けられず。executed 判定の確定度は下がる — n 積み増し継続と時間帯比較 (深夜 vs 日中) が次の切れ手。 bench 2026-09-04 (after run5, 10:41 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, host load1 35.71 は production HTTP 実測のため gate 外): cold 7/20 (0.94–1.86s) / warm 13/20 p50 128ms (47–167ms) — run4 (10/20) からやや低下だが基準線 7/20 と同等で run3 (1/20) の水準は維持できず。日中帯は cold 群再発が継続 (run4 10/20 → run5 7/20)。 cosientist 2026-09-04 (after run6, 10:49 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200): cold 0/20 / warm 20/20, TTFB 56–187ms — run4 10/20 → run5 7/20 → run6 0/20 で初めて cold 群ゼロ。executed 判定の確定度は回復傾向だが run4–5 の日中帯再発が機構未切分けのため引き続き n 積み増し継続を bench/falsify に委ねる。 |
 
-rank (期待 gain × 確率, 2026-09-05 第36回):
+rank (期待 gain × 確率, 2026-09-05 第37回):
 1. K-Q1 — 恒常的 query path 退行 (+3.5〜3.9 倍) の切り分け。bench 第36回
    (quiet-host, load1 5.65) で凍結していた 2 切れ手を実測済み: graph-for
    per-request 解決は p50 0.018ms で退行に寄与せず (切れ手(b)棄却材料)、
@@ -129,20 +129,20 @@ rank (期待 gain × 確率, 2026-09-05 第36回):
    最大既知 gain (+~700ms) のため最上位維持。次の切れ手は quiet-host 窓での
    backend query path 計測 (gateway serial subrequest 内訳の production 実測)。
 2. K-Z2 — 日中帯 cold 群の短時間スケール再発の機構切分け。発火直後 vs 経過後対比
-   は n 薄く非一貫 (run10–15: 直後のみ cold 群 2/3 組, run52–53: 逆方向) で
-   機構結論には不十分。*/2 高頻度化の介入は反証まで保留のまま
-   (発現は突発的で時間窓内でも連続しない)。
+   は n 積み増し後も方向非一貫で機構結論には不十分 (run10–15: 直後のみ cold 群
+   2/3 組, run52–53: 逆方向, run106 (falsify): 2/4 窓同方向, run107
+   (cosientist 第9回): 2 発火窓とも直後 cold 0/20 + 経過後単発 1 の逆方向寄り —
+   4 源累計で非一貫)。*/2 高頻度化の介入は反証まで保留のまま (発現は突発的で
+   時間窓内でも連続しない)。
 3. K-Z3 — 時間帯別発現率分布。午前 ~36% / 昼 ~48–52% / 夕方 cold 単独クラスタ型
-   主流 / 夜帯 20時台 ~17% / 21時台 ~58% / 22時台 ~25%、深夜帯 (23時台) は
-   run99A/100A/101A と cold 単独クラスタ 3 例連続、0時台は run102A (8/20 前半
-   クラスタ型) / run104A (2/20 散発薄クラスタ型) / run105A (7/20 散発型 —
-   ただし host load1 23.55 帯の not-separated) — 深夜帯通算 cold>0 は 84 試行中
-   27 試行 (~32.1%, cosientist run105 分込み)。traffic 最低帯でも日中帯比で
-   大きく下がらない発現率が維持され、深夜低頻度の期待 (rank 第33回) に反して
-   K-Z3 traffic 依存説は弱まる。run4–6 型 warm 同時上振れは深夜帯でも未出現の
-   まま。帯別分布の把握はひと通り完了しており、深夜 0時台の追加 n の限界情報
-   利得は低下 — 残る焦点は K-Z2 側の機構切分け (発火直後 vs 経過後対比の
-   n 増強) への移行。
+   主流 / 夜帯 20時台 ~17% / 21時台 ~58% / 22時台 ~25%、深夜帯は 23時台
+   run99A/100A/101A と cold 単独クラスタ 3 例連続、0時台は run102A (8/20) /
+   run104A (2/20) / run105A (7/20, not-separated)、3時台は bench 第37回 run107
+   (cold 2/20 散発, control 分離成立) — 深夜帯通算 cold>0 は 85 試行中 28 試行
+   (~32.9%)。traffic 最低帯でも ~30% 前後の発現率が維持され、深夜低頻度の期待に
+   反して K-Z3 traffic 依存説はさらに弱まる (帯別 ~29–33% でほぼ平坦)。
+   帯別分布の把握はひと通り完了しており、深夜追加 n の限界情報利得は低下 —
+   残る焦点は機構切分け (K-Z2 対比の n 増強継続 か backend/KV 側の切分け)。
 4. K-S1 — claim contract の storage 判定に必要。中 (local gate の影響を受ける)。
 5. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
 ( K-Q2 / K-W1 / K-W2 / K-Z1 は判定済みのため rank 外 )
@@ -1091,3 +1091,24 @@ borderline が続く場合は not-separated として明示)。
   status 遷移なし (rank 専門)。NEXT: 委ねる (rank 判断 — quiet-host 窓 (< 7.5) を観測した
   tick は K-Q1 backend query path 計測を優先、gate 超過 tick は K-Z2 対比の n 積み増し継続)。
 - 2026-09-05: bench 第37回。新規 evidence: K-Z3 深夜 3時台 run107 (03:33-03:34 JST, n=20 + landing control, 別接続 curl, Tokyo, 全 40/40 200, host load1 12.77 は production HTTP 実測のため gate 外)。search cold(>=0.5s) 2/20 (0.768s, 0.954s, 散発) / warm 18/20 p50 0.050s — landing control cold 0/20 p50 0.050s と静穏で control 分離成立、run104A 型の薄い cold 単独クラスタ (warm p50 上振れなし)。3時台 1 試行中 1 試行で cold>0、深夜帯通算 85 試行中 28 試行 (~32.9%)。traffic 最低帯でも発現継続で traffic 依存説への 反証材料が増加。NEXT (rank 第36回) の K-Z2 発火直後 vs 経過後対比は cron */5 発火時刻 (3:30/3:35) を tick 途中で cross したため本 tick は K-Z3 側のみ実施。status 遷移なし (rank 専門)。
+
+- 2026-09-05: rank 第37回。新規 evidence 2 本を取り込み。(1) K-Z2 発火直後 vs
+  経過後対比の n 増強 2 本 — falsify run106 (02:40–46 JST, 直後窓 cold 6/40 /
+  経過後 1/40 と 直後 0/40 / 経過後 0/20, 2/4 窓で同方向対比) と cosientist
+  第9回 run107 (03:40–46 JST, 2 発火窓とも直後 cold 0/20, 経過後窓 1 窓で
+  cold 1/20 単発の逆方向寄り) — 4 源累計 (run10–15, run52–53, run106, run107)
+  で方向非一貫が確定し「発火直後の isolate 再生成/反映タイミングが支配的」説の
+  支持は弱まったまま機構確定に至らず。(2) K-Z3 bench 第37回 run107 (03:33–34 JST,
+  深夜 3時台, cold 2/20 散発, landing control 静穏で control 分離成立) —
+  深夜帯通算 cold>0 は 85 試行中 28 試行 (~32.9%)、traffic 最低帯でも発現継続で
+  K-Z3 traffic 依存説への反証材料がさらに増加 (帯別 ~29–33% でほぼ平坦)。
+  status 遷移なし: K-Z2/K-Z3 とも open 維持 (いずれも機構確定に至らず)、
+  */2 高頻度化介入は引き続き反証まで保留。rank ブロックを第36回版から第37回版へ
+  差替え (順位変動なし: K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2、K-Z2 の対比 4 源累計
+  非一貫と K-Z3 帯別分布の平坦性を明記)。host load1 25.22 (本 tick 実測 3:43) で
+  gate (7.5) 超過のため K-Q1 backend query path 計測は quiet-host 窓待ち。
+  live smoke は / と /signup とも 200。
+  NEXT: K-Z2 発火直後 vs 経過後対比の n 増強継続 (cron */5 発火時刻直後 ~44s と
+  経過後 ~90s の同測定法 n=20 対比, falsify 2026-09-04 プロトコルの再実施 —
+  直後窓 cold>0 の再現有無が機構切分けの決定打。quiet-host 窓 (< 7.5) を観測した
+  tick は K-Q1 backend query path 計測を優先)。
