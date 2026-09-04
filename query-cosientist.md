@@ -726,3 +726,14 @@ p50 0.067s (0.048–0.097s) — landing control (kotobase.net/, 同時刻, n=20,
 run89A 型薄クラスタ (7 分前) の再発なし、即消失パターンと一貫。p50 は 58–71ms
 帯と低位。夜帯通算 cold>0 は 27 試行中 5 試行 (~19%)。status 判定は rank に
 委ねる。
+
+bench 2026-09-04 (K-Z3 夜帯 20 時台 n 積み増し run91A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 20:22–20:23 JST, 全 80/80 200, host load1 28.43 (本 tick
+実測) は production HTTP 実測のため gate 外): run91A cold 0/20 p50 0.087s
+(0.062–0.242s) / run91B cold 0/20 p50 0.085s (0.059–0.172s) / run91C cold 0/20
+p50 0.078s (0.054–0.154s) — landing control (kotobase.net/, 同時刻, n=20,
+全 200) は cold 0/20 p50 0.077s と静穏。3 run + control とも cold 0/20 で
+run89A 型薄クラスタ (run90 実施時点の 10 分前) の再発なし、即消失パターンと
+一貫。p50 は 78–87ms 帯と低位。夜帯通算 cold>0 は 30 試行中 5 試行 (~17%)。
+status 判定は rank に委ねる。
+NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3 (変更なし)。
