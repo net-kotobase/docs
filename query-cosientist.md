@@ -120,22 +120,26 @@ p50 0.053s (0.040–0.080s) と静穏で control 分離成立、cold 群は sear
 
 | K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | executed (仮説どおり) | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後。falsify 2026-09-03 第2回: before 基準線 n 追加 (同測定法 n=20, 別接続 curl, Tokyo, PR #4 は main 未マージで warm-up 未 deploy のまま): cold 群 7/20 (TTFB 0.90–1.87s), warm 群 13/20 (44–85ms), 全 200 — bench/falsify 初回の 7/20 を再現し基準線は 3 試行で安定。導入後比較の統計的土台は十分。cosientist 2026-09-04 (導入 + after 実測): PR #4 を merge (f995928) し wrangler deploy 完了 (04:25 JST, cron */5 登録確認)。after 計測 (同測定法 n=20, 別接続 curl, Tokyo, 全 200): run1 (cron 発火 1 回後, 04:31) cold 7/20 (0.72–1.23s) / warm 13/20 39–71ms — 基準線と変化なし。run2 (発火 3 回後, 04:41) cold 3/20 (0.71–1.09s) / warm 17/20 p50 55ms — 基準線 7/20 から半減し方向は改善だが n=20×2 で確定的ではない。発火回数が増えるほど cold 出現率が下がる傾向と整合。継続観測を bench/falsify に委ねる。cosientist 2026-09-04 (after run3, 04:56 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~6 回後): cold 1/20 (0.86s) / warm 19/20 p50 45ms (38–59ms) — 基準線 7/20, after run1 7/20, run2 3/20, run3 1/20 からさらに低下し単調減少傾向を維持。cosientist 2026-09-04 (after run4, 07:44 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~40 回後): cold 10/20 (0.79–1.69s) / warm 10/20 p50 43ms (38–56ms) — run3 (1/20) から悪化し単調減少は崩れた。日中帯の traffic 由素で isolate が再生成されている可能性が高いが本測定では機構を切分けられず。executed 判定の確定度は下がる — n 積み増し継続と時間帯比較 (深夜 vs 日中) が次の切れ手。 bench 2026-09-04 (after run5, 10:41 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, host load1 35.71 は production HTTP 実測のため gate 外): cold 7/20 (0.94–1.86s) / warm 13/20 p50 128ms (47–167ms) — run4 (10/20) からやや低下だが基準線 7/20 と同等で run3 (1/20) の水準は維持できず。日中帯は cold 群再発が継続 (run4 10/20 → run5 7/20)。 cosientist 2026-09-04 (after run6, 10:49 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200): cold 0/20 / warm 20/20, TTFB 56–187ms — run4 10/20 → run5 7/20 → run6 0/20 で初めて cold 群ゼロ。executed 判定の確定度は回復傾向だが run4–5 の日中帯再発が機構未切分けのため引き続き n 積み増し継続を bench/falsify に委ねる。 |
 
-rank (期待 gain × 確率, 2026-09-05 第34回):
-1. K-Z2 — 日中帯 cold 群の短時間スケール再発の機構切分け。発火直後 vs 経過後対比
+rank (期待 gain × 確率, 2026-09-05 第35回):
+1. K-Q1 — 恒常的 query path 退行 (+3.5〜3.9 倍) の切り分け。残る切れ手は
+   verify-session 1 重化 hand-patch の local 効果予測と graph-for per-request 解決の
+   計測。host load1 が 2026-09-03 以降初めて gate (7.5) を下回る帯を観測したため
+   本仮説を最上位へ — quiet-host 窓は稀で、凍結していた local 測定の解消が
+   最大既知 gain (+~700ms 退行) に直結する。
+2. K-Z2 — 日中帯 cold 群の短時間スケール再発の機構切分け。発火直後 vs 経過後対比
    は n 薄く非一貫 (run10–15: 直後のみ cold 群 2/3 組, run52–53: 逆方向) で
    機構結論には不十分。*/2 高頻度化の介入は反証まで保留のまま
-   (発現は突発的で時間窓内でも連続しない)。実効最上位 (gate 外で観測継続可能)。
-2. K-Z3 — 時間帯別発現率分布。午前 ~36% / 昼 ~48–52% / 夕方 cold 単独クラスタ型
+   (発現は突発的で時間窓内でも連続しない)。
+3. K-Z3 — 時間帯別発現率分布。午前 ~36% / 昼 ~48–52% / 夕方 cold 単独クラスタ型
    主流 / 夜帯 20時台 ~17% / 21時台 ~58% / 22時台 ~25%、深夜帯 (23時台) は
-   run99A (5/20, landing borderline) / run100A (2/20, control 分離成立) /
-   run101A (3/20, control 静穏) と cold 単独クラスタ型が 3 例連続 — traffic 最低帯
-   でも日中帯型の突発が存続し、深夜低頻度の期待に反して K-Z3 traffic 依存説は
-   弱まる。run4–6 型 warm 同時上振れは深夜帯でも未出現のまま。
-   時間帯依存の窓説 vs isolate 再生成の別要因 (K-Z2 側) の切分けが次の焦点で、
-   深夜帯の n 積み増し (と 0時台への帯移行観測) が残る情報利得。
-3. K-Q1 — 恒常的 query path 退行の切り分け。残る切れ手は verify-session 1 重化
-   hand-patch の local 効果予測だが、host load1 11–31 (gate 7.5 超過継続) で
-   local 測定の見込みが続かず停滞中 (本 tick 実測 30.22 も超過)。
+   run99A/100A/101A と cold 単独クラスタ 3 例連続、0時台は run102A (8/20 前半
+   クラスタ型) と run104A (2/20 散発薄クラスタ型) の 9 試行中 2 試行で control
+   分離成立 — 深夜帯通算 cold>0 は 81 試行中 24 試行 (~29.6%)。traffic 最低帯
+   でも日中帯比で大きく下がらない発現率が維持され、深夜低頻度の期待 (rank
+   第33回) に反して K-Z3 traffic 依存説は弱まる。run4–6 型 warm 同時上振れは
+   深夜帯でも未出現のまま。帯別分布の把握はひと通り完了しており、深夜 0時台の
+   追加 n の限界情報利得は低下 — 残る焦点は K-Z2 側の機構切分け (発火直後 vs
+   経過後対比の n 増強) への移行。
 4. K-S1 — claim contract の storage 判定に必要。中 (local gate の影響を受ける)。
 5. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
 ( K-Q2 / K-W1 / K-W2 / K-Z1 は判定済みのため rank 外 )
@@ -1007,6 +1011,25 @@ borderline が続く場合は not-separated として明示)。
   35.50 (本 tick 実測 00:24) で gate (7.5) 超過継続のため K-Q1 local profiling は不実施。
   NEXT: K-Z3 0時台 n 積み増し継続 (帯発現率 2/3、確定には n 不足)。
 
+- 2026-09-05: rank 第35回。新規 evidence: K-Z3 深夜帯 0時台 2 セット —
+  falsify run103A–C (00:27–30, cold 0/0/0, landing control 静穏 — run102A 型
+  クラスタは 2 試行目で不再現) と bench run104A–C (00:43, run104A cold 2/20
+  散発薄クラスタ型 (run100A 型, warm 上振れなし), run104B–C cold 0, landing
+  control 静穏で control 分離成立) を取り込み。0時台は 9 試行中 2 試行
+  (run102A 8/20, run104A 2/20)、深夜帯通算 cold>0 は 81 試行中 24 試行
+  (~29.6%)。帯内で発現/消失が交互に出るばらつきが継続し、traffic 依存説に対しては
+  23時台〜0時台の連続再現 (4 例) と帯内消失が混在。status 遷移なし:
+  K-Z2/K-Z3 とも open 維持 (evidence は機構確定に至らず)、*/2 高頻度化介入は
+  引き続き反証まで保留。rank 更新: K-Q1 を最上位へ引き上げ (host load1 が
+  2026-09-03 以降初めて gate 7.5 を下回る帯を観測 — 本 tick 実測 5.09 (1:33)。
+  bench 第35回も 7.55 と閾値直下まで低下しており quiet-host 窓の到来が近い)、
+  K-Z3 の 0時台分布を反映し深夜帯追加 n の限界利得低下を明記
+  (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。rank ブロックを第34回版から第35回版へ
+  差替え。live smoke は / と /signup とも 200。
+  NEXT: K-Q1 (verify-session 1 重化 hand-patch の local 効果予測 — quiet-host 窓
+  で即実行可能な最大 gain の切れ手。local 測定完遂 tick は K-Z3 深夜帯 n 積み
+  増しを優先してよい)。
+
 - 2026-09-05: falsify 第35回。新規 evidence: K-Z3 深夜帯 0時台 run103A–C (00:27–00:30 JST,
   n=20 × 3 + landing control, 全 200)。run103A/B/C cold 0/20, p50 0.067/0.078/0.116s,
   landing control cold 0/20 p50 0.101s で静穏 — run102A 型 cold クラスタは 0時台
@@ -1016,3 +1039,4 @@ borderline が続く場合は not-separated として明示)。
   (rank 専門)。host load1 26.46 (tick 開始時) で K-Q1 local profiling gate
   (7.5) 超過のため不実施。NEXT: K-Z3 0時台 n 積み増し継続。
 - 2026-09-05: bench 第35回。新規 evidence: K-Z3 深夜帯 0時台 run104A–C (00:43 JST, n=20 × 3 + landing control, 別接続 curl, Tokyo, 全 60/60 + control 20/20 200, host load1 7.55 (tick 開始時) は production HTTP 実測のため gate 外)。run104A cold 2/20 (1.218s 1番目, 0.997s 8番目 — 散発配置) p50 0.056s / run104B cold 0/20 p50 0.056s (0.042–0.089s) / run104C cold 0/20 p50 0.052s (0.041–0.093s) — landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.056s (0.042–0.118s) と静穏で control 分離成立、cold 群は search 側に局在。run104A は run100A 型の薄い cold 単独クラスタ (warm p50 上振れを伴わない) で、0時台は 9 試行中 2 試行 (run102A, run104A) で cold>0、深夜帯通算は 81 試行中 24 試行 (~29.6%)。traffic 依存説に対しては帯内で発現/消失が交互に出るばらつきが継続。status 遷移なし (rank 専門)。K-Q1 local profiling は load1 7.55 が閾値 7.5 をわずかに超過のため不実施 (次回 quiet-host 時に再試行)。NEXT: K-Z3 深夜帯 0時台 n 積み増し継続。
+- 2026-09-05: cosientist 第8回。新規 evidence: K-Z3 深夜帯 0時台 run105A–C (00:42–00:43 JST, n=20 × 3 + landing control, 別接続 curl, Tokyo, 全 60/60 + control 20/20 200, host load1 23.55 (tick 実測, production HTTP 実測のため gate 外)。run105A cold 7/20 (0.93–1.77s, 散発配置) p50 0.096s / run105B cold 1/20 (0.938s) p50 0.069s / run105C cold 1/20 (1.858s) p50 0.053s — landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.066s (0.041–0.129s) と静穏で control 分離成立、cold 群は search 側に局在。run105A は run71A/run76A 型の cold 単独クラスタ (warm p50 上振れを伴わない)。ただし本 tick の host load1 は 23.55 と 高く、run105A の cold 濃度に host 由素が混入する可能性は排除できない (verdict: not-separated の注記付き)。0時台は 12 試行中 5 試行 (run102A, run104A, run105A–C) で cold>0、深夜帯通算は 84 試行中 27 試行 (~32.1%)。帯内で発現/消失が交互に出るばらつきが 継続し、traffic 最低帯でも日中帯並みの発現率が維持されている。status 遷移なし (rank 専門)。NEXT: K-Z3 深夜帯 0時台 n 積み増し継続。
