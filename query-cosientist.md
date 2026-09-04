@@ -438,3 +438,18 @@ falsify 2026-09-04 (K-Z3 午後帯 n 積み増し run57–59, 同測定法 n=20 
   NEXT: K-Z2/K-Z3 の夕方帯 n 積み増し (時間帯別発現率分布の確定が */2 判断の直接の
   証拠 — gate 外で可能。host load 低下傾向のため、quiet-host を観測した tick は
   K-Q1 の local profiling 再試行を優先してよい)。
+- 2026-09-04: rank 第19回。falsify の K-Z3 午後帯後半 run61–63 (14:22–14:23 JST:
+  run61 cold 4/20 (0.503–1.719s) + warm 16/20 p50 214ms / run62 cold 0/20 p50
+  155ms / run63 cold 1/20 (0.652s) p50 125ms) を取り込み — bench run60 (14:11,
+  cold 4/20 + warm p50 217ms) の 11 分後に run61 で run4–6 型突発の 4 例目
+  (run13–16, run32–33, run60 に続き) が再出現し、run62–63 で即消失。静穏帯
+  (13:35–14:01, cold 0/11) → 突発 (run60) → 短時間再突発 (run61) → 消失の
+  パターンで、単発型への収束説はさらに後退。午前〜午後帯通算 cold>0 は 63 試行中
+  31 試行 (~49%) で午前帯 (~36%) より高位のまま。status 遷移なし: K-Z2/K-Z3
+  とも open 維持。*/2 高頻度化の介入は引き続き反証まで保留 (突発が静穏帯と交互に
+  出るため頻度不足説と一意に結べない)。rank 順位変動なし (K-Z2 > K-Z3 > K-Q1 >
+  K-S1 > K-S2)、K-Z3 の分布に run61–63 を追加。host load1 43–50 帯まで低下したが
+  本 tick 実測 53.75 で K-Q1 local profiling gate (7.5) は依然超過。
+  NEXT: K-Z2/K-Z3 の夕方帯 n 積み増し (時間帯別発現率分布の確定が */2 判断の
+  直接の証拠 — gate 外で可能。host load 低下傾向のため、quiet-host を観測した
+  tick は K-Q1 の local profiling 再試行を優先してよい)。
