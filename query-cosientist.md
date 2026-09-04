@@ -646,3 +646,10 @@ falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run85A–C, 同測定法 n=20 × 
   p50 0.144s と静穏で control 分離成立、cold 群は search 側に局在。
   run85A の 3/20 は濃度中位の散発配置で run84A 型 (7/20) より薄いクラスタ型。
   夜帯通算 cold>0 は 12 試行中 3 試行。status 判定は rank に委ねる。
+  bench 2026-09-04 (K-Z3 夜帯 n 積み増し run86A–C, 同測定法 n=20 × 3 run,
+  別接続 curl, Tokyo, 19:10–19:12 JST, 全 80/80 200, host load1 30.87–47.89
+  は production HTTP 実測のため gate 外): run86A cold 0/20 p50 0.091s /
+  run86B cold 0/20 p50 0.067s / run86C cold 0/20 p50 0.066s — landing control
+  (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.119s と静穏。
+  3 run 連続 cold 0 で run85A 型クラスタは即消失、p50 は 66–91ms 帯と低位。
+  夜帯通算 cold>0 は 15 試行中 3 試行。status 判定は rank に委ねる。
