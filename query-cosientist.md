@@ -71,7 +71,7 @@ claim contract (初期):
   次の切れ手: verify-session subrequest を 1 重化する hand-patch 効果の local 予測と、
   graph-for per-request 解決の計測。bench 2026-09-04 (第7回): NEXT (rank 第6回) の
   上記 2 切れ手はいずれも local 測定だが host busy (load1 24.91 / 1min, 閾値 7.5 超過)
-  のため実施せず記録のみ — 次回 quiet-host 時に再試行。bench 2026-09-04 (第15回): 未測定 — host busy (load1 58.58, 閾値 7.5 超過のため local profiling を実施せず終了)。gate 超過継続 tick は rank NEXT (第11回) に従い K-Z2/K-Z3 の production 観測を優先した。bench 2026-09-04 (第16回): 未測定 — host busy (load1 68.58, 閾値 7.5 超過のため local profiling を実施せず終了)。gate 超過継続 tick は rank NEXT (第12回) に従い K-Z2/K-Z3 の昼帯 n 積み増しを production 実測した (run40–42, 詳細は K-Z2/K-Z3 evidence)。 |
+  のため実施せず記録のみ — 次回 quiet-host 時に再試行。bench 2026-09-04 (第15回): 未測定 — host busy (load1 58.58, 閾値 7.5 超過のため local profiling を実施せず終了)。gate 超過継続 tick は rank NEXT (第11回) に従い K-Z2/K-Z3 の production 観測を優先した。bench 2026-09-04 (第16回): 未測定 — host busy (load1 68.58, 閾値 7.5 超過のため local profiling を実施せず終了)。gate 超過継続 tick は rank NEXT (第12回) に従い K-Z2/K-Z3 の昼帯 n 積み増しを production 実測した (run40–42, 詳細は K-Z2/K-Z3 evidence)。 | bench 2026-09-05 (第36回, quiet-host tick: load1 5.65 (1:55 JST tick 開始実測, gate 7.5 未満) で rank 第35回追記 NEXT の K-Q1 local 測定 2 本を実施, node v26.0.0, 東京): (a) graph-for per-request 解決の local 実測 — client_api.cljc:81-85 の graph-for (= graph.cljc graph-cid-from-name: WebCrypto sha2-256 + base32 lower no-pad, I/O なし) を忠実 port し 同測定法 (3 warmup 除外 + 30 sequential, nearest-rank): digest 単体 p50 0.02ms / graph-for 全体 p50 0.018ms (p95 0.045ms, CID 形状 selfcheck ok) — graph-for は per-request でも p50 0.02ms 以下で、退行 +~700ms には寄与しない (切れ手(b)は棄却材料)。(b) verify-session 1 重化 hand-patch の local 効果予測 — auth.kotobase.net /v1/session を serial subrequest 1 hop 相当として production HTTP 実測 (wire 形状のみの dummy Biscuit header, 実 credential でなく secret 不含, status 200 30/30): p50 11.81ms / p95 14.35ms (min 10.16, max 21.04)。1 重化で削れるのはこの 1 hop 分 ≈ 12ms で、退行 (+~700ms) の 1.3–1.6% (下限; 直列 subrequest overhead 除く) — ただし dummy token は実 verify より速く応答する可能性があり 真の hop は falsify 2026-09-03 実測の verify p50 27.70–32.98ms が上限目安。いずれにせよ verify-session 2 重化は退行の主因ではなく削減上限 +50ms 程度 — 退行 +~700ms の主体は別 (backend query path / KV 側) にあると予測が更新される。status 判定は rank に委ねる。
 | K-Q2 | query | 同一測定法での再測 (2026-08-26 との比較) で p50 が再現するか — 測定の再現性を先に確立する (基準線の固定) | executed (再現せず) | rank 2026-09-03: falsify 実測 2 run (753.41/908.69ms, p95 884/1668) で基準線 187.35ms は不再現 → 判定確定。後続は K-Q1 (退行切り分け) へ |
 | K-W1 | worker | live smoke 4xx 2% の内訳は path 固有 (bot traffic) であり、 Worker のバグではない — /api/funnel と status code 分布の実測で反証する | executed (仮説どおり) | bench 2026-09-03: production GET 実測 (kotobase.net, n=30/path, 100ms 間隔, host load1 15.91 は production HTTP 実測のため gate 外): / /signup /api/funnel は全 30/30=200 (p50 32/28/77ms) — smoke 対象 path は健全。4xx は path 固有で決定的: /login 404 30/30, /api/status 404 30/30, /wp-login.php /.env /xmlrpc.php 404 30/30, /admin 401 30/30 — ランダム/断続的な Worker エラーではなく特定 path の恒常応答。bot 起源説と整合 (判定は rank に委ねる)。falsify 2026-09-03 独立再現 (production GET, n=10/path, 200ms 間隔, host load1 17.75 は production HTTP 実測のため gate 外): code 分布が bench と完全一致 — / /api/funnel 200 10/10, /login /api/status /wp-login.php 404 10/10, /admin 401 10/10。bot 起源説の反証は不成立 (仮説どおり path 固有恒常応答) |
 | K-W2 | worker | search.kotobase.net の in-memory projection は起動後初回リクエストで cold penalty を持つ — /search?q= の初回 vs 2回目 latency 実測 | refuted (初回 1 回説) | falsify 2026-09-03: n=20 で cold 群 7/20, isolate 単位で再発 — 詳細は population 直下の注記 |
@@ -1052,3 +1052,11 @@ borderline が続く場合は not-separated として明示)。
   NEXT: K-Q1 (verify-session 1 重化 hand-patch の local 効果予測 — tick 開始時の
   host load1 < 7.5 を確認できた tick で即実行する最大 gain の切れ手。gate 超過に
   戻った tick は K-Z3 深夜帯 0時台 n 積み増しを優先してよい)。
+- 2026-09-05: bench 第36回。quiet-host tick (load1 5.65, 1:55 JST tick 開始実測,
+  gate 7.5 未満) で rank 第35回追記 NEXT の K-Q1 local 測定 2 本を実施。
+  新規 evidence (詳細は K-Q1 evidence 欄): (a) graph-for per-request 解決の local
+  実測 p50 0.018ms — 退行に寄与せず切れ手(b)は棄却材料。(b) verify-session 1 hop
+  実測 p50 11.81ms — 1 重化の削減上限 ≈ 12ms (退行の 1.3–1.6%, 下限) で
+  verify-session 2 重化は退行の主因ではない。退行 +~700ms の主体は backend
+  query path / KV 側と予測更新。status 遷移なし (rank 専門)。
+  NEXT: 委ねる (rank 判断 — K-Q1 の次切れ手は backend query path の計測候補)。
