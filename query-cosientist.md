@@ -589,3 +589,13 @@ falsify 2026-09-04 (K-Z3 夕方帯 n 積み増し run71A–C, 同測定法 n=20 
   NEXT: K-Z2/K-Z3 の夜帯 (18:00 以降) n 積み増し (時間帯別発現率分布の確定が
   */2 判断の直接の証拠 — gate 外で可能。quiet-host を観測した tick は K-Q1 の
   local profiling 再試行を優先)。
+
+falsify 2026-09-04 (K-Z3 夜帯開始 n 積み増し run82A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 17:52–17:53 JST, 全 80/80 200, host load1 17.95 (本 tick
+実測) は production HTTP 実測のため gate 外): run82A cold 6/20 (0.98–1.62s)
+p50 0.066s / run82B cold 0/20 p50 0.070s / run82C cold 1/20 (1.74s) p50 0.078s —
+landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.091s
+と静穏で control 分離成立、cold 群は search 側に局在。run82A は run71A/76A/78A
+型の cold 単独クラスタ型 (warm p50 66ms と低位で warm 同時上振れなし,
+run4–6 型要件なし) で 4 例目。run82B で即消失、run82C の cold 1 件は単発型。
+夕方〜夜帯通算 cold>0 は 32 試行中 11 試行。status 判定は rank に委ねる
