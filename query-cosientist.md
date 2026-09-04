@@ -78,7 +78,7 @@ claim contract (初期):
 | K-S1 | storage | KOTOBASE_PACK_WRITES 有効 (testnet) は write path を測定劣化させない — engine の local test で pack on/off 比較 | open | — |
 | K-S2 | storage | 1 commit CID 構造の map/git/search 統合読み出しは、同一 CID への反復読み出しで KV キャッシュに乗り p50 が改善する — 同一 CID 反復 vs 初回の実測 | open | — |
 
-| K-Z2 | worker | K-Z1 の日中帯 cold 群再発 (run4 10/20 → run5 7/20, 深夜 run3 1/20) は traffic 由素の isolate 再生成が支配的であり、warm-up を高頻度化 (cron */5 → */2) するか時間帯別発火にすることで日中帯の cold 群出現率が低下する — 頻度変更前後で日中帯同時刻の同測定法 (n=20) を比較する | open | — |
+| K-Z2 | worker | K-Z1 の日中帯 cold 群再発 (run4 10/20 → run5 7/20, 深夜 run3 1/20) は traffic 由素の isolate 再生成が支配的であり、warm-up を高頻度化 (cron */5 → */2) するか時間帯別発火にすることで日中帯の cold 群出現率が低下する — 頻度変更前後で日中帯同時刻の同測定法 (n=20) を比較する | open | — | falsify 2026-09-04 (発火直後 vs 発火経過後の対比, 同測定法 n=20, 別接続 curl, Tokyo, production gate 外, 全 200, cron */5 発火時刻 11:00/11:05/11:10 直後に計測開始): 直後 run10 (11:00:44, 発火 ~44s 後) cold 3/20 (TTFB 0.91–1.46s) / run12 (11:05:10 直後) cold 2/20 (0.64–1.16s) / run14 (11:10:11 直後) cold 0/20 p50 ~0.08s。経過後 run11 (11:01:30, 発火 ~90s 経過) cold 0/20 p50 0.08s / run13 (11:05:54) cold 0/20 p50 ~0.20s / run15 (11:10:59) cold 0/20 p50 ~0.12s。3 組中 2 組で「発火直後のみ cold 群あり → 経過後 0」の同方向対比が出現 — cold 群は warm-up 発火直後の isolate 再生成/反映タイミングと交互作用するパターンを支持するが n=20×6 で確定的ではなく機構切分けには至らず。status 判定は rank に委ねる |
 
 ※ falsify 2026-09-03 (K-Q2 反証実測, 再現性の検証): 2026-08-26 の harness
   (biscuit-auth-query-bench/authn/scripts/live_biscuit_query_bench.mjs, 同一測定法:
