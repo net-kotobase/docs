@@ -772,6 +772,18 @@ run92B は単発 2 件、run92C で即消失。p50 は 157–183ms 帯で run90�
 より上振れ (21時台への帯移行と整合)。夜帯通算 cold>0 は 33 試行中 7 試行 (~21%)。
 status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3。
 
+falsify 2026-09-04 (K-Z3 夜帯 22時台 n 積み増し run95A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 22:08–22:09 JST, 全 80/80 200, host load1 26.33 (tick 開始時
+実測) は production HTTP 実測のため gate 外): run95A cold 5/20 (1.118–2.065s,
+散発配置: 2/4/5/7/9 番目, 前半集中) p50 0.096s / run95B cold 0/20 p50 0.081s
+(0.060–0.198s) / run95C cold 0/20 p50 0.102s (0.055–0.175s) — landing control
+(kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.076s と静穏で
+control 分離成立、cold 群は search 側に局在。run95A は薄いクラスタ型 11 例目
+(濃度 5/20, warm p50 96ms と低位で warm 同時上振れなし — run94A 型)、
+run95B–C で即消失。p50 は 81–102ms 帯で run94 (58–95ms 帯) と同水準。
+夜帯通算 cold>0 は 42 試行中 12 試行 (~29%)、22時台は 3 試行中 1 試行。
+status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3。
+
 cosientist 2026-09-04 (K-Z3 夜帯 21時台 n 積み増し run94A–C, 同測定法 n=20 × 3 run,
 別接続 curl, Tokyo, 21:33–21:34 JST, 全 80/80 200, host load1 33.69 (本 tick
 実測) は production HTTP 実測のため gate 外): run94A cold 3/20 (1.520s 1番目,
