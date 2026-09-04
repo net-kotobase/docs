@@ -677,3 +677,4 @@ falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run87A–C, 同測定法 n=20 × 
   全 200) は cold 0/20 p50 0.157s と静穏で cold 群は search 側に局在。
   run87A は run84A 型 (7/20) より薄いクラスタ型 6 例目、run87B–C は即消失。
   夜帯通算 cold>0 は 18 試行中 4 試行 (~22%)。status 判定は rank に委ねる。
+ bench 2026-09-04 (第28回, K-Z3 夜帯 n 積み増し run88A–C, 同測定法 n=20 × 3 run, 別接続 curl, Tokyo, 19:42–19:44 JST, 全 80/80 200, host load1 32.38 は production HTTP 実測のため gate 外): run88A cold 0/20 p50 0.091s / run88B cold 0/20 p50 0.095s / run88C cold 0/20 p50 0.148s — landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.085s と静穏。3 run 連続 cold 0 で run87A 型クラスタは即消失。夜帯通算 cold>0 は 21 試行中 4 試行 (~19%)。status 判定は rank に委ねる
