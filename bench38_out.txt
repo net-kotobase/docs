@@ -1,0 +1,5 @@
+fired_at=04:05:03 elapsed=04:05:11-04:06:43
+4:06  up 6 days, 16:05, 13 users, load averages: 4.81 6.06 9.00
+direct-after ok=20/20 cold=1/20 cold_range=[0.800869, 0.800869] cold_pos=[4] warm_p50=0.050322 p50_all=0.050322
+elapsed ok=20/20 cold=1/20 cold_range=[1.318466, 1.318466] cold_pos=[18] warm_p50=0.0379 p50_all=0.0379
+control ttfb=0.040495 code=200
