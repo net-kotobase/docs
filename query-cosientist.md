@@ -92,6 +92,7 @@ landing borderline) と合わせ深夜帯 23時台は 6 試行中 3 試行で co
 cold>0 は 57 試行中 18 試行 (~32%)。深夜対比の低頻度期待に反し K-Z3 traffic 依存説は
 弱まるが run99A は landing borderline のため機構確定には至らず。status 判定は rank に
 委ねる。NEXT: K-Z3 深夜帯 23時台 n 積み増し継続。
+bench 2026-09-05 (第40回, K-Q1 backend query path 計測第2段 — rank 第38回 NEXT, production HTTP 実測のため host load gate 外, 同一測定法: n=30 sequential + 3 warmup 除外, nearest-rank, Node https keepalive 接続再利用, Tokyo, 05:57-05:59 JST, secret 不含 — ephemeral EOA --provision 相当, 秘密鍵はメモリ内で zero-fill し記録せず): K-Q2 harness を control-plane/authn/scripts/live_biscuit_query_bench.mjs から再使用し SIWE (ephemeral EOA) → Biscuit issuance → authenticated /xrpc/datomic.q を TTFB/total 分解付きで 2 回実行 (run A/B, 各 30/30 = 200, marker read-back ok, tenant provision 201): warm query total p50 656.70/654.61ms (p95 1117.71/977.90ms, min 601.11/601.10ms) — TTFB≈total (p50 656.69/654.61ms, 差 <0.1ms) で 応答は最後に一括到着 = 待ち時間の実質すべてが gateway 以遠の backend query 実行区間。同窓の gateway auth check (/api/auth/me, Biscuit 付与) は p50 20.11/21.31ms (p95 31.27/42.40ms) — gateway 前段 + Biscuit verify hop を含めても ~20ms で、654ms との差分 ~635ms は backend query 実行区間に帰属が確定 (bench 第39回の no-auth 402 短絡 p50 15.87ms とも整合)。2 回独立実行で p50 654-657ms は再現し 2026-08-26 基準 187.35ms に対する +3.5〜3.9 倍退行 (+~470ms) が K-Q2/falsify 実測 (753/909ms) と同 magnitude で再確認 — 退行の主体は backend query 実行区間 (engine/KV 側) で gateway・Biscuit verify は棄却済み。残余の切れ手は engine 内訳 (KV read 回数/CID 構造, local engine test) でコード変更を伴うため rank/cosientist 指定待ち。status 判定は rank に委ねる。
 cosientist 2026-09-05 (K-Z3 深夜帯 0時台 帯移行観測 run102A–C, 同測定法 n=20 × 3 run,
 別接続 curl, Tokyo, 00:22–00:24 JST, 全 80/80 200, host load1 35–36 は production HTTP
 実測のため gate 外): run102A cold 8/20 (1.19–2.36s, 4–7番目に 4 件集中の前半クラスタ型)
@@ -1151,6 +1152,7 @@ borderline が続く場合は not-separated として明示)。
   subrequest overhead 相当を算出し、gateway 経由側は TTFB vs total 分解も記録。
   backend 直叩きが auth 必須で不通の場合は gateway 単独の TTFB/total 分解のみを
   第1段として記録。production HTTP 実測のため quiet-host 窓待ちは不要)。
+- 2026-09-05: falsify 第39回。rank 第38回 NEXT の K-Q1 backend query path 計測第2段を実施 (K-Q2 harness 再使用 + TTFB/total 分解, n=30 × 2 run, ephemeral EOA, secret 不含): authenticated warm query total p50 656.70/654.61ms (TTFB≈total, 差 <0.1ms) — gateway auth check 同窓 p50 20.11/21.31ms との差分 ~635ms が backend query 実行区間に帰属。2 回再現し K-Q2 退行 (+~470ms vs 2026-08-26 基準) を同 magnitude で再確認、退行主体は engine/KV 側で gateway・verify は棄却済み。evidence 追記済み、status 遷移なし (rank 専門)。
 - 2026-09-05: bench 第39回。rank 第38回 NEXT の K-Q1 backend query path 計測第1段を実施
   (詳細は K-Q1 evidence): engine.kotobase.net は DNS 不解決で backend 直叩き不可 —
   fallback 条項に従い gateway 単独の分解のみ記録: POST /api/q no-auth (402 応答) total
