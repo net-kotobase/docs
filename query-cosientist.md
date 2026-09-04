@@ -284,5 +284,4 @@ rank (期待 gain × 確率, 2026-09-04 第7回):
   141ms (45–453ms) / run16 cold 1/20 (0.92s) / warm 19/20 p50 133ms (63–252ms) —
   run4–6 型の短時間スケール再発の 3 例目 (run13 が 11:25, run15 が 11:38)。
   発現は突発的で消失も速く、cold 群と warm 群の遅延上振れが同時に出るパターンは
-  run4–13 と一貫。午前帯 (10:41–11:41) の発現率は 13 試行中 cold>0 が 5 試行。
-  status 判定は rank に委ねる |
+  run4–13 と一貫。status 判定は rank に委ねる falsify 2026-09-04 (after run17, 同測定法 n=20, 別接続 curl, Tokyo, 11:46–11:47 JST, 全 200, host load1 36.01 は production HTTP 実測のため gate 外): cold 0/20 (max TTFB 0.34s), p50 0.139s (0.063–0.342s) — 午前帯 (10:41–11:47) の 14 試行中 cold>0 は 5 試行、本試行は発現なし。p50 は bench run15–16 と同程度の 100–140ms 帯。status 判定は rank に委ねる |
