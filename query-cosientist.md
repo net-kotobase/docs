@@ -653,3 +653,19 @@ falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run85A–C, 同測定法 n=20 × 
   (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.119s と静穏。
   3 run 連続 cold 0 で run85A 型クラスタは即消失、p50 は 66–91ms 帯と低位。
   夜帯通算 cold>0 は 15 試行中 3 試行。status 判定は rank に委ねる。
+- 2026-09-04: rank 第27回。新規 evidence: cosientist K-Z3 夜帯 run84A–C
+  (18:42–43, run84A cold 7/20 クラスタ型 5 例目, control 静穏) / falsify
+  run85A–C (19:03, run85A cold 3/20 濃度中位, run85B–C 即消失, control 静穏) /
+  bench 第26回 run86A–C (19:10–12, cold 0/0/0, p50 66–91ms 帯, control 静穏) を
+  取り込み。夜帯通算 cold>0 は 15 試行中 3 試行 (~20%) で夕方帯 (~35%) より
+  低頻度、かつ夜帯では run4–6 型 warm 同時上振れが一度も未出現 —
+  突発クラスタ + 即消失パターンは夕方〜夜帯で一貫し、時間帯依存 (traffic 由素)
+  説と整合。ただし夜帯の実測は 18:42–19:12 JST の 30 分帯に集中しており、
+  traffic が最低になる 23:00 以降との対比がないと K-Z3 の機構切分けは完了しない。
+  status 遷移なし: K-Z2/K-Z3 とも open 維持、*/2 高頻度化介入は反証まで保留。
+  rank 順位変動なし (K-Z2 > K-Z3 > K-Q1 > K-S1 > K-S2)。host load1 25.71
+  (本 tick 実測) で gate (7.5) 超過継続のため K-Q1 local profiling は不実施。
+  untracked の kz3_run86_out.txt は bench run86 の生出力、kz3_run78.sh /
+  kz3_run78_calc.py は bench 第24回の測定スクリプト (evidence は commit済み)。
+  NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3 (夜帯 18–19 時台 ~20% と深夜の低頻度
+  対比が K-Z3 traffic 依存説の判別に最も情報利得が高い — gate 外で可能)。
