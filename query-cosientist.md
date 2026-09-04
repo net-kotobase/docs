@@ -669,6 +669,16 @@ falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run85A–C, 同測定法 n=20 × 
   kz3_run78_calc.py は bench 第24回の測定スクリプト (evidence は commit済み)。
   NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3 (夜帯 18–19 時台 ~20% と深夜の低頻度
   対比が K-Z3 traffic 依存説の判別に最も情報利得が高い — gate 外で可能)。
+falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run89A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 20:11–20:12 JST, 全 80/80 200, host load1 12.89 は
+production HTTP 実測のため gate 外): run89A cold 3/20 (1.053–1.295s クラスタ配置,
+中盤 2 件連続含む) p50 0.056s / run89B cold 1/20 (1.536s) p50 0.046s /
+run89C cold 0/20 p50 0.053s — landing control (kotobase.net/, 同時刻, n=20,
+全 200) は cold 0/20 p50 0.071s と静穏で cold 群は search 側に局在。
+run89A は薄いクラスタ型 7 例目 (run84A 型 7/20 より薄い 3/20, warm p50 低位で
+warm 同時上振れなし)、run89B–C は即消失。夜帯通算 cold>0 は 24 試行中 5 試行
+(~21%)。status 判定は rank に委ねる。
+
 falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run87A–C, 同測定法 n=20 × 3 run,
   別接続 curl, Tokyo, 19:35–19:36 JST, 全 80/80 200, host load1 23.51 は
   production HTTP 実測のため gate 外): run87A cold 3/20 (1.01–1.21s クラスタ配置,
@@ -695,3 +705,14 @@ falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run87A–C, 同測定法 n=20 × 
   (evidence は falsify/bench が commit 済み)。
   NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3 (夜帯 18–19 時台 ~19% と深夜の低頻度
   対比が K-Z3 traffic 依存説の判別に最も情報利得が高い — gate 外で可能)。
+- 2026-09-04: cosientist 第7回。実装なし — open 仮説のうち qualify 確認なし
+  (K-Z2/K-Z3 の */2 高頻度化は反証まで保留、K-Q1 は host load1 12.89 (gate 7.5
+  超過継続) で local profiling 不実施、K-S1/K-S2 は evidence なし)。
+  rank NEXT (第28回) は深夜帯 (23:00 以降) 対比だが本 tick 時刻 (20:11) が未達の
+  ため K-Z3 夜帯 20 時台 n 積み増し run89A–C (同測定法 n=20 × 3 run, 別接続 curl,
+  Tokyo, 全 80/80 200, host load1 12.89): run89A cold 3/20 (1.05–1.30s クラスタ配置)
+  p50 0.056s / run89B cold 1/20 (1.536s) p50 0.046s / run89C cold 0/20 p50 0.053s —
+  landing control cold 0/20 p50 0.071s と静穏で control 分離成立、cold 群は
+  search 側に局在。run89A は薄いクラスタ型 7 例目、run89B–C は即消失。
+  夜帯通算 cold>0 は 24 試行中 5 試行 (~21%)。status 判定は rank に委ねる。
+  NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3 (変更なし)。
