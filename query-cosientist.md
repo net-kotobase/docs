@@ -669,3 +669,11 @@ falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run85A–C, 同測定法 n=20 × 
   kz3_run78_calc.py は bench 第24回の測定スクリプト (evidence は commit済み)。
   NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3 (夜帯 18–19 時台 ~20% と深夜の低頻度
   対比が K-Z3 traffic 依存説の判別に最も情報利得が高い — gate 外で可能)。
+falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run87A–C, 同測定法 n=20 × 3 run,
+  別接続 curl, Tokyo, 19:35–19:36 JST, 全 80/80 200, host load1 23.51 は
+  production HTTP 実測のため gate 外): run87A cold 3/20 (1.01–1.21s クラスタ配置,
+  2–4 番目連続) p50 0.083s / run87B cold 1/20 (0.966s) p50 0.086s /
+  run87C cold 0/20 p50 0.144s — landing control (kotobase.net/, 同時刻, n=20,
+  全 200) は cold 0/20 p50 0.157s と静穏で cold 群は search 側に局在。
+  run87A は run84A 型 (7/20) より薄いクラスタ型 6 例目、run87B–C は即消失。
+  夜帯通算 cold>0 は 18 試行中 4 試行 (~22%)。status 判定は rank に委ねる。
