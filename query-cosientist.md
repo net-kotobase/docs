@@ -637,3 +637,12 @@ cold 単独クラスタ (5 分前) の再発なし、即消失パターンと一
   夕方〜夜帯通算 cold>0 は 44 試行中 14 試行 (~32%)。status 判定は rank に委ねる。
   NEXT: K-Z2/K-Z3 の夜帯 n 積み増し継続 (quiet-host を観測した tick は
   K-Q1 の local profiling 再試行を優先)。
+
+falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run85A–C, 同測定法 n=20 × 3 run,
+  別接続 curl, Tokyo, 19:03 JST, 全 80/80 200, host load1 63.67 は production
+  HTTP 実測のため gate 外): run85A cold 3/20 (1.12–1.31s) p50 0.143s /
+  run85B cold 0/20 p50 0.198s / run85C cold 1/20 (0.543s 浅め単発) p50 0.208s —
+  landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20
+  p50 0.144s と静穏で control 分離成立、cold 群は search 側に局在。
+  run85A の 3/20 は濃度中位の散発配置で run84A 型 (7/20) より薄いクラスタ型。
+  夜帯通算 cold>0 は 12 試行中 3 試行。status 判定は rank に委ねる。
