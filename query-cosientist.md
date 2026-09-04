@@ -97,18 +97,21 @@ claim contract (初期):
 
 | K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | executed (仮説どおり) | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後。falsify 2026-09-03 第2回: before 基準線 n 追加 (同測定法 n=20, 別接続 curl, Tokyo, PR #4 は main 未マージで warm-up 未 deploy のまま): cold 群 7/20 (TTFB 0.90–1.87s), warm 群 13/20 (44–85ms), 全 200 — bench/falsify 初回の 7/20 を再現し基準線は 3 試行で安定。導入後比較の統計的土台は十分。cosientist 2026-09-04 (導入 + after 実測): PR #4 を merge (f995928) し wrangler deploy 完了 (04:25 JST, cron */5 登録確認)。after 計測 (同測定法 n=20, 別接続 curl, Tokyo, 全 200): run1 (cron 発火 1 回後, 04:31) cold 7/20 (0.72–1.23s) / warm 13/20 39–71ms — 基準線と変化なし。run2 (発火 3 回後, 04:41) cold 3/20 (0.71–1.09s) / warm 17/20 p50 55ms — 基準線 7/20 から半減し方向は改善だが n=20×2 で確定的ではない。発火回数が増えるほど cold 出現率が下がる傾向と整合。継続観測を bench/falsify に委ねる。cosientist 2026-09-04 (after run3, 04:56 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~6 回後): cold 1/20 (0.86s) / warm 19/20 p50 45ms (38–59ms) — 基準線 7/20, after run1 7/20, run2 3/20, run3 1/20 からさらに低下し単調減少傾向を維持。cosientist 2026-09-04 (after run4, 07:44 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~40 回後): cold 10/20 (0.79–1.69s) / warm 10/20 p50 43ms (38–56ms) — run3 (1/20) から悪化し単調減少は崩れた。日中帯の traffic 由素で isolate が再生成されている可能性が高いが本測定では機構を切分けられず。executed 判定の確定度は下がる — n 積み増し継続と時間帯比較 (深夜 vs 日中) が次の切れ手。 bench 2026-09-04 (after run5, 10:41 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, host load1 35.71 は production HTTP 実測のため gate 外): cold 7/20 (0.94–1.86s) / warm 13/20 p50 128ms (47–167ms) — run4 (10/20) からやや低下だが基準線 7/20 と同等で run3 (1/20) の水準は維持できず。日中帯は cold 群再発が継続 (run4 10/20 → run5 7/20)。 cosientist 2026-09-04 (after run6, 10:49 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200): cold 0/20 / warm 20/20, TTFB 56–187ms — run4 10/20 → run5 7/20 → run6 0/20 で初めて cold 群ゼロ。executed 判定の確定度は回復傾向だが run4–5 の日中帯再発が機構未切分けのため引き続き n 積み増し継続を bench/falsify に委ねる。 |
 
-rank (期待 gain × 確率, 2026-09-04 第18回):
+rank (期待 gain × 確率, 2026-09-04 第20回):
 1. K-Z2 — 日中帯 cold 群の短時間スケール再発の機構切分け。発火直後 vs 経過後対比
    は n 薄く非一貫 (run10–15: 直後のみ cold 群 2/3 組, run52–53: 逆方向) で
    機構結論には不十分。*/2 高頻度化の介入は反証まで保留のまま
    (発現は突発的で時間窓内でも連続しない)。実効最上位 (gate 外で観測継続可能)。
+   run64–66 は 3/3 試行連続 cold>0 (run4–6 以来初) だが landing page control も
+   上振れで not-separated — 発現率の材料にはなるが機構/介入判断には使えない。
 2. K-Z3 — 時間帯別発現率分布。午前帯 5/14 → 昼過ぎ〜午後開始帯 (run18–24) 4/7 →
    昼帯 (run25–27 3/3, run28–30 0/3, run31–33 3/3, run34–36 2/3, run37–39 1/3,
    run40–42 1/3, run43–45 1/3, run46–48 0/3) + 午後帯 (run49–51) 2/3,
-   (run52–59) 2/8 → run60 (14:11) cold 4/20 + warm 群同時上振れ (p50 217ms) の
-   run4–6 型突発 3 例目 — 13:35–14:01 の静穏帯 (0/11, p50 60–90ms) が再び崩れた。
-   昼帯〜午後帯通算 cold>0 は 60 試行中 26 試行 (~43%)。run4–6 型は静穏帯の後の
-   突発で再出現しており、単発型への収束説は後退。夕方帯の n 積み増しが次。
+   (run52–59) 2/8, run60 (14:11) と run61 (14:22) で run4–6 型突発 4 例目 —
+   run64–66 (14:29–30) は 3/3 試行連続 cold>0 (run4–6 以来初) だが
+   landing page control (14:38: p50 280ms, cold 2/20) も上振れしており
+   host load1 ~55–67 帯では local/host 由素混入を排除できず not-separated。
+   verdict 付きの確定数値としては蓄積せず、分布への採用は控える。
 3. K-Q1 — 恒常的 query path 退行の切り分け。残る切れ手は verify-session 1 重化
    hand-patch の local 効果予測だが、host load1 48–69 (gate 7.5 超過継続) で
    local 測定の見込みが続かず停滞中 (現 load1 ~53 も超過)。
@@ -453,3 +456,16 @@ falsify 2026-09-04 (K-Z3 午後帯 n 積み増し run57–59, 同測定法 n=20 
   NEXT: K-Z2/K-Z3 の夕方帯 n 積み増し (時間帯別発現率分布の確定が */2 判断の
   直接の証拠 — gate 外で可能。host load 低下傾向のため、quiet-host を観測した
   tick は K-Q1 の local profiling 再試行を優先してよい)。
+- 2026-09-04: rank 第20回。bench 第20回の run64–66 (14:29–14:30 JST: run64 cold
+  5/20 p50 303ms / run65 cold 8/20 p50 401ms / run66 cold 4/20 p50 236ms —
+  3/3 試行連続 cold>0 は run4–6 以来初) を取り込んだが、同手法の landing page
+  control (14:38, n=20) も p50 280ms / cold 2/20 と上振れしており host load1
+  ~55–67 帯では local/host 由素混入を排除できないため verdict は not-separated。
+  分布への採用は控え、rank 上は材料扱いのみ。status 遷移なし: K-Z2/K-Z3 とも
+  open 維持。*/2 高頻度化の介入は引き続き反証まで保留。rank 順位変動なし
+  (K-Z2 > K-Z3 > K-Q1 > K-S1 > K-S2)。host load1 56.05 (本 tick 実測) で
+  K-Q1 local profiling gate (7.5) は依然超過。
+  NEXT: K-Z2/K-Z3 の夕方帯 n 積み増し (時間帯別発現率分布の確定が */2 判断の
+  直接の証拠 — gate 外で可能。ただし host load1 ~55–67 が続く帯は landing page
+  control を必ず併記し not-separated を明示すること。quiet-host を観測した tick
+  は K-Q1 の local profiling 再試行を優先してよい)。
