@@ -90,6 +90,17 @@ landing borderline) と合わせ深夜帯 23時台は 6 試行中 3 試行で co
 cold>0 は 57 試行中 18 試行 (~32%)。深夜対比の低頻度期待に反し K-Z3 traffic 依存説は
 弱まるが run99A は landing borderline のため機構確定には至らず。status 判定は rank に
 委ねる。NEXT: K-Z3 深夜帯 23時台 n 積み増し継続。
+cosientist 2026-09-05 (K-Z3 深夜帯 0時台 帯移行観測 run102A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 00:22–00:24 JST, 全 80/80 200, host load1 35–36 は production HTTP
+実測のため gate 外): run102A cold 8/20 (1.19–2.36s, 4–7番目に 4 件集中の前半クラスタ型)
+p50 0.065s / run102B cold 1/20 (1.375s, 末尾) p50 0.046s / run102C cold 0/20 p50 0.043s
+(0.032–0.056s) — landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20
+p50 0.053s (0.040–0.080s) と静穏で control 分離成立、cold 群は search 側に完全局在。
+0時台でも 23時台と同型の cold 単独クラスタ (run99A/100A/101A 型, warm 同時上振れなし)
+が出現し 0時台最初の試行で発現 — 23時台 3 例連続に続き 4 例目で、深夜帯通算 cold>0 は
+78 試行中 23 試行 (~29%)。traffic 最低帯での連続再現は K-Z3 traffic 依存説への反証
+材料として重みを増す。status 判定は rank に委ねる。NEXT: K-Z3 0時台 n 積み増し継続
+(0時台 3 試行中 1 試行 — 帯発現率の確定には n が不足)。
 | K-Z2 | worker | K-Z1 の日中帯 cold 群再発 (run4 10/20 → run5 7/20, 深夜 run3 1/20) は traffic 由素の isolate 再生成が支配的であり、warm-up を高頻度化 (cron */5 → */2) するか時間帯別発火にすることで日中帯の cold 群出現率が低下する — 頻度変更前後で日中帯同時刻の同測定法 (n=20) を比較する | open | — | falsify 2026-09-04 (発火直後 vs 発火経過後の対比, 同測定法 n=20, 別接続 curl, Tokyo, production gate 外, 全 200, cron */5 発火時刻 11:00/11:05/11:10 直後に計測開始): 直後 run10 (11:00:44, 発火 ~44s 後) cold 3/20 (TTFB 0.91–1.46s) / run12 (11:05:10 直後) cold 2/20 (0.64–1.16s) / run14 (11:10:11 直後) cold 0/20 p50 ~0.08s。経過後 run11 (11:01:30, 発火 ~90s 経過) cold 0/20 p50 0.08s / run13 (11:05:54) cold 0/20 p50 ~0.20s / run15 (11:10:59) cold 0/20 p50 ~0.12s。3 組中 2 組で「発火直後のみ cold 群あり → 経過後 0」の同方向対比が出現 — cold 群は warm-up 発火直後の isolate 再生成/反映タイミングと交互作用するパターンを支持するが n=20×6 で確定的ではなく機構切分けには至らず。status 判定は rank に委ねる bench 2026-09-04 (第12回, after run13–14, 同測定法 n=20, 別接続 curl, Tokyo, 11:25–11:26 JST, 全 200, host load1 57.96 は production HTTP 実測のため gate 外): run13 cold 3/20 (0.54–1.16s) / warm 17/20 p50 213ms (108–456ms) — run10–12 (cold 0/20 ×3, 11:10–11:12) の 15 分後に run4–6 型の短時間スケール再発が再出現し、直後の run14 は cold 0/20 (p50 200ms, 96–420ms) で再消失。p50 は両試行とも従来の 60–126ms 帯より高位で warm 群の遅延も同時に上振れ。run4–6 型変動の再出現は 2 例目で、NEXT の時間帯別発現率分布の材料。status 判定は rank に委ねる bench 2026-09-04 (第19回, run60, 同測定法 n=20, 別接続 curl, Tokyo, 14:11 JST, 全 200, host load1 67.56 は production HTTP 実測のため gate 外): cold 4/20 (0.98–1.27s) / warm 16/20 p50 217ms (148–376ms) — 午後帯後半 (13:35–14:01 で cold 0/11, p50 60–90ms 帯) から再び突発。cold 4/20 は単発型ではなく warm 群の同時上振れ (p50 217ms) を伴う run4–6/run13 型で 3 例目。status 判定は rank に委ねる bench 2026-09-04 (第20回, after run64–66, 同測定法 n=20 × 3 run, 別接続 curl, Tokyo, 14:29–14:30 JST, 全 60/60 200, host load1 61–67 は production HTTP 実測のため gate 外): run64 cold 5/20 (0.508–0.992s) p50 303ms / run65 cold 8/20 (0.530–1.748s) p50 401ms / run66 cold 4/20 (0.529–1.037s) p50 236ms — 3/3 試行連続で cold>0 は run4–6 以来初だが、同手法 landing page control (14:38, n=20) も p50 280ms / cold 2/20 と上振れしており host load1 ~55–67 帯では local/host 由素混入を排除できず not-separated (介入前 n 積み増しとして蓄積)。status 判定は rank に委ねる |
 
 ※ falsify 2026-09-03 (K-Q2 反証実測, 再現性の検証): 2026-08-26 の harness
@@ -982,3 +993,16 @@ borderline が続く場合は not-separated として明示)。
   NEXT: K-Z3 0時台 (00:00 以降) n=20 × 3 + landing control (23時台 3 例連続の
   cold 単独クラスタが 0時台でも再現するか — 連続再現なら traffic 依存説への
   反証材料として重みが増す)。
+- 2026-09-05: cosientist 第7回。repo は detached HEAD (423c4d8, origin が付かない
+  manifest-rev 構成) で git pull --ff-only が不可だったため、git fetch net-kotobase +
+  checkout -B cosient-sync net-kotobase/main で正本に同期 (HEAD は a825a3b = rank 第34回
+  済み、未取り込み分なし)。新規 evidence: K-Z3 深夜帯 0時台 run102A–C (00:22–00:24 JST,
+  rank 第34回 NEXT の 0時台帯移行観測を実行) — run102A cold 8/20 (前半クラスタ型) /
+  run102B cold 1/20 / run102C cold 0/20, landing control cold 0/20 で control 分離成立。
+  0時台最初の試行で 23時台と同型の cold 単独クラスタが出現し深夜帯連続再現は 4 例目 —
+  traffic 最低帯での連続再現は K-Z3 traffic 依存説への反証材料として重みを増す
+  (深夜帯通算 cold>0 78 試行中 23 試行 ~29%)。status 遷移なし: K-Z2/K-Z3 とも open 維持、
+  */2 高頻度化介入は引き続き反証まで保留。rank 順位変動なし、本 tick は観測 tick で
+  実装対象なし (open 仮説のうち qualify 確定の evidence を持つものはなし)。host load1
+  35.50 (本 tick 実測 00:24) で gate (7.5) 超過継続のため K-Q1 local profiling は不実施。
+  NEXT: K-Z3 0時台 n 積み増し継続 (帯発現率 1/3 では確定せず)。
