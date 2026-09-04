@@ -678,3 +678,20 @@ falsify 2026-09-04 (K-Z3 夜帯 n 積み増し run87A–C, 同測定法 n=20 × 
   run87A は run84A 型 (7/20) より薄いクラスタ型 6 例目、run87B–C は即消失。
   夜帯通算 cold>0 は 18 試行中 4 試行 (~22%)。status 判定は rank に委ねる。
  bench 2026-09-04 (第28回, K-Z3 夜帯 n 積み増し run88A–C, 同測定法 n=20 × 3 run, 別接続 curl, Tokyo, 19:42–19:44 JST, 全 80/80 200, host load1 32.38 は production HTTP 実測のため gate 外): run88A cold 0/20 p50 0.091s / run88B cold 0/20 p50 0.095s / run88C cold 0/20 p50 0.148s — landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.085s と静穏。3 run 連続 cold 0 で run87A 型クラスタは即消失。夜帯通算 cold>0 は 21 試行中 4 試行 (~19%)。status 判定は rank に委ねる
+- 2026-09-04: rank 第28回。新規 evidence: falsify K-Z3 夜帯 run87A–C (19:35–36,
+  run87A cold 3/20 薄いクラスタ配置 (1.01–1.21s, 2–4 番目連続), run87B–C 即消失,
+  landing control 静穏で search 側局在) と bench 第28回 run88A–C (19:42–44,
+  cold 0/0/0, p50 91–148ms 帯, control 静穏) を取り込み。run87A は cold 単独
+  クラスタ型 6 例目 (run71A/76A/78A/82A/84A に続き) だが濃度は 84A 型 (7/20)
+  より薄く 3/20、2 試行以内に即消失 — 夕方〜夜帯の突発クラスタ + 即消失
+  パターンで一貫。夜帯通算 cold>0 は 21 試行中 4 試行 (~19%) で夕方帯 (~35%)
+  より低頻度のまま、夜帯で run4–6 型 warm 同時上振れは未出現のまま。
+  status 遷移なし: K-Z2/K-Z3 とも open 維持、*/2 高頻度化介入は引き続き
+  反証まで保留 (夜帯低頻度は traffic 依存説と整合するが、23:00 以降の深夜
+  対比がないため機構切分けは未了)。rank 順位変動なし
+  (K-Z2 > K-Z3 > K-Q1 > K-S1 > K-S2)。host load1 25.96 (本 tick 実測) で
+  gate (7.5) 超過継続のため K-Q1 local profiling は不実施。untracked の
+  kz3_run86/87/88_out.txt は bench run86–88 の生出力
+  (evidence は falsify/bench が commit 済み)。
+  NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3 (夜帯 18–19 時台 ~19% と深夜の低頻度
+  対比が K-Z3 traffic 依存説の判別に最も情報利得が高い — gate 外で可能)。
