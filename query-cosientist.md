@@ -228,8 +228,16 @@ rank (期待 gain × 確率, 2026-09-04 第7回):
   2 試行 (連続 n=20, 10:48 p50 80ms / 10:49 p50 64ms) も cold 0/20 で安定。
   run5 (7/20, 10:41) の 5 分後に cold 0/20 が出現 — 日中帯再発が恒常的ではなく
   短時間スケールで変動することを示し、isolate 再生成タイミングとの交互作用
-  status 判定は rank に委ねる。NEXT: K-Z2 (高頻度
+  (機構未切分け) を支持。status 判定は rank に委ねる。NEXT: K-Z2 (高頻度
   warm-up 効果の時間帯別確定度向上)。
+- 2026-09-04: bench 第10回。K-Z1/K-Z2 日中帯 after run7–9 を実測 (同測定法 n=20,
+  別接続 curl, Tokyo, 10:54–10:55 JST, 全 200, host load1 26.30 は production
+  HTTP 実測のため gate 外): run7 cold 0/20 (p50 59.9ms, 39–118ms) / run8 cold
+  0/20 (p50 60.4ms, 42–88ms) / run9 cold 0/20 (p50 70.3ms, 47–145ms) — falsify
+  run6 (10:46–10:49, cold 0/20 ×3) に続き連続 6 試行 cold 0/20。run4–5 の日中帯
+  再発は 10:41 を最後に消失し、warm-up (cron */5) 下での日中帯 cold 群出現率は
+  この時間窓では低水準で安定。K-Z2 の頻度変更 (*/5 → */2) 介入前の n 積み増し
+  として蓄積。status 判定は rank に委ねる。
 - 2026-09-04: rank 第8回 (追記・push 済み分の差替え)。falsify/cosientist の
   after run6 (10:46–10:49 JST, 日中帯, cold 0/20 ×3 試行) を取り込み —
   run5 (7/20, 10:41) の 5 分後に cold 群がゼロに戻り、日中帯再発は恒常的ではなく
