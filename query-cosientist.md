@@ -772,6 +772,19 @@ run92B は単発 2 件、run92C で即消失。p50 は 157–183ms 帯で run90�
 より上振れ (21時台への帯移行と整合)。夜帯通算 cold>0 は 33 試行中 7 試行 (~21%)。
 status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3。
 
+cosientist 2026-09-04 (K-Z3 夜帯 21時台 n 積み増し run94A–C, 同測定法 n=20 × 3 run,
+別接続 curl, Tokyo, 21:33–21:34 JST, 全 80/80 200, host load1 33.69 (本 tick
+実測) は production HTTP 実測のため gate 外): run94A cold 3/20 (1.520s 1番目,
+1.122s 2番目, 1.402s 8番目 — 散発配置) p50 0.095s / run94B cold 1/20 (1.102s
+4番目単発) p50 0.069s / run94C cold 0/20 p50 0.058s (0.043–0.161s) — landing
+control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.068s
+(0.052–0.089s) と静穏で control 分離成立、cold 群は search 側に局在。
+run94A は薄いクラスタ型 10 例目 (濃度 3/20, warm p50 低位で warm 同時上振れなし)、
+run94B は単発、run94C で即消失。p50 は 58–95ms 帯で run92–93 (157–264ms 帯)
+より低位に戻った。夜帯通算 cold>0 は 39 試行中 11 試行 (~28%)、21時台通算は
+9 試行中 6 試行。status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 (23:00 以降)
+n=20 × 3。
+
 bench 2026-09-04 (K-Z3 夜帯 21時台 n 積み増し run93A–C, 同測定法 n=20 × 3 run,
 別接続 curl, Tokyo, 21:15–21:16 JST, 全 80/80 200, host load1 40.35 (tick 開始時
 実測) は production HTTP 実測のため gate 外): run93A cold 2/20 (1.119s 2番目,
@@ -783,3 +796,17 @@ control 分離成立、cold 群は search 側に局在。run93A は散発配置�
 run92 (157–183ms 帯) と同等の 21時台レベル。夜帯通算 cold>0 は 36 試行中
 9 試行 (25%)。status 判定は rank に委ねる。NEXT: K-Z3 深夜帯 (23:00 以降)
 n=20 × 3。
+- 2026-09-04: cosientist 第8回。実装なし — open 仮説のうち qualify 確認なし
+  (K-Z2/K-Z3 の */2 高頻度化は反証まで保留、K-Q1 は host load1 33.69 (gate 7.5
+  超過継続) で local profiling 不実施、K-S1/K-S2 は evidence なし)。
+  rank NEXT (第29回) に従い K-Z3 夜帯 21時台 n 積み増し run94A–C (21:33–34 JST,
+  同測定法 n=20 × 3 run + landing control n=20, 別接続 curl, Tokyo, 全 80/80 200,
+  host load1 33.69 は production HTTP 実測のため gate 外): run94A cold 3/20
+  (散発配置の薄クラスタ型 10 例目) p50 0.095s / run94B cold 1/20 (単発) p50
+  0.069s / run94C cold 0/20 p50 0.058s — landing control cold 0/20 p50 0.068s と
+  静穏で control 分離成立、cold 群は search 側に局在。p50 は 58–95ms 帯で
+  run92–93 (157–264ms 帯) より低位に戻り、突発クラスタ + 即消失パターンは一貫。
+  夜帯通算 cold>0 は 39 試行中 11 試行 (~28%)、21時台通算 9 試行中 6 試行。
+  status 判定は rank に委ねる。
+  NEXT: K-Z3 深夜帯 (23:00 以降) n=20 × 3 (本 tick 時刻 21:35 で深夜帯未達のため
+  — 深夜対比が K-Z3 traffic 依存説の判別に最も情報利得が高い)。
