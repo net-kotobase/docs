@@ -271,4 +271,18 @@ rank (期待 gain × 確率, 2026-09-04 第7回):
   falsify run6 以降の連続 9 試行 cold 0/20。日中帯 (午前帯) の cold 群出現率は
   引き続き低水準で安定し、run4–6 型の短時間スケール再発は 10:41 以降未発生。
   K-Z2 の介入前 n 積み増しとして蓄積 (NEXT の午後/夕方帯観測に引き継ぎ)。
-  status 判定は rank に委ねる。
+  status 判定は rank に委ねる。 bench 2026-09-04 (第12回, after run13–14, 同測定法
+  n=20, 別接続 curl, Tokyo, 11:25–11:26 JST, 全 200, host load1 57.96 は production
+  HTTP 実測のため gate 外): run13 cold 3/20 (0.54–1.16s) / warm 17/20 p50 213ms
+  (108–456ms) — run10–12 (cold 0/20 ×3, 11:10–11:12) の 15 分後に run4–6 型の
+  短時間スケール再発が再出現し、直後の run14 は cold 0/20 (p50 200ms, 96–420ms)
+  で再消失。p50 は両試行とも従来の 60–126ms 帯より高位で warm 群の遅延も同時に
+  上振れ。run4–6 型変動の再出現は 2 例目で、NEXT の時間帯別発現率分布の材料。
+  status 判定は rank に委ねる bench 2026-09-04 (第13回, after run15–16, 同測定法
+  n=20, 別接続 curl, Tokyo, 11:38–11:41 JST, 全 200, host load1 61.12 は production
+  HTTP 実測のため gate 外): run15 cold 3/20 (TTFB 1.00–1.06s) / warm 17/20 p50
+  141ms (45–453ms) / run16 cold 1/20 (0.92s) / warm 19/20 p50 133ms (63–252ms) —
+  run4–6 型の短時間スケール再発の 3 例目 (run13 が 11:25, run15 が 11:38)。
+  発現は突発的で消失も速く、cold 群と warm 群の遅延上振れが同時に出るパターンは
+  run4–13 と一貫。午前帯 (10:41–11:41) の発現率は 13 試行中 cold>0 が 5 試行。
+  status 判定は rank に委ねる |
