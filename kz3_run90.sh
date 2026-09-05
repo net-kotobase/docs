@@ -1,5 +1,5 @@
 #!/bin/bash
-# K-Z3 night-band n accumulation: run90A-C (n=20 each) + landing control
+# K-Z3 n accumulation: run90A-C (n=20 each) + landing control
 URL_S="https://search.kotobase.net/search?q=test"
 URL_L="https://kotobase.net/"
 for rid in 90A 90B 90C; do
