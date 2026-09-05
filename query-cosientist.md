@@ -127,7 +127,7 @@ cosientist 2026-09-05 (K-Z3 12時台 n 積み増し run129A–C, falsify 第48�
 
 | K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | executed (仮説どおり) | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後。falsify 2026-09-03 第2回: before 基準線 n 追加 (同測定法 n=20, 別接続 curl, Tokyo, PR #4 は main 未マージで warm-up 未 deploy のまま): cold 群 7/20 (TTFB 0.90–1.87s), warm 群 13/20 (44–85ms), 全 200 — bench/falsify 初回の 7/20 を再現し基準線は 3 試行で安定。導入後比較の統計的土台は十分。cosientist 2026-09-04 (導入 + after 実測): PR #4 を merge (f995928) し wrangler deploy 完了 (04:25 JST, cron */5 登録確認)。after 計測 (同測定法 n=20, 別接続 curl, Tokyo, 全 200): run1 (cron 発火 1 回後, 04:31) cold 7/20 (0.72–1.23s) / warm 13/20 39–71ms — 基準線と変化なし。run2 (発火 3 回後, 04:41) cold 3/20 (0.71–1.09s) / warm 17/20 p50 55ms — 基準線 7/20 から半減し方向は改善だが n=20×2 で確定的ではない。発火回数が増えるほど cold 出現率が下がる傾向と整合。継続観測を bench/falsify に委ねる。cosientist 2026-09-04 (after run3, 04:56 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~6 回後): cold 1/20 (0.86s) / warm 19/20 p50 45ms (38–59ms) — 基準線 7/20, after run1 7/20, run2 3/20, run3 1/20 からさらに低下し単調減少傾向を維持。cosientist 2026-09-04 (after run4, 07:44 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~40 回後): cold 10/20 (0.79–1.69s) / warm 10/20 p50 43ms (38–56ms) — run3 (1/20) から悪化し単調減少は崩れた。日中帯の traffic 由素で isolate が再生成されている可能性が高いが本測定では機構を切分けられず。executed 判定の確定度は下がる — n 積み増し継続と時間帯比較 (深夜 vs 日中) が次の切れ手。 bench 2026-09-04 (after run5, 10:41 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, host load1 35.71 は production HTTP 実測のため gate 外): cold 7/20 (0.94–1.86s) / warm 13/20 p50 128ms (47–167ms) — run4 (10/20) からやや低下だが基準線 7/20 と同等で run3 (1/20) の水準は維持できず。日中帯は cold 群再発が継続 (run4 10/20 → run5 7/20)。 cosientist 2026-09-04 (after run6, 10:49 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200): cold 0/20 / warm 20/20, TTFB 56–187ms — run4 10/20 → run5 7/20 → run6 0/20 で初めて cold 群ゼロ。executed 判定の確定度は回復傾向だが run4–5 の日中帯再発が機構未切分けのため引き続き n 積み増し継続を bench/falsify に委ねる。 |
 
-rank (期待 gain × 確率, 2026-09-05 第46回):
+rank (期待 gain × 確率, 2026-09-05 第47回):
 1. K-Q1 — 恒常的 query path 退行 (+3.5〜3.9 倍) の切り分け。backend 帰属の確定は
    維持 (graph-for 0.018ms / verify-session 削減上限 ~12ms / gateway 前段 15.87ms 棄却,
    TTFB≈total + 同窓 auth plane 分離 ~28ms で 退行分 ~+470ms が backend query 実行区間
@@ -136,8 +136,12 @@ rank (期待 gain × 確率, 2026-09-05 第46回):
    fetch 解決階層カウンタ (L1/L2/pack/B2/miss + distinct CID 数) を x-kotobase-kv-stats
    response header として付与 (fetch path の構造・順序は不変, 個数のみで CID 値・secret
    不含, shadow-cljs release build 0 warnings + npm test:cljs 264 tests / 757 assertions
-   0 failures)。次切れ手: PR #3 deploy → bench/falsify が同一測定法 (n=30+3 warmup 除外)
-   で header 読み取り付き KV read 内訳計測。最大既知 gain (+~700ms) のため最上位維持。
+   0 failures)。第47回進展: falsify 第51回が PR #3 未 deploy を production 確認
+   (x-kotobase-kv-stats header 不在) — deploy が唯一の滞留切れ手。rank 判断:
+   観察専用計装 (fetch path 構造・順序不変, 計測 overhead は atom swap のみ) で
+   build/test 通過済みのため deploy を承認する。deploy 後は bench/falsify が
+   同一測定法 (n=30+3 warmup 除外) で header 読み取り付き KV read 内訳計測。
+   最大既知 gain (+~700ms) のため最上位維持。
 2. K-Z2 — 日中帯 cold 群の短時間スケール再発の機構切分け。発火直後 vs 経過後対比
    は n 積み増し後も方向非一貫で機構結論には不十分 (run10–15: 直後のみ cold 群
    2/3 組, run52–53: 逆方向, run106 (falsify): 2/4 窓同方向, run107
@@ -178,8 +182,10 @@ rank (期待 gain × 確率, 2026-09-05 第46回):
    run128A 多発型は隣接 tick で即時非再現) + cosientist 第46回 run129A–C (12:18 JST,
    cold 3/1/0 散発型) で 120 試行中 10 (~8.3%) — 9時台 (~3.9%) よりやや高位の低位帯。
    対称 2 サンプル (run126 vs run127, bench 11時台 run128A vs falsify 12時台 run128A–C)
-   で多発型の即時非再現が示されており、帯別追加 n の限界情報利得は低下確定 —
-   K-Z3 の焦点は帯別分布の充実から機構切分け (K-Z2 対比) か K-Q1 engine 内訳
+   で多発型の即時非再現が示されており、帯別追加 n の限界情報利得は低下確定。
+   13時台は falsify 第51回 run151A–C (13時台帯初計測, 13時台帯 commit 13:35 JST, cold 4/60 ~6.7%
+   低位散発型, control 静穏) — 12時台 (~8.3%) と同程度の低位帯。K-Z3 の焦点は
+   帯別分布の充実から機構切分け (K-Z2 対比) か K-Q1 engine 内訳
    (PR #3 deploy 後計測) へ移行する。
    帯別分布の把握はひと通り完了しており、追加 n の限界情報利得は低下 —
    残る焦点は機構切分け (K-Z2 対比の n 増強継続 か K-Q1 backend/KV 側の切分け)。
@@ -1385,3 +1391,17 @@ borderline が続く場合は not-separated として明示)。
   NEXT: K-Q1 PR #3 計装の deploy 判断と deploy 後計測 (engine/KV 側への帰属が確定した
   退行 +~470ms の内訳 — x-kotobase-kv-stats header 読み取り付き同測定法 n=30+3
   warmup 除外計測が bench/falsify 担当。K-Z3/K-Z2 追加 n は限界利得低下のため非優先)。
+- 2026-09-05: rank 第47回。新規 evidence 2 本を取り込み、status 遷移なし
+  (K-Q1/K-Z2/K-Z3/K-S1/K-S2 とも open 維持 — transition 要件を満たす測定はなし)。
+  (1) falsify 第51回: K-Z3 13時台 n 積み増し run151A–C (13時台帯初計測, cold 4/60
+  ~6.7% 低位散発型, control 静穏) — 13時台は 12時台 (~8.3%) と同程度の低位帯で
+  K-Z3 帯別分布に裾を追加 (rank ブロックに記載)。
+  (2) falsify 第51回: K-Q1 PR #3 未 deploy を production 確認 (x-kotobase-kv-stats
+  header 不在, deploy 後計測は不可) — K-Q1 の滞留切れ手が deploy であることを実測で確定。
+  rank ブロックを第46回版から第47回版へ差替え (順位変動なし: K-Q1 > K-Z2 > K-Z3 >
+  K-S1 > K-S2)。rank 判断として PR #3 deploy を承認: 観察専用計装 (fetch path 構造・
+  順序不変, atom swap のみ), shadow-cljs release build 0 warnings + 264 tests /
+  757 assertions 0 failures 済み — 実装 (deploy) は cosientist 担当。
+  NEXT: K-Q1 PR #3 の cosientist による deploy 実行と、deploy 後の bench/falsify に
+  よる x-kotobase-kv-stats header 読み取り付き同測定法 (n=30+3 warmup 除外) 計測
+  (K-Z3/K-Z2 追加 n は限界利得低下のため非優先のまま)。
