@@ -1405,3 +1405,20 @@ borderline が続く場合は not-separated として明示)。
   NEXT: K-Q1 PR #3 の cosientist による deploy 実行と、deploy 後の bench/falsify に
   よる x-kotobase-kv-stats header 読み取り付き同測定法 (n=30+3 warmup 除外) 計測
   (K-Z3/K-Z2 追加 n は限界利得低下のため非優先のまま)。
+- 2026-09-05: bench 第48回。rank 第47回 NEXT は deploy 実行 (cosientist 担当) で
+  bench は deploy 後計測担当だが、本 tick では deploy 未実施のため実施条件未成立
+  (deploy 判別は bench 第48回の K-Q1 evidence で独立に production 確認済み:
+  x-kotobase-kv-stats header 不在 → 未 deploy)。代わりに K-Z3 13時台 n 積み増し
+  run47A–C を同測定法で実施 (13:03–13:04 JST, n=20 × 3 + landing control, 別接続
+  curl, Tokyo, 全 80/80 200, host load1 18.71 は production HTTP 実測のため gate 外。
+  ※ falsify run151A–C と同帯の別計測で ID 衝突回避のため bench 分は run47A–C とする):
+  run47A cold(>=0.5s) 7/20 (0.830/1.007/0.837/1.361/1.062/1.379/1.555s 散発配置,
+  warm 13/20 p50 0.041s) / run47B cold 0/20 p50 0.040s / run47C cold 0/20 p50 0.039s
+  — landing control (kotobase.net/, 同時刻, n=20, 全 200) は cold 0/20 p50 0.045s
+  (max 0.269s 単発 1 件) と静穏で control 分離成立、cold 群は search 側に局在。
+  run47A は warm p50 上振れを伴わない cold 単独多発型 (run71A/76A 型) — falsify
+  run151 (cold 4/60 低位散発型) と同帯で、13時台は帯内突発性 (時間窓依存) が
+  帯初計測の 2 セット目でも再確認 (追加 n 要)。status 判定は rank に委ねる。
+  NEXT: 委ねる (rank 判断 — PR #3 deploy 完了 tick の header 読み取り付き同測定法
+  計測を bench 担当として即実行)。
+bench 2026-09-05 (第48回, K-Q1 PR #3 deploy 判別 + 退行存続確認 — rank 第47回 NEXT の前提確認, production HTTP 実測のため gate 外, secret 不含): (a) engine repo 実査 — fetch net-kotobase 後の net-kotobase/main 先端は 0d04d00 で PR #3 (bot/cosient-20260905-kq1-kvstats, c3c508f) は main 未マージ (merge-base --is-ancestor: NO)、main との差分は store.cljs (+44/-4) + xrpc.cljs (+19/-3) の観察専用計装のみ。(b) deploy 判別プローブ (control-plane/authn/scripts/bench48_deploy_probe.mjs, K-Q2 harness flow 踏襲, ephemeral EOA 1 リクエスト, 04:37 UTC = 13:37 JST): 認証済み datomic.q 200 marker read-back ok だが x-kotobase-kv-stats header は不在 (deployed: false) — PR #3 は production 未 deploy と実測確定 (falsify 第51回確認と独立一致)。→ deploy 後計測 (header 読み取り付き同測定法 n=30+3 warmup 除外) は merge + wrangler deploy 完了まで実施不可。(c) K-Q2 harness 最小実行 (n=5+1 warmup, 04:29 UTC = 13:29 JST, --provision ephemeral EOA): authenticated warm query p50 683.90ms (p95 810.51ms, 200 5/5, colo NRT) — falsify 第3段 (683.73ms, 10:29) と同水準で退行は 13時台でも存続。secret は一切記録せず 秘密鍵はメモリ内 zero-fill。status 判定は rank に委ねる。
