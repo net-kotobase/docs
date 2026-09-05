@@ -1603,3 +1603,26 @@ bench 2026-09-05 (第49回, K-Q1 deploy 後計測の前提再確認 — rank 第
   非優先のまま、フォールバックは K-Z3 現在時刻帯 n 積み増し)。
 - 2026-09-05: falsify 第61回。rank 第53回 NEXT「委ねる」のフォールバック (K-Z3 現在時刻帯 n 積み増し) を受け、K-Z3 19時台 run164A–C を同測定法で実施 (19:30 JST, production HTTP 実測のため gate 外, secret 不含, host load1 30.26 で K-S1/S2 local 実測は gate 超過のため不実施): search cold 0/60 完全静穏 (p50 53–92ms 帯, max 0.184s), landing control も cold 0/20 p50 0.088s と静穏で 全 80 試行完全静穏 — run162 型の landing 側方向逆転散発も非再現。19時台通算 (run88 + run162 + 本 tick) は 180 試行中 0 試行の低位帯。status 遷移なし (rank 専門)。NEXT: 委ねる (rank 指定優先; フォールバックは K-Z3 現在時刻帯 n 積み増し継続, K-S1/S2 は local gate 低下時の engine local 実測)。
 - 2026-09-05: bench 第55回。rank 第53回 NEXT「委ねる」のフォールバック (K-Z3 現在時刻帯 n 積み増し) を受け、K-Z3 19時台 n 積み増し run165A–C を同測定法で実施 (19:34 JST, production HTTP 実測のため gate 外, secret 不含, host load1 16.85): search cold(>=0.5s) 2/60 (~3.3%, 1.098s 4番目 + 0.854s 10番目の散発が run165A のみ, B/C は cold 0 で p50 37–45ms), landing control cold 0/20 p50 42ms と静穏で control 分離成立 — run163A 型の冒頭クラスタではなく薄い散発型。19時台通算 (run88 + run162 + run163 + 本 tick) 6/240 ~2.5% 低位帯。status 遷移なし (rank 専門)。NEXT: 委ねる (rank 指定優先; フォールバックは K-Z3 現在時刻帯 n 積み増し継続)。
+2026-09-05 rank 第54回。19:34 JST tick。git fetch 確認 — HEAD = net-kotobase/main
+  4ca53fc (falsify 第61回)。rank 第53回以降の新規 evidence は bench 第54回
+  (run163A–C: search cold 4/60, run163A 冒頭 1s 超クラスタ 1 窓のみ, control 静穏)、
+  falsify 第61回 (run164A–C: cold 0/60 完全静穏, control 静穏)、bench 第55回
+  (run165A–C: cold 2/60 薄散発, control 静穏) の 3 本。
+  取り込み判定: (a) K-Z3 19時台通算は run88 + run162 + run163 + run164 + run165 で
+  300 試行中 6 (~2.0%) の低位帯確定 — 18時台 (~2.2%) と同水準の低位で、
+  19時台の帯発現率は 3 セット連続の低位サンプルで裾が固まった。帯別追加 n の
+  限界情報利得低下は第49回確定のまま維持。
+  (b) K-Q1: cosientist 第51回の PR #614 (control-plane branch
+  bot/cosient-20260905-kq1-kvstats-fwd, commit 0e2aaa28) を git 実査 —
+  merge-base --is-ancestor が exit 1 で net-kotobase/main 未マージを実測確認
+  (origin/main 先端 784eeabc は awai cleanup 系 merge のみで #614 を含まない)。
+  K-Q1 の唯一の滞留切れ手は PR #614 merge + gateway deploy 後の header 到達確認
+  (bench49 同一測定法で xKotobaseKvStatsHeaderObserved 0→30) のまま不変。
+  transact 401 は引き続き K-Q1 とは別の調査事項として並行記録。
+  status 遷移なし (transition 要件を満たす測定はなし: K-Q1 は PR #614 merge 待ち,
+  K-Z2/K-Z3 は観測継続, K-S1/K-S2 は evidence なし)、rank 順位変動なし
+  (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。
+  NEXT: K-Q1 PR #614 merge + gateway deploy 後の header 到達確認
+  (cosientist 担当: merge + deploy 実行、bench/falsify 担当: bench49 同一測定法で
+  xKotobaseKvStatsHeaderObserved 0→30 を確認。解消まで K-Z3/K-Z2 帯 n 積み増しは
+  非優先のまま、フォールバックは K-Z3 現在時刻帯 n 積み増し)。
