@@ -1,0 +1,37 @@
+CMD ls /Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase RC 0
+authn
+commoncrawl-actor
+commoncrawler
+control-plane
+cypher
+docs
+engine
+ipfs
+lake
+sdk
+search-origin
+
+CMD grep -l "@noble" /Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/*.mjs | head RC 0
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/bench49_kq1_warmquery.mjs
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/bench49_kq1_warmquery2.mjs
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/bench49_mini.mjs
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/bench49_noble_check.mjs
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/bench49_probe.mjs
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/bench49_probe3.mjs
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/bench49_reprobe.mjs
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/bench49_reprobe2.mjs
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/bench52_kq1_edge.mjs
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/docs/cos_iter51_kq1_backenddirect.mjs
+
+CMD find /Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase -maxdepth 3 -name "package.json" -not -path "*/node_modules/*" | head RC 0
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/search-origin/package.json
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/ipfs/package.json
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/ipfs/ipni-drain/package.json
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/cypher/package.json
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/lake/package.json
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/sdk/gateway/package.json
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/engine/package.json
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/control-plane/mail-worker/package.json
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/control-plane/kotobase-index-prolly-standalone/package.json
+/Users/junkawasaki/github/com-junkawasaki/orgs/net-kotobase/control-plane/kotobase-api-gateway-cljs/package.json
+

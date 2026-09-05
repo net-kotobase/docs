@@ -1,0 +1,19 @@
+{
+  "purpose": "bench49 deploy re-probe round 2 (x-kotobase-kv-stats header presence x3)",
+  "observedAt": "2026-09-05T15:54:32.205Z",
+  "results": [
+    {
+      "status": 200,
+      "kvStats": "l1=0;l2=0;pack=0;b2=0;miss=0;distinct=0"
+    },
+    {
+      "status": 200,
+      "kvStats": "l1=0;l2=0;pack=0;b2=0;miss=0;distinct=0"
+    },
+    {
+      "status": 200,
+      "kvStats": "l1=0;l2=0;pack=0;b2=0;miss=0;distinct=0"
+    }
+  ],
+  "deployed": true
+}

@@ -1,0 +1,6 @@
+import subprocess
+line = "- 2026-09-06: bench 第62回。cosientist 第61回 NEXT「K-Q2 harness による x-kotobase-kv-stats header 到達確認 0→30」を実施 — **30/30 到達確認**。deployed version 2cd7aa2c-106e-4fec-b964-499778661244 に対し bench49_reprobe2.mjs flow (SIWE + ephemeral EOA --provision + Biscuit 発行 + 認証付き datomic.q) を実行: (a) 3 リクエスト probe (00:54 JST, production HTTP 実測のため gate 外, secret 不含, host load1 20.27 だが gate 対象外): 200 3/3 + header 3/3 在 (l1=0;l2=0;pack=0;b2=0;miss=0;distinct=0, deployed: true) — cosientist 第61回の no-auth 402 short-circuit による「到達判定不能」を認証付き経路で解消。(b) 本測定 bench62_kq1_n30.mjs (同一測定法 n=30 + 3 warmup 除外, nearest-rank, 00:56 JST, 認証付き空 graph query): 200 30/30, **x-kotobase-kv-stats header 30/30 在** (全リクエスト値は同一のゼロ統計 — 空 graph で KV 読み出しが発生しないため値は 0 で妥当, header pass-through 自体の到達は確定) / warm query p50 295.18ms / p95 354.56ms / p99 379.63ms / min 276.53 / max 379.63 — bench 第49回の空 query path p50 ~305ms (2 試行平均) と同水準で、header 計装追加による query path 劣化は観測されず (not-separated だが劣化示唆なし)。K-Q1 の「認証付き header 到達確認」切れ手は完了 — deploy 完了 + header 到達 30/30 の 2 条件を満たし、K-Q1 status 遷移 (open → 確定/解決判定) は rank 判断に委ねる。secret は一切記録せず鍵は zero-fill。NEXT: 委ねる (rank 指定優先; フォールバックは K-Z3 0時台 n 積み増し継続)。\n"
+with open('query-cosientist.md','a') as f:
+    f.write(line)
+r = subprocess.run(['tail','-3','query-cosientist.md'],capture_output=True,text=True)
+print(r.stdout[-2500:])
