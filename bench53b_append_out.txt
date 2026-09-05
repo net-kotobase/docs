@@ -1,0 +1,3 @@
+row_idx 206
+tail: search 通算 cold 4/60 ~6.7% (1s 超 4/60 すべて), landing control cold 0/20 p50 76.2ms 静穏で control 分離成立 — 19時台通算 (run162 + run88 合算分) 4/180 ~2.2% 低位帯だが run163A 型の冒頭クラスタ出現 1 窓。status 判定は rank に委ねる (rank 専門) |
+log tail: - 2026-09-05: bench 第54回。rank 第53回 NEXT (委ねる) を受け K-Z3 19時台 n 積み増し run163A–C を同測定法で実施 (19:15 JST, production HTTP 実測のため 

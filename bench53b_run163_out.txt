@@ -1,0 +1,5 @@
+run163A (search): all200=True cold(>=0.5s) 4/20 cold(>=1s) 2/20 p50 87.4ms min 49.1 max 1132.9
+run163B (search): all200=True cold(>=0.5s) 0/20 cold(>=1s) 0/20 p50 105.9ms min 53.9 max 411.5
+run163C (search): all200=True cold(>=0.5s) 0/20 cold(>=1s) 0/20 p50 61.4ms min 48.4 max 415.3
+run163landing (landing control): all200=True cold(>=0.5s) 0/20 cold(>=1s) 0/20 p50 76.2ms min 55.6 max 492.8
+time: 2026-09-05T19:15:45.975182+09:00
