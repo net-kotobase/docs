@@ -1,0 +1,36 @@
+{
+  "schema": "kotobase.benchmark.biscuit-auth-query.v1.bench49",
+  "observedAt": "2026-09-05T09:23:50.046Z",
+  "environment": {
+    "authnUrl": "https://auth.kotobase.net",
+    "apiUrl": "https://kotobase.net",
+    "runtime": "Node 26.0.0",
+    "clientRegion": "Tokyo, Japan"
+  },
+  "workload": {
+    "authentication": "EIP-4361 SIWE with a real secp256k1 EIP-191 signature",
+    "samplesPerSeries": 30,
+    "excludedWarmupsPerSeries": 3,
+    "database": "biscuit-query-1788600213887",
+    "transactStatus": 401,
+    "transactUnauthorized": true,
+    "note": "transact 401 (Unauthorized) は bench 第49回 tick から継続して観測。query path 自体は 200 で成立。write 系 datom 未投入のため query は常時空結果 (rows: []) — warm query latency 測定としては実質 empty-result path となる点に注意。"
+  },
+  "latencyMs": {
+    "min": 291.84,
+    "p50": 331.4,
+    "p95": 457.69,
+    "p99": 524.54,
+    "max": 524.54,
+    "mean": 345.81
+  },
+  "xKotobaseKvStatsHeaderObserved": 0,
+  "xKotobaseKvStatsHeaderValues": [],
+  "deployed": false,
+  "method": {
+    "percentile": "nearest-rank over successful measured requests",
+    "concurrency": 1,
+    "connectionPolicy": "Node fetch connection reuse; no forced cache clear",
+    "secretsRecorded": false
+  }
+}

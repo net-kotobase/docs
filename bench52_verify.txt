@@ -1,0 +1,2 @@
+ev_in_row=1 log_entry=1
+ctx:  query 実行区間に帰属確定 (gateway 前段/Biscuit verify は棄却済みのまま)。engine (KV read) 内訳が残る切れ手。status 判定は rank に委ねる  bench 2026-09-05 (第52回, K-Q1 deploy 整合再確認計測 — cosientist 第51回の再 deploy (18:05 JST, version ea383ee
