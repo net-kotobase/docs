@@ -1,0 +1,46 @@
+{
+ "purpose": "bench68 K-Z3 5時台 1セット目 (run185A-C)",
+ "observedAt": "2026-09-05T19:37:38.261Z",
+ "runs": [
+  {
+   "label": "run1 search",
+   "n": 20,
+   "ok200": 20,
+   "coldCount": 0,
+   "coldValues": [],
+   "p50ms": 34,
+   "minMs": 30,
+   "maxMs": 75
+  },
+  {
+   "label": "run2 search",
+   "n": 20,
+   "ok200": 20,
+   "coldCount": 0,
+   "coldValues": [],
+   "p50ms": 33,
+   "minMs": 28,
+   "maxMs": 41
+  },
+  {
+   "label": "run3 search",
+   "n": 20,
+   "ok200": 20,
+   "coldCount": 0,
+   "coldValues": [],
+   "p50ms": 35,
+   "minMs": 30,
+   "maxMs": 49
+  }
+ ],
+ "control": {
+  "label": "landing control",
+  "n": 20,
+  "ok200": 20,
+  "coldCount": 0,
+  "coldValues": [],
+  "p50ms": 42,
+  "minMs": 37,
+  "maxMs": 50
+ }
+}
