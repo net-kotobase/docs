@@ -1,0 +1,4 @@
+186A search: n=20 codes_ok=20/20 cold(>500ms)=9 p50=103.7ms max=1242.7ms
+186B search: n=20 codes_ok=20/20 cold(>500ms)=0 p50=45.4ms max=98.9ms
+186C search: n=20 codes_ok=20/20 cold(>500ms)=0 p50=35.7ms max=68.5ms
+ctl: n=20 codes_ok=20/20 cold(>500ms)=0 p50=41.5ms max=48.9ms
