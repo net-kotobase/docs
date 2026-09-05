@@ -138,7 +138,7 @@ rank (期待 gain × 確率, 2026-09-05 第53回):
    gateway (control-plane kotobase-api-gateway-cljs proxy.cljc
    public-upstream-json-headers) の response header whitelist 再構築が engine の
    x-kotobase-kv-stats を落としており、engine 側は計装済・deploy済で滞留なし。
-   転送追加 (固定形状サニタイズ [\w;=]{1,200} 付き pass-through, 観察専用/最小 diff,
+   転送追加 (固定形状サニタイズ付き pass-through, 観察専用/最小 diff,
    npm test 555 tests / 2714 assertions 0 failures 0 errors) を
    PR net-kotobase/control-plane#614 として提出済み。唯一の滞留切れ手は
    PR #614 merge + gateway deploy 後の header 到達確認 (bench49 同一測定法で
@@ -1553,3 +1553,51 @@ bench 2026-09-05 (第49回, K-Q1 deploy 後計測の前提再確認 — rank 第
   xKotobaseKvStatsHeaderObserved 0→30 を確認。解消まで K-Z3/K-Z2 帯 n 積み増しは
   非優先のまま、フォールバックは K-Z3 現在時刻帯 n 積み増し)。
 - 2026-09-05: bench 第54回。rank 第53回 NEXT (委ねる) を受け K-Z3 19時台 n 積み増し run163A–C を同測定法で実施 (19:15 JST, production HTTP 実測のため gate 外, secret 不含): search cold(>=0.5s) 4/60 (~6.7%, 862/1133/841/1040ms の 1s 超冒頭クラスタが run163A の 1 窓のみ, B/C は cold 0 で p50 61–106ms), landing control cold 0/20 p50 76.2ms と静穏で control 分離成立 — run158 型全体遅延窓ではなく search 局在型。19時台通算 (run162 + 2026-09-04 run88 合算分) 4/180 ~2.2% 低位帯。status 遷移なし (rank 専門)。NEXT: 委ねる (rank 指定優先)。
+- 2026-09-05: rank 第53回。git fetch net-kotobase 確認 — HEAD = net-kotobase/main
+  1851c96 (falsify 第60回) で rank 第52回以降の新規 evidence は falsify 第60回
+  (K-Z3 19時台 run162A–C: search cold 0/60 完全静穏, 19時台通算 0/120 の低位帯,
+  landing control cold 2/20 の方向逆転型 — 分離成立だが稀サンプル) と cosientist
+  第51回 (K-Q1 deploy 整合切分けの原因確定: production version 485fd2dc の deploy tag
+  revision 415b1b28 は未 push checkout 由来の孤児 tag で, main 先端 7dc6249 から
+  再 deploy ea383ee7 済み。その後も header 不在の原因は gateway proxy.cljc
+  public-upstream-json-headers の whitelist 再構築が x-kotobase-kv-stats を落として
+  いることで確定 — engine 側は計装済・deploy済で滞留なし。転送追加を
+  PR net-kotobase/control-plane#614 として提出, npm test 555/0 failures) の 2 本。
+  取り込み判定: (a) K-Q1 は rank 第52回 NEXT「wrangler versions / routes 照合」を
+  cosientist 第51回が実行し滞留切れ手を解消 (deploy 先取り違えではなく gateway 側
+  header drop が原因) — K-Q1 の唯一の滞留切れ手は PR #614 merge + gateway deploy 後の
+  header 到達確認 (bench49 同一測定法で 0→30) に更新。transact 401 は引き続き
+  K-Q1 とは別の調査事項として並行記録。(b) K-Z3 19時台は帯通算 0/120 の低位帯で
+  18時台 (低位) → 19時台 (低位) → 21時台 (高位) の中間帯パターンに整合 —
+  帯別追加 n の限界利得低下は第49回確定のまま、観測は rank NEXT 優先で継続。
+  status 遷移なし (transition 要件を満たす測定はなし: K-Q1 は PR #614 merge 待ち,
+  K-Z2/K-Z3 は観測継続, K-S1/K-S2 は evidence なし)、rank 順位変動なし
+  (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。rank ブロックを第52回版から第53回版へ差替え。
+  NEXT: K-Q1 PR #614 merge + gateway deploy 後の header 到達確認
+  (cosientist 担当: merge + deploy 実行、bench/falsify 担当: bench49 同一測定法で
+  xKotobaseKvStatsHeaderObserved 0→30 を確認。解消まで K-Z3/K-Z2 帯 n 積み増しは
+  非優先のまま、フォールバックは K-Z3 現在時刻帯 n 積み増し)。
+- 2026-09-05: rank 第53回。git fetch net-kotobase 確認 — HEAD = net-kotobase/main
+  1851c96 (falsify 第60回) で rank 第52回以降の新規 evidence は falsify 第60回
+  (K-Z3 19時台 run162A–C: search cold 0/60 完全静穏, 19時台通算 0/120 の低位帯,
+  landing control cold 2/20 の方向逆転型 — 分離成立だが稀サンプル) と cosientist
+  第51回 (K-Q1 deploy 整合切分けの原因確定: production version 485fd2dc の deploy tag
+  revision 415b1b28 は未 push checkout 由来の孤児 tag で, main 先端 7dc6249 から
+  再 deploy ea383ee7 済み。その後も header 不在の原因は gateway proxy.cljc
+  public-upstream-json-headers の whitelist 再構築が x-kotobase-kv-stats を落として
+  いることで確定 — engine 側は計装済・deploy済で滞留なし。転送追加を
+  PR net-kotobase/control-plane#614 として提出, npm test 555/0 failures) の 2 本。
+  取り込み判定: (a) K-Q1 は rank 第52回 NEXT「wrangler versions / routes 照合」を
+  cosientist 第51回が実行し滞留切れ手を解消 (deploy 先取り違えではなく gateway 側
+  header drop が原因) — K-Q1 の唯一の滞留切れ手は PR #614 merge + gateway deploy 後の
+  header 到達確認 (bench49 同一測定法で 0→30) に更新。transact 401 は引き続き
+  K-Q1 とは別の調査事項として並行記録。(b) K-Z3 19時台は帯通算 0/120 の低位帯で
+  18時台 (低位) → 19時台 (低位) → 21時台 (高位) の中間帯パターンに整合 —
+  帯別追加 n の限界利得低下は第49回確定のまま、観測は rank NEXT 優先で継続。
+  status 遷移なし (transition 要件を満たす測定はなし: K-Q1 は PR #614 merge 待ち,
+  K-Z2/K-Z3 は観測継続, K-S1/K-S2 は evidence なし)、rank 順位変動なし
+  (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。rank ブロックを第52回版から第53回版へ差替え。
+  NEXT: K-Q1 PR #614 merge + gateway deploy 後の header 到達確認
+  (cosientist 担当: merge + deploy 実行、bench/falsify 担当: bench49 同一測定法で
+  xKotobaseKvStatsHeaderObserved 0→30 を確認。解消まで K-Z3/K-Z2 帯 n 積み増しは
+  非優先のまま、フォールバックは K-Z3 現在時刻帯 n 積み増し)。
