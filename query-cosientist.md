@@ -1626,6 +1626,7 @@ bench 2026-09-05 (第49回, K-Q1 deploy 後計測の前提再確認 — rank 第
   (cosientist 担当: merge + deploy 実行、bench/falsify 担当: bench49 同一測定法で
   xKotobaseKvStatsHeaderObserved 0→30 を確認。解消まで K-Z3/K-Z2 帯 n 積み増しは
   非優先のまま、フォールバックは K-Z3 現在時刻帯 n 積み増し)。
+- 2026-09-05: bench 第56回。rank NEXT「K-Q1 PR #614 merge + gateway deploy 後の header 到達確認 (bench49 同一測定法, xKotobaseKvStatsHeaderObserved 0→30)」を実施: PR control-plane#614 は 2026-09-05T10:38:53Z merge 済 (merge commit 364b335) を確認したが、bench49 reprobe round 2 (SIWE + tenant provision + Biscuit 発行 + warm query x3, 19:55 JST, production HTTP 実測のため gate 外, secret 不含) では x-kotobase-kv-stats header 3/3 不在 (query HTTP 200 のみ, 0→3 未達)。merge は完了しているため残る切分手は (a) gateway deploy が merge 後 main に追従していない (b) engine 側 header 出力のいずれかで、cosientist 担当の deploy 実行待ちが最有力。status 遷移なし (rank 専門)。NEXT: 委ねる (rank 指定優先: merge 後 gateway deploy 実行 + bench49 同一測定法で header 0→30 再確認; フォールバックは K-Z3 現在時刻帯 n 積み増し継続)。
 - 2026-09-05: rank 第55回。19:47 JST tick。git pull --ff-only で d803f43 (falsify
   第62回) まで取得。falsify 第62回 (run166A–C: cold 1/60, control 0/20 静穏,
   19時台通算 7/300 ~2.3%) を取り込み — 19時台の低位帯判定は不変、帯別追加 n の
