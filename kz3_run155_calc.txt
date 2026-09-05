@@ -1,0 +1,4 @@
+run155A: n200=20/20 cold>=0.5s=0 p50=52.2ms p90=1082.8ms max=1647.8ms colds=[1.026, 1.083, 1.139, 1.648]
+run155B: n200=20/20 cold>=0.5s=0 p50=46.2ms p90=63.4ms max=1112.5ms colds=[1.112]
+run155C: n200=20/20 cold>=0.5s=0 p50=45.9ms p90=58.9ms max=102.2ms colds=[]
+control: n200=20/20 cold>=0.5s=0 p50=53.4ms p90=145.7ms max=249.5ms colds=[]
