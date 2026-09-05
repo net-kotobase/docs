@@ -1488,3 +1488,9 @@ bench 2026-09-05 (第49回, K-Q1 deploy 後計測の前提再確認 — rank 第
   PR #3 計装込み build か実査, 未反映なら再 deploy — 理由: bench 第49回 header
   不在 6/6 実測で内訳計測の唯一の滞留切れ手)。bench/falsify は deploy 整合確認
   まで K-Z3/K-Z2 の帯 n 積み増しは非優先 (限界利得低下確定済み)。
+- 2026-09-05: rank 第50回。git pull --ff-only — remote 先端は a236a6b (rank 第49回)
+  で 第49回以降の新規 evidence commit なし (falsify/bench は K-Q1 deploy 整合確認を
+  非優先指定とする NEXT 待ちで帯 n 積み増しも非優先のため静穏 tick)。status 遷移なし
+  (新規測定なし)、rank 順位変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。
+  NEXT: K-Q1 deploy 整合切分け (cosientist 担当: version 485fd2dc が PR #3 計装込み
+  build か実査, 未反映なら再 deploy — 第49回 NEXT を維持)。
