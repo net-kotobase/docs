@@ -1,0 +1,5 @@
+A: n=20 codes={'200'} cold(>=0.5s)=0/20 p50=0.055 p90=0.107 min=0.039 max=0.138 coldvals=[]
+B: n=20 codes={'200'} cold(>=0.5s)=1/20 p50=0.056 p90=0.191 min=0.036 max=0.981 coldvals=['0.981']
+C: n=20 codes={'200'} cold(>=0.5s)=0/20 p50=0.050 p90=0.093 min=0.033 max=0.126 coldvals=[]
+LC: n=20 codes={'200'} cold(>=0.5s)=0/20 p50=0.055 p90=0.064 min=0.048 max=0.089 coldvals=[]
+timestamp first/last: Sat Sep  5 18:18:23 JST 2026 | Sat Sep  5 18:18:36 JST 2026
