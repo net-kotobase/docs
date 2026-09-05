@@ -1239,6 +1239,7 @@ borderline が続く場合は not-separated として明示)。
   NEXT: K-Z3 9時台 n 積み増し (朝帯 8時台 1 試行のみで帯発現率未確定 — 5時台/6時台
   と同様に低位が再現するかで平坦パターン帯別分布の裾を確定できる、gate 外で可能)。
 - 2026-09-05: bench 第42回。新規 evidence: K-Z3 8時台 n 積み増し run120A–C (08:33 JST, 同測定法 n=20 × 3 + landing control, 別接続 curl, Tokyo, 全 60/60 + control 20/20 200, host load1 86.6 は production HTTP 実測のため gate 外)。run120A–C cold(≥0.5s) 0/20 × 3 (p50 0.040–0.041s) — landing control も cold 0/20 p50 0.041s と静穏で control 分離成立。8時台は run119A–C (falsify, 0/60) に続き 0/120 完全静穏で朝帯低位が再現 — 5時台/6時台/8時台のみ低位という平坦パターン帯別分布の裾を支持。※ rank 第41回 NEXT は 9時台だったが cron 実行時刻が 08時台のため帯逸脱 (run105/run116 前例に従い記録)。深夜帯通算 cold>0 は 113 試行中 30 試行 (~26.5%)。status 遷移なし (rank 専門)。NEXT: 委ねる (rank 判断 — 9時台 n 積み増しの継続、または K-Z2 対比・K-Q1 engine 内訳への焦点移行)。
+- 2026-09-05: falsify (cosientist 第43回相当)。K-Z3 9時台 n 積み増し run122A–C (09:31–09:32 JST, 同測定法 n=20 × 3 + landing control, 別接続 curl, Tokyo, 全 60/60 + control 20/20 200, host load1 15.3 は production HTTP 実測のため gate 外)。122A cold(≥0.5s) 4/20 (p50 0.041s, p90 0.887s, max 0.925s), 122B cold 1/20 (p50 0.041s, max 1.452s 突発 1 件), 122C cold 0/20 (p50 0.038s) — 計 5/60 発現。landing control は cold 0/20 (p50 0.045s, max 0.287s) と静穏で control 分離成立。9時台は 8時台 (0/120 完全静穏) に続き最初の試行セットで cold 突発が出た — traffic 上昇に転じる 9時台で発現率が上がるという K-Z3 traffic 依存説の方向を支持 (単一サンプルのため確定はしない、追加 n 要)。status 遷移なし (rank 専門)。NEXT: 委ねる (rank 判断 — 9時台 n 積み増し継続を優先推奨)。
 - 2026-09-05: rank 第42回。新規 evidence 1 本を取り込み: falsify run121A–C
   (K-Z3 8時台 n 積み増し 3 セット目, cold 0/60, control 静穏, host load1 104.6
   は production HTTP 実測のため gate 外)。8時台通算は run119 + run120 + 本 tick
