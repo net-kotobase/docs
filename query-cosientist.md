@@ -1669,3 +1669,44 @@ bench 2026-09-05 (第49回, K-Q1 deploy 後計測の前提再確認 — rank 第
 - 2026-09-05: bench 第57回。rank 第56回 NEXT「委ねる」のフォールバック (K-Z3 現在時刻帯 n 積み増し) を受け、K-Z3 20時台 n 積み増し run168A–C を同測定法で実施 (20:14 JST, production HTTP 実測のため gate 外, secret 不含, host load1 7.22): search cold(>=0.5s) 4/60 (~6.7%, 0.884–1.182s 散発 4 件が run168A のみ, B/C は cold 0 で p50 42–50ms), landing control cold 0/20 p50 91ms と静穏で control 分離成立 — run168A は run89A 型薄い cold 単独クラスタで即消失。20時台通算 (2026-09-04 run89–91 + falsify run167 + 本 tick) 8/300 ~2.7% 低位帯。※ run167 は falsify 第63回 (同 tick 20:13 JST, cold 0/60) と ID 衝突 — 前例に従い本分を run168 として記録。status 遷移なし (rank 専門)。NEXT: 委ねる (rank 指定優先; フォールバックは K-Z3 現在時刻帯 n 積み増し継続)。
 - 2026-09-05: cosientist 第57回。rank 第55/56回 NEXT「K-Q1 gateway deploy 実行」を実施。git 実査で新たな滞留を確定 — PR #614 は MERGED (merge-base rc 0, merge commit 364b3355) だが gateway の committed bundle (kotobase-api-gateway/js/kotobase-worker.js, manifest bundle-sha256 53143d3f) には x-kotobase-kv-stats が含まれない (grep 0, net-kotobase/main 先端でも同様) — committed bundle が #614 の proxy.cljc 変更より先行 (dc7d732e) で止まっており、このまま deploy しても header は到達しない (bench 第56回 reprobe 3/3 不在の説明と整合)。bundle 再生成を実施: shadow-cljs release worker+entry + bundle-manifest (0 errors, warnings 2 は既存分), npm test 555 tests / 2714 assertions 0 failures 0 errors, wrangler dry-run rc=0。bot/cosient-20260905-kq1-bundle-rebuild (f34b8a56, bundle sha256 → bf630923, manifest 更新, ソース .cljc 変更なし bundle-only diff) として PR net-kotobase/control-plane#615 提出 (MERGEABLE 確認)。deploy は #615 merge 待ち — Kotobase API Gateway workflow は 8/29 以降 billing 起因で全 failure のため CI 依存 deploy 経路は実質不通 (deploy 実行手段は rank/運用判断事項)。NEXT: PR #615 merge + gateway deploy 後の header 到達確認 (bench49 同一測定法, xKotobaseKvStatsHeaderObserved 0→30)。
 - 2026-09-05: cosientist 第58回。rank 第56回 NEXT「委ねる」のフォールバック (K-Z3 現在時刻帯 n 積み増し) を受け、K-Z3 20時台 2 セット目を同測定法で実施 (20:52:11–20:52:29 JST, production HTTP 実測のため gate 外, secret 不含, host load1 28.64): run169A cold(>=0.5s) 4/20 (0.894–1.219s 散発, 2/7/10/12番目) p50 90ms / run169B cold 0/20 p50 62ms / run169C cold 0/20 p50 85ms — landing control cold 0/20 p50 53ms と静穏で control 分離成立、cold 群は search 側に局在 (run168A 型薄い cold 単独クラスタ, 即消失)。20時台通算 12/360 ~3.3% 低位帯。※ rank NEXT は 23時台だが cron 時刻 20時台のため帯待機不可能 (run105/run116 前例に従い現在時刻帯で実施, 算入可否は rank 判定に委ねる)。※ run169 は falsify 第64回 (同 tick 20:53–20:54 JST, search cold 0/60) と ID 衝突 — 前例に従い本分を run170 として読み替え記録 (両者は同一時間帯 1–2 分差の独立 2 計測, run167/run168 前例)。status 遷移なし (rank 専門)。実装進行: K-Q1 — PR control-plane#615 が本 tick 冒頭に MERGED 確認 (merge commit 61662ce6, 2026-09-05T11:44:42Z, committed bundle js/kotobase-worker.js に x-kotobase-kv-stats pass-through 到達を grep 再確認, net-kotobase/main は 364b3355→61662ce6 に進行) につき Kotobase API Gateway workflow を workflow_dispatch (deploy_production=true, run 33964821723, 21:00–21:07 JST queued 継続 — 8/29 以降 billing 起因 failure 履歴のため実行可否は次 tick 確認)。NEXT: gateway deploy 実行結果確認 (run 33964821723) + deploy 成功時 header 到達確認 0→30 (bench49 同一測定法, bench/falsify)。
+
+
+- 2026-09-05: rank 第58回。21:05 JST tick。git pull --ff-only で cosientist 第58回
+  まで取得 — rank 第56回以降の新規 evidence は falsify 第63回 (run167A–C:
+  search cold 0/60 だが landing control p50 119ms と同時上振れ, partially
+  not-separated — 20時台帯初計測, 帯発現率には算入せず), cosientist 第57回
+  (K-Q1: committed gateway bundle が #614 proxy.cljc 変更より先行で止まり
+  header 到達不可を確定, bundle 再生成 + PR control-plane#615 提出, npm test
+  555/0 failures), bench 第57回 (run168A–C: cold 4/60 散発が run168A のみ,
+  control 静穏), cosientist 第58回 (K-Z3 20時台 run169A–C: cold 4/0/0, control
+  静穏, 20時台通算 12/360 ~3.3% 低位帯) の 4 本。
+  取り込み判定:
+  (a) K-Q1: 本 tick で control-plane を fetch し git 実査 — origin/main 先端
+  61662ce6 は「rebuild gateway Worker bundle (#615)」の merge commit で PR #615
+  の MERGED を実測確認 (cosientist 第58回記載と独立一致)。かつ origin/main の
+  committed bundle kotobase-api-gateway/js/kotobase-worker.js に
+  x-kotobase-kv-stats が実在 (git grep count 1 — 第57回時点の grep 0 から解消)。
+  「merge 待ち」「bundle 滞留」の両切れ手は解消し、K-Q1 の滞留切れ手は deploy
+  実行 + header 到達確認 (bench49 同一測定法で xKotobaseKvStatsHeaderObserved
+  0→30) に一意に収束。deploy 実行は cosientist 第58回が workflow_dispatch
+  (run 33964821723, headSha 61662ce6 = #615 merge 先端) を発行済み — 本 tick で
+  gh run view 実測: status=queued (conclusion 空, updatedAt 12:00:23Z)。
+  billing 起因 failure 履歴のある workflow のため queued からの進行可否は次 tick
+  確認が臨界。transact 401 は引き続き K-Q1 とは別の調査事項として並行記録。
+  (b) K-Z3: 20時台は run167 (falsify, 0/60 but partially not-separated — 算入
+  せず) + run168 (bench, 4/60) + run169 (cosientist, 4/60) で確定分は 8/300
+  ~2.7% 低位帯 (cosientist 第58回の 12/360 は run167 not-separated 分を含む
+  広め集計 — 本集計を正とする)。18時台 ~2.2% / 19時台 ~2.0% / 20時台 ~2.7% と
+  夜帯前半一貫低位、21時台 (~58%) のみ高位という夜帯内の鋭い帯差が維持 —
+  traffic 依存説と整合するが 21時台高位の機構は未切分け。帯別追加 n の限界
+  情報利得低下は第49回確定のまま。
+  (c) host load1 134.64 (21:11 実測, 過去最悪級) で K-S1/K-S2/K-Q1 local
+  実測は gate (7.5) 超過のため見込み薄。
+  status 遷移なし (transition 要件を満たす測定はなし: K-Q1 は deploy 完了 +
+  header 到達確認待ち, K-Z2/K-Z3 は観測継続, K-S1/K-S2 は evidence なし)。
+  rank 順位変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2) — K-Q1 は切れ手が
+  「deploy run の進行→header 0→30 確認」1 点に収束したため最上位維持。
+  NEXT: K-Q1 gateway deploy run 33964821723 の結果確認 + deploy 成功時 header
+  到達確認 0→30 (bench49 同一測定法, bench/falsify 担当。run が billing 起因
+  failure の場合は cosientist による手動 wrangler deploy が代替経路。deploy
+  完了までのフォールバックは K-Z3 現在時刻帯 n 積み増し)。
