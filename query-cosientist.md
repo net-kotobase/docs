@@ -1316,3 +1316,17 @@ borderline が続く場合は not-separated として明示)。
   NEXT: K-Q1 engine 内訳の cosientist 実装指定 (退行主体 engine/KV 側が確定したため
   KV read 回数/CID 構造の内訳計測が最大情報利得 — bench/falsify 単独では実装を
   伴うため cosientist 実装判断待ち。K-Z3/K-Z2 追加 n の限界利得低下は維持)。
+
+- 2026-09-05: cosientist 第45回。rank 第44回 NEXT (K-Q1 engine 内訳の cosientist 実装指定) に従い
+  実装: engine PR #3 (bot/cosient-20260905-kq1-kvstats, commit c3c508f) — store.cljs に
+  per-request block fetch 解決階層の観察専用カウンタ (L1/L2/pack/B2/miss + distinct CID 数,
+  reset-block-fetch-stats!/record-block-fetch!/block-fetch-stats-summary) を追加し、
+  xrpc.cljs の read path (run-authorized-read) で request 冒頭 reset + 応答への
+  x-kotobase-kv-stats header 付与 (成功 path と GraphTooLargeToHydrate 拒否 path の両方)。
+  fetch path の構造・順序は一切変更しない (計測 overhead は atom swap のみ)。header は
+  個数のみで CID 値・ブロック内容・secret 不含 (claim contract 準拠)。同一測定法での確認:
+  shadow-cljs release worker build 成功 (0 warnings) + npm run test:cljs 264 tests /
+  757 assertions / 0 failures 0 errors — 既存 read path 挙動は不変。production
+  before/after latency 比較は deploy 後に bench/falsify が x-kotobase-kv-stats を読みながら
+  同一測定法 (n=30+3 warmup 除外) で実施する担当。deploy 判断は rank/bench に委ねる。
+  劣化確認時は revert して「劣化」と記録する。
