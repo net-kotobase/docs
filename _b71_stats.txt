@@ -1,0 +1,5 @@
+DONE 2026-09-06 06:58:43 JST
+A: n=20 200=20 cold(>=0.5s)=1/20 p50=50ms max=1037ms
+B: n=20 200=20 cold(>=0.5s)=0/20 p50=47ms max=65ms
+C: n=20 200=20 cold(>=0.5s)=0/20 p50=48ms max=112ms
+CTRL: n=20 200=20 cold(>=0.5s)=0/20 p50=59ms max=200ms
