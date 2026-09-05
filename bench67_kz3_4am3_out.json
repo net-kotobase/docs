@@ -1,0 +1,46 @@
+{
+ "purpose": "bench67 K-Z3 4時台 3 セット目 (run184A-C)",
+ "observedAt": "2026-09-05T19:30:41.873Z",
+ "runs": [
+  {
+   "label": "run1 search",
+   "n": 20,
+   "ok200": 20,
+   "coldCount": 0,
+   "coldValues": [],
+   "p50ms": 57,
+   "minMs": 32,
+   "maxMs": 133
+  },
+  {
+   "label": "run2 search",
+   "n": 20,
+   "ok200": 20,
+   "coldCount": 0,
+   "coldValues": [],
+   "p50ms": 92,
+   "minMs": 34,
+   "maxMs": 175
+  },
+  {
+   "label": "run3 search",
+   "n": 20,
+   "ok200": 20,
+   "coldCount": 0,
+   "coldValues": [],
+   "p50ms": 41,
+   "minMs": 33,
+   "maxMs": 124
+  }
+ ],
+ "control": {
+  "label": "landing control",
+  "n": 20,
+  "ok200": 20,
+  "coldCount": 0,
+  "coldValues": [],
+  "p50ms": 81,
+  "minMs": 40,
+  "maxMs": 174
+ }
+}
