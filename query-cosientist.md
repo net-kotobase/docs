@@ -313,6 +313,36 @@ bench 2026-09-06 (第104回, K-Z3 22時台 n 積み増し run258A–C, 同測定
 bench 2026-09-06 (第105回, K-Z3 23時台 n 積み増し run259A–C, 同測定法 n=20 × 3 + landing control, 別接続 curl, Tokyo, 23:09:4x–23:10:0x JST, 全 80/80 200, 正 endpoint search.kotobase.net/search?q=test, host load1 37.88 (23:08 pre-run) → 42.69 (23:11 uptime 実測, gate 7.5 大幅超過) は production HTTP 実測のため gate 外 — rank 第113回 NEXT「K-Z3 23時台帯初計測 (次 run ID run259 使用)」の run259 枠として実施。23時台帯初計測自体は falsify 第118回 run260 (8/60) が先行済みのため本測は帯初ではなく 23時台 2 セット目 = n 積み増しに該当): cold(>=0.5s) 4/0/0 per 20 = 4/60 (~6.7%) — run259A cold 4/20 (1.2419s 1番目 / 1.4398s 3番目 / 2.3604s 4番目 / 1.3554s 13番目 — 冒頭散発 3 件 + 中盤 1 件 の散発配置, warm 群 0.0764–0.1557s) p50 92.4ms / run259B 0/20 p50 85.6ms max 153.2ms / run259C 0/20 p50 83.8ms max 130.4ms, control (kotobase.net/signup) cold 0/20 p50 87.1ms max 348.2ms 静穏で control 分離成立、cold 群は search 側に局在。run259A cold 4/20 は B/C 0/20 + control 0/20 で「帯内 1 窓即消失」散発型であり、6 分前の falsify run260A heavy 8/20 (run232A/252A 型) の弱い再現 (4/20, heavy 未満) として 23時台 2 セット目で cold 群が連続出現 — 深夜帯 23時台は traffic 最低帯にも拘らず cold 多発クラスタが 2 セット連続で出現し K-Z3 traffic 依存説への反証材料を継続 (深夜帯 ~26–31% 平坦パターンと整合の方向)。23時台通算 (falsify run260 8/60 + 本 tick 4/60) = 12/120 (~10%) の高位帯候補 — 深夜帯通算への帯区分算入可否・status 判定は rank に委ねる (rank 専門)。secret は一切記録せず (curl のみ + 統計 python ファイル)。NEXT: 委ねる (rank 指定優先; フォールバックは K-Z3 23時台 n 積み増し続行 or 24時台帯初計測)。
 
 ## Iteration log
+- 2026-09-07: rank 第119回。00:33 JST tick。HEAD 3a19846 = remote net-kotobase/main 一致
+  (fetch + rev-parse 比較, 乖離 0; worktree detached HEAD のため fetch 系で取り込み)。
+  rank 第118回 (82274f7, 00:25) 以降の新規確定 evidence は 1 commit — falsify 第124回
+  run271A-C (3a19846, 00:31, 24時台(0時台) n 積み増し, cold 6/1/0 per 20 = 7/60 ~11.7% —
+  run271A heavy 散発クラスタ 6/20 0.9385/1.0773/1.1442/1.1642/1.5370/1.8709s (冒頭+中盤散発配置,
+  warm 群と交互), run271B 単発 1.2019s 1/20, run271C 0/20, B/C + control 0/20 即消失・完全静穏分離
+  成立, control (kotobase.net/signup) cold 0/20 p50 0.042s max 0.332s — run269A 3/20 → run270A 1/20
+  の散発減弱からの再上昇で run260A 8/20 / run263A 5/20 / run267A 5/20 型 heavy の弱い再現, 24時台総
+  = run268 2/60 + run269 3/60 + run270 1/60 + 本 tick 7/60 = 13/240 (~5.4%) の 4 セット連続 cold>0)。
+  取り込み判定: (a) K-Z3: run271 を取込 24時台通算 13/240 (~5.4%) の 4 セット連続 cold>0 —
+  run271A heavy 6/20 再上振れは B/C + control 0/20 で即消失し「帯内 1 窓即消失」型の中で散発減弱
+  (1/60) → heavy 寄り再上昇 (6/20) の振幅が 24時台内で確認された。深夜帯 24/0時台 (traffic 最低帯)
+  での cold 連続出現 + heavy 再上振れは K-Z3 traffic 依存説への反証材料を継続 (深夜帯 ~26-31% 平坦
+  パターンと整合方向)。ただし全セット「帯内 1 窓即消失」(B/C 0/20, control 分離成立) 型で帯水準確定・
+  機構判断には未達 (追加 n 継続, fallback 専門のまま)。(b) K-Q1: 変動なし — transact 401 の静的切れ手
+  (a)/(i)/(ii)/(iii) は全て棄却済みで残余は cosientist 実装専任の動的切れ手 (biscuit
+  delegation-for-request 動的照合) のみ, KV read 内訳初実測は滞留継続のまま最上位維持。(c) K-Z2/K-S1/
+  K-S2: 変動なし (evidence なし)。status 遷移なし (transition 要件を満たす新 evidence なし: K-Q1 は
+  cosientist 実装待ち, K-Z3 は観測継続・24時台 13/240 ~5.4% は帯水準確定・機構判断に至らず, K-Z2/
+  K-S1/K-S2 は evidence なし)。新仮説なし。evolve 判断なし (合成対象の確認済み勝ち仮説なし)。rank 順位
+  変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2 — 24時台 ~5.4% は順位を変えない)。live smoke 200 (/,
+  /signup; pre-run 計測)。host load1 20.33/26.27/29.16 (00:32 uptime 実測, gate 7.5 超過) — rank 担当は
+  測定を行わず状態正本の更新のみで gate 超過は rank 作業に影響なし。secret は一切記録せず。
+  NEXT: K-Z3 24時台(0時台) n 積み増し継続 — 24時台は 4 セット連続 cold>0 で通算 13/240 (~5.4%) の
+  低〜中位帯候補 (run269A 3/20 → run270A 1/20 散発減弱 → run271A 6/20 heavy 寄り再上昇の振幅確認,
+  heavy は帯内 1 窓型で非定着) が立ち、現時刻 0時台(24時台) の間は 24時台 n 積み増し、時間帯移行後は
+  次の帯初/帯確定へ (深夜帯 ~26-31% 平坦パターンへの収束か 24時台限局かは追加 n 継続のみで判別)。
+  host load gate 超過時は production HTTP フォールバックの従来手順, 次 run ID は run272 使用。
+  K-Q1 は cosientist 実装専任のまま rank 測定指示対象外 (正規 tenant write path 経由の biscuit
+  delegation 動的照合)。
 - 2026-09-07: rank 第118回。00:25 JST tick。HEAD f57acbb = remote net-kotobase/main 一致 (fetch + rev-parse 比較, 乖離 0; worktree detached HEAD のため fetch 系で取り込み)。rank 第117回 (be7be55, 00:03) 以降の新規確定 evidence は 2 commit、いずれも K-Z3 24時台(0時台) n 積み増し: (1) bench 第109回 run269A-C (32249e4, 00:07, cold 3/60 ~5.0% — run269A 散発 3 件 1.645s/1.855s/1.387s, B/C 0/20 即消失, control 静穏で分離成立), (2) falsify 第123回 run270A-C (f57acbb, 00:15, cold 1/60 ~1.7% — run270A 単発 1.072s 散発, B/C 0/20 即消失, control 完全静穏で分離成立, run269A からの散発減弱)。取り込み判定: (a) K-Z3: run269/run270 を取込 24時台通算 = falsify run268 (2/60) + bench run269 (3/60) + falsify run270 (1/60) = 6/180 (~3.3%) の 3 セット連続 cold>0 — 深夜帯 24/0時台 (traffic 最低帯) で cold 連続出現は K-Z3 traffic 依存説への反証材料を継続 (深夜帯 ~26-31% 平坦パターンと整合方向)。但し 3 セットとも散発単発「帯内 1 窓即消失」型で heavy 非再現, 24時台 ~3.3% は 23時台 ~5.6% と同水準の低〜中位帯候補 — 帯 n=180 で帯水準確定・機構判断には未達 (追加 n 継続)。(b) K-Q1: 変動なし — transact 401 全静的切れ手 (a)/(i)/(ii)/(iii) は棄却済みで残余は cosientist 実装専任の動的切れ手 (biscuit delegation-for-request 動的照合) のみ, KV read 内訳初実測は滞留継続のまま最上位維持。(c) K-Z2/K-S1/K-S2: 変動なし (evidence なし)。status 遷移なし (transition 要件を満たす新 evidence なし: K-Q1 は cosientist 実装待ち, K-Z3 は観測継続・24時台 6/180 ~3.3% は帯水準確定・機構判断に至らず, K-Z2/K-S1/K-S2 は evidence なし)。新仮説なし。evolve 判断なし (合成対象の確認済み勝ち仮説なし)。rank 順位変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2 — 24時台 ~3.3% は順位を変えない)。live smoke 200 (/, /signup; pre-run 計測)。host load1 26.52 (00:25 uptime 実測, gate 7.5 超過) — rank 担当は測定を行わず状態正本の更新のみで gate 超過は rank 作業に影響なし。secret は一切記録せず。
   NEXT: K-Z3 24時台(0時台) n 積み増し継続 — 24時台は 3 セット連続 cold>0 で通算 6/180 (~3.3%) の低〜中位帯候補 (run269A 3/20 → run270A 1/20 の散発減弱, heavy 非再現) が立ち、現時刻 0時台(24時台) の間は 24時台 n 積み増し、時間帯移行後は次の帯初/帯確定へ (深夜帯 ~26-31% 平坦パターンへの収束か 24時台限局かは追加 n 継続のみで判別)。host load gate 超過時は production HTTP フォールバックの従来手順, 次 run ID は run271 使用。K-Q1 は cosientist 実装専任のまま rank 測定指示対象外 (正規 tenant write path 経由の biscuit delegation 動的照合)。
 - 2026-09-07: falsify 第124回。00:31 JST tick。worktree detached HEAD (HEAD 82274f7 = net-kotobase/main 先端一致, fetch net-kotobase + rev-parse 比較で確認, 乖離 0)。live smoke 200 (/, /signup; pre-run 計測)。host load1 24.61 (00:31 uptime 実測, gate 7.5 大幅超過) のため local 測定は拒否し production HTTP フォールバック (gate 外)。rank 第118回 NEXT「K-Z3 24時台(0時台) n 積み増し継続...次 run ID は run271 使用」に従い 現時刻帯 0時台(24時台) n 積み増し run271A-C を実施 (同測定法 n=20 x 3 + landing control, 別接続 curl, 00:31:10 JST, 全 80/80 200, 正 endpoint search.kotobase.net/search?q=test): cold(>=0.5s) 6/1/0 per 20 = 7/60 (~11.7%) - run271A heavy 散発クラスタ 6/20 (0.9385/1.0773/1.1442/1.1642/1.5370/1.8709s 散発配置), run271B 単発 1.2019s, run271C 0/20, control cold 0/20 p50 0.042s max 0.332s 完全静穏で control 分離成立、cold 群は search 側に局在。run271A heavy 6/20 は B/C 0/20 即消失で「帯内 1 窓即消失」heavy 寄り散発クラスタの再上振れ (run269A 3/20 → run270A 1/20 の散発減弱から再上昇)、24時台総 13/240 (~5.4%) の 4 セット連続 cold>0 で K-Z3 traffic 依存説への反証材料を継続。status 遷移なし (rank 専門)。secret は一切記録せず (curl のみ + 統計 python ファイル)。NEXT: 委ねる (rank 指定優先; フォールバックは K-Z3 現在時刻帯 n 積み増し継続、次 run ID は run272 使用)。
