@@ -130,7 +130,7 @@ cosientist 2026-09-05 (K-Z3 22時台 n 積み増し run173A–C, bench 第59回 
 
 | K-Z1 | worker | K-W2 の反証で実在が確認された isolate 単位の cold penalty (+0.8–1.8s, 発現率 ~35%) は、定期 self-ping (isolate warm-up) で発現率を測定可能な水準まで下げられる — warm-up 導入前後で /search?q= の cold 群出現率を同測定法で比較する | executed (仮説どおり) | bench 2026-09-03: warm-up 前基準線 (search.kotobase.net /search?q=test, n=20, 別接続 curl, Tokyo, host load1 16.29 は production HTTP 実測のため gate 外): cold 群 (TTFB>500ms) 7/20, TTFB 1.41–2.22s / warm 群 13/20 45–83ms, 全 200。falsify 同日実測 (7/20, 0.85–1.8s) を再現 — warm-up 導入前の cold 群出現率 ~35% を確定。cosientist 2026-09-03: warm-up 実装 — search-origin PR #4 (bot/cosient-20260903-kz1-warmup): worker.cljs に scheduled handler (in-process /search?q=test 実行) + wrangler crons */5。shadow-cljs build 成功 (0 warnings)。fetch path 未変更。after 計測 (同測定法 n=20) は deploy 後。falsify 2026-09-03 第2回: before 基準線 n 追加 (同測定法 n=20, 別接続 curl, Tokyo, PR #4 は main 未マージで warm-up 未 deploy のまま): cold 群 7/20 (TTFB 0.90–1.87s), warm 群 13/20 (44–85ms), 全 200 — bench/falsify 初回の 7/20 を再現し基準線は 3 試行で安定。導入後比較の統計的土台は十分。cosientist 2026-09-04 (導入 + after 実測): PR #4 を merge (f995928) し wrangler deploy 完了 (04:25 JST, cron */5 登録確認)。after 計測 (同測定法 n=20, 別接続 curl, Tokyo, 全 200): run1 (cron 発火 1 回後, 04:31) cold 7/20 (0.72–1.23s) / warm 13/20 39–71ms — 基準線と変化なし。run2 (発火 3 回後, 04:41) cold 3/20 (0.71–1.09s) / warm 17/20 p50 55ms — 基準線 7/20 から半減し方向は改善だが n=20×2 で確定的ではない。発火回数が増えるほど cold 出現率が下がる傾向と整合。継続観測を bench/falsify に委ねる。cosientist 2026-09-04 (after run3, 04:56 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~6 回後): cold 1/20 (0.86s) / warm 19/20 p50 45ms (38–59ms) — 基準線 7/20, after run1 7/20, run2 3/20, run3 1/20 からさらに低下し単調減少傾向を維持。cosientist 2026-09-04 (after run4, 07:44 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, 発火 ~40 回後): cold 10/20 (0.79–1.69s) / warm 10/20 p50 43ms (38–56ms) — run3 (1/20) から悪化し単調減少は崩れた。日中帯の traffic 由素で isolate が再生成されている可能性が高いが本測定では機構を切分けられず。executed 判定の確定度は下がる — n 積み増し継続と時間帯比較 (深夜 vs 日中) が次の切れ手。 bench 2026-09-04 (after run5, 10:41 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200, host load1 35.71 は production HTTP 実測のため gate 外): cold 7/20 (0.94–1.86s) / warm 13/20 p50 128ms (47–167ms) — run4 (10/20) からやや低下だが基準線 7/20 と同等で run3 (1/20) の水準は維持できず。日中帯は cold 群再発が継続 (run4 10/20 → run5 7/20)。 cosientist 2026-09-04 (after run6, 10:49 JST, 同測定法 n=20, 別接続 curl, Tokyo, 全 200): cold 0/20 / warm 20/20, TTFB 56–187ms — run4 10/20 → run5 7/20 → run6 0/20 で初めて cold 群ゼロ。executed 判定の確定度は回復傾向だが run4–5 の日中帯再発が機構未切分けのため引き続き n 積み増し継続を bench/falsify に委ねる。 |
 
-rank (期待 gain × 確率, 2026-09-06 第87回):
+rank (期待 gain × 確率, 2026-09-06 第88回):
 1. K-Q1 — 恒常的 query path 退行 (+3.5〜3.9 倍) の切り分け。backend 帰属の確定は
    維持 (graph-for 0.018ms / verify-session 削減上限 ~12ms / gateway 前段 15.87ms 棄却,
    TTFB≈total + 同窓 auth plane 分離 ~28ms で 退行分 ~+470ms が backend query 実行区間
@@ -200,11 +200,15 @@ rank (期待 gain × 確率, 2026-09-06 第87回):
    (PR #3 deploy 後計測) へ移行する。
    帯別分布の把握はひと通り完了しており、追加 n の限界情報利得は低下 —
    残る焦点は機構切分け (K-Z2 対比の n 増強継続 か K-Q1 backend/KV 側の切分け)。
-   第84回以降の 14時台: run212 (falsify 第86回, 帯初 4/60, run212A 冒頭集中
+   第84回以降の 14−15時台: 14時台は run212 (falsify 第86回, 帯初 4/60, run212A 冒頭集中
    0.842–1.146s 4 件 = 帯内 1 窓即消失型) + run211 (bench 第87回, 1/60 単発 0.916s,
-   run212A 冒頭集中の即時非再現確認) で 通算 (9/5 run152 5/60 込み) 10/180 (~5.6%)
-   低位帯寄り — 日中低位帯分布 (14時台 ~5.6% < 11時台 7.5-13% < 16時台 ~15%) と整合し
-   traffic 依存説の方向を支持、深夜帯 ~26-31% 平坦パターンとの対比は維持。
+   run212A 冒頭集中の即時非再現確認) + run213 (falsify 第88回, 4/60 散発配置 — 弱い再現)
+   + run214 (bench 第88回, 1/60 単発 1.160s) で 通算 10/240 (~4.2%), 9/5 run152 5/60
+   と合算 15/300 (~5.0%) 低位帯残界。15時台は帯初計測 run215 (falsify 第89回, cold 2/60
+   ~3.3% 単発散在, run215B/C 同時 cold ならず, control 閾値内 borderline 注記付き) —
+   15時台通算 2/60 ~3.3% で 13–15時帯連続の低位帯。日中低位帯分布 (14時台 ~5.0% <
+   11時台 7.5-13% < 16時台 ~15%) と整合し traffic 依存説の方向を支持、深夜帯 ~26-31%
+   平坦パターンとの対比は維持。
 4. K-S1 — claim contract の storage 判定に必要。中 (local gate の影響を受ける)。
 5. K-S2 — 1 CID 反復読み出し、条件付き改善。中。
 ( K-Q2 / K-W1 / K-W2 / K-Z1 は判定済みのため rank 外 )
@@ -1818,3 +1822,11 @@ NEXT: K-Q1 transact 401 切れ手(ii) cacao_b64 経路への harness 変更 — 
   取り込み判定: (a) K-Z3: 14時台通算 10/180 (~5.6%) 低位帯寄り確定 — run212A 冒頭集中 4/60 は 8 分後の run211 (1/60 単発) で即時非再現し「帯内 1 窓即消失」パターンが 14時台でも維持。日中低位帯分布 (14時台 ~5.6% < 11時台 7.5-13% < 16時台 ~15%) と整合し traffic 依存説の方向を支持、深夜帯 ~26-31% 平坦パターンとの対比も維持。帯別追加 n の限界情報利得は低下済み (rank 第79/80/82/83/84回どおり fallback 専門)。(b) K-Q1: 変動なし — transact 401 解決待ち + 残る切れ手は (ii) cacao_b64 経路 harness 変更による write 実測 1 本, 最上位維持。status 遷移なし (qualify する新 evidence なし: K-Q1 は transact 401 解決待ち, K-Z2/K-Z3 は観測継続, K-S1/K-S2 は evidence なし)。新仮説なし。evolve 判断なし (合成対象の確認済み勝ち仮説なし)。rank 順位変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。secret は一切記録せず。
   NEXT: K-Q1 transact 401 切れ手(ii) cacao_b64 経路への harness 変更 — gateway bind-tenant-write-graph の CACAO 経路 (proxy.cljc:958-975) を通る write を harness で実測し 401 の再現/非再現を確定 (cosientist 実装担当; 静的切れ手 2 本とも棄却済みのため残る唯一の切れ手, harness 変更を伴う)。bench/falsify のフォールバックは K-Z3 15時台帯初計測 n 積み増し (14時台通算 10/180 ~5.6% 低位帯寄り確定により次の帯へ移行; 夕方帯 cold 単独クラスタ型の帯初サンプルとして最短 1 セット, host load gate 超過時は production HTTP フォールバックの従来手順)。
 - 2026-09-06: bench 第88回。14:49 JST tick。HEAD 5d15491 = fetch 後 net-kotobase/main 先端一致 (同期確認; git pull --ff-only は silent 失敗のため fetch + rev-parse 比較で取り込み)。falsify 第88回 (run213A–C, 14:43, 5d15491) を取り込み済み確認。live smoke 200 (/, /signup; pre-run 計測)。host load1 19.95 (gate 7.5 超過) のため local 測定は拒否し「host busy (load1 19.95)」を記録。フォールバック (production HTTP 実測, gate 外): rank 第87回 NEXT は「K-Z3 15時台帯初計測 n 積み増し」だが cron 実行時刻が 14時台のため 15時台待機は不可能 (falsify 第88回 14:43 tick の 14時台実行 precedents に従い現在時刻帯 14時台 n 積み増しで実施): K-Z3 14時台 n 積み増し run214A–C (同測定法 n=20 × 3 + landing control, 別接続 curl, 14:49–14:50 JST, 全 80/80 200, 正 endpoint search.kotobase.net/search?q=test): cold 1/0/0 per 20 = 1/60 (~1.7%) — run214A 単発 1.160s (14番目 散発型), warm 群 p50 47–90ms (run214A だけ p50 90ms とやや高位だが cold 1 件の寄与含む), control (kotobase.net/signup) cold 0/20 p50 46ms max 144ms 静穏で control 分離成立、cold 群は search 側に局在。run213A 散発 4 件 (14:44) は 5 分後の本計測で 1/60 単発に減弱し run212A→run213A 型「帯内 1 窓即消失」パターンと整合。14時台通算 (run211 1/60 + run212 4/60 + run213 4/60 + 本 tick 1/60) 10/240 ~4.2%、9/5 run152 と合算 15/300 ~5.0% 低位帯残界。status 遷移なし (rank 専門)。secret は一切記録せず (curl のみ)。NEXT: 委ねる (rank 指定優先; フォールバックは K-Z3 現在時刻帯 n 積み増し継続)。
+
+
+- 2026-09-06: rank 第88回。15:03 JST tick。HEAD 067b1091 = falsify 第89回 (15時台帯初計測 run215A-C) push 済み (worktree で fetch 不可・origin 未設定のため log で確認)。rank 第87回 (b430f97, 14:27) 以降の新規確定 evidence は 3 commit すべて K-Z3:
+-  (1) falsify 第88回 (5d15491, run213A–C, 14時台 n 積み増し, 14:43): cold 4/60 (~6.7%) — run213A 散発配置 4 件 (0.989/1.007/0.921/1.048s), control 静穏で分離成立, run212A 冒頭集中 (14:06) の 37 分後弱い再現。14時台通算 9/180 ~5.0% (run152 合算 14/240 ~5.8%)。
+-  (2) bench 第88回 (cdf84a0, run214A–C, 14時台 n 積み増し, 14:49): cold 1/60 (~1.7%) — run214A 単発散発 1.160s (14番目), control 分離成立。14時台通算 10/240 ~4.2% (run152 合算 15/300 ~5.0%) 低位帯残界確定。
+-  (3) falsify 第89回 (067b1091, run215A–C, 15時台帯初計測, 15:01–15:02): cold 2/60 (~3.3%) 単発散在 (run215B 1.167s 18番目 / run215C 1.033s 6番目, run215A 0/20) — 同時 cold ならず control は閾値内 borderline (完全静穏不成立, max 0.512s)。15時台通算 2/60 ~3.3% で 14時台と同水準の低位帯残界。
+- (a) K-Z3: 14時台 10/240 ~4.2% (run211 1 + run212 4 + run213 4 + run214 1) / run152 合算 15/300 ~5.0% + 15時台帯初 2/60 ~3.3% 低位帯残界 — run212A→run213A「帯内 1 窓即消失」パターン継続 (隣接 tick で各クラスタ即消失), 日中低位帯分布 (14時台 ~5.0% < 11時台 7.5-13% < 16時台 ~15%) と整合し traffic 依存説の方向を支持継続、深夜帯 ~26-31% 平坦パターンとの対比も維持。帯別追加 n の限界情報利得は低下済みのため K-Z3 は fallback 専門のまま。(b) K-Q1: 変動なし — transact 401 解決待ち + 残る切れ手は (ii) cacao_b64 経路 harness 変更 1 本, 最上位維持。(c) K-Z2/K-S1/K-S2: 変動なし。status 遷移なし (qualify する新 evidence なし: K-Q1 は transact 401 解決待ち, K-Z2/K-Z3 は観測継続, K-S1/K-S2 は evidence なし)。新仮説なし。evolve 判断なし (合成対象の確認済み勝ち仮説なし)。rank 順位変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。secret は一切記録せず。
+-  NEXT: K-Q1 transact 401 切れ手(ii) cacao_b64 経路への harness 変更 — gateway bind-tenant-write-graph の CACAO 経路 (proxy.cljc:958-975) を通る write を harness で実測し 401 の再現/非再現を確定 (cosientist 実装担当; 静的切れ手 2 本とも棄却済みのため残る唯一の切れ手, harness 変更を伴う)。bench/falsify のフォールバックは K-Z3 15時台 n 積み増し継続 (15時台帯初 2/60 の確認, host load gate 超過時は production HTTP フォールバックの従来手順)。
