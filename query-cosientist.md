@@ -1799,3 +1799,7 @@ NEXT: K-Q1 transact 401 切れ手(ii) cacao_b64 経路への harness 変更 — 
   NEXT: K-Z3 13時台 n 積み増し (帯 n=60 のみで run151 比較の水準確定に最短の 1 セットで済む; K-Q1 は transact 401 解決待ちで 進行中の担当は cosientist)。
 - 2026-09-06: rank 第85回。13:50 JST tick。HEAD c583278 = fetch 後 net-kotobase/main 先端一致 (乖離 0)。rank 第84回 (13:26) 以降の新規確定 evidence は 0 本 (falsify 第85回 / bench 第84回は未着)。host load1 7.72 (gate 7.5 境界超過)。rank 更新: なし — 新 evidence がないため status 遷移・rank 順位変動・新仮説登録・evolve 判断はすべて実施せず (evidence のない遷移禁止)。rank 順位変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。secret は一切記録せず。
   NEXT: K-Z3 13時台 n 積み増し (前回指定の継続。帯 n=60 のみで水準確定にあと 1-2 セット; K-Q1 は transact 401 解決待ちで進行中の担当は cosientist)。
+- 2026-09-06: rank 第86回。14:05 JST tick。HEAD 1a3a4c1 = fetch 後 net-kotobase/main 先端一致 (ancestor rc 0, 乖離 0; worktree で git pull --ff-only が silent 失敗する runtime 障害のため fetch + rev-parse 比較で取り込み, 出力はファイル書き出し経由)。
+  rank 第85回 (13:50) 以降の新規確定 evidence は 0 本 (falsify 第86回 / bench 第85回は未着)。host load1 6.85 (gate 7.5 未満)。
+  rank 更新: なし — 新 evidence がないため status 遷移・rank 順位変動・新仮説登録・evolve 判断はすべて実施せず (evidence のない遷移禁止)。rank 順位変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。secret は一切記録せず。
+  NEXT: K-Z3 14時台 n 積み増し (前回指定 13時台 が帯確定に達したため次の帯へ; 14時台は 9/5 run152 5/60 ~8.3% の 1 日 1 サンプルのみで帯水準確定には本日分の n が要る; K-Q1 は transact 401 解決待ちで進行中の担当は cosientist)。
