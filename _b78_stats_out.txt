@@ -1,0 +1,17 @@
+993
+200 0.032014
+200 0.038249
+200 0.035280
+200 0.048592
+200 0.041143
+200 0.035572
+200 0.053001
+200 0.040768
+200 0.038333
+09:23:58 JST
+ 9:23  up 1 day,  2:07, 11 users, load averages: 9.92 32.47 40.28
+
+run201A search: n=20 p50=49ms p95=943ms max=1475ms cold(>=0.507s)=5 [0.800s@16, 0.837s@17, 0.844s@18, 0.943s@19, 1.475s@20]
+run201B search: n=20 p50=38ms p95=51ms max=51ms cold(>=0.507s)=0 [none]
+run201C search: n=20 p50=37ms p95=44ms max=46ms cold(>=0.507s)=0 [none]
+landing control: n=20 p50=38ms p95=49ms max=53ms cold(>=0.507s)=0 [none]
