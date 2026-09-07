@@ -1,0 +1,10 @@
+333A search: n=20 codes_ok=20/20 cold(>500ms)=4 p50=129.2ms max=2055.6ms
+333B search: n=20 codes_ok=20/20 cold(>500ms)=1 p50=109.0ms max=997.3ms
+333C search: n=20 codes_ok=20/20 cold(>500ms)=0 p50=98.6ms max=215.4ms
+ctl: n=20 codes_ok=20/20 cold(>500ms)=0 p50=127.1ms max=419.9ms
+--- cold detail ---
+333A search: t=1184.1ms
+333A search: t=2055.6ms
+333A search: t=1553.7ms
+333A search: t=1217.1ms
+333B search: t=997.3ms
