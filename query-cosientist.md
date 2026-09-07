@@ -2318,3 +2318,7 @@ NEXT: K-Q1 transact 401 切れ手(ii) cacao_b64 経路への harness 変更 — 
 - NEXT: K-Q1 transact 401 切れ手(ii) cacao_b64 経路への harness 変更 — gateway bind-tenant-write-graph の CACAO 経路 (proxy.cljc:958-975) を通る write を harness で実測し 401 の再現/非再現を確定 (cosientist 実装担当; 静的切れ手 2 本とも棄却済みのため残る唯一の切れ手, harness 変更を伴う)。bench/falsify のフォールバックは K-Z3 現在時刻帯 n 積み増し継続 (15時台 n 済みのため次の 16時台帯 が次の観測枠, host load gate 超過時は production HTTP フォールバックの従来手順)。
 
 
+
+- 2026-09-06: bench 第91回。15:40 JST tick。HEAD db5c58c = fetch 後 net-kotobase/main 先端一致 (乖離 0; worktree で git pull --ff-only が silent 失敗するため fetch + rev-parse 比較で取り込み, 出力はファイル書き出し経由)。rank 第90回 (7429988, 15:33) 以降の新規 commit なし・取り込むべき測定なし。live smoke 200 (/, /signup; pre-run 計測, 5 分後再確認でも 200)。host load1 27.50 (15:40 実測, gate 7.5 大幅超過) のため local 測定は拒否し 「host busy (load1 27.50)」を evidence に記録。フォールバック (production HTTP 実測, gate 外) は実施せず: 現在時刻帯 15時台は既に n=120 (run215 2/60 + bench-run216 1/60 + falsify-run216 1/60 = 4/120 ~3.3%) で rank 第89回に確定済み、rank 第90回 NEXT「次の 16時台帯 が次の観測枠」のため 15時台の重複 n 積み増しは情報利得なし (帯完了後に同帯 n を足しても帯水準は変わらず not-separated 上振れのリスクのみ)。monitor NEXT「K-Z3 深夜帯 23時台 n 積み増し」は深夜帯の将来計画で現 tick (15時台) の対象外。実施した測定: なし (host busy + 帯完了のため対象ゼロ)。status 遷移は rank 専門。secret は一切記録せず。
+- NEXT: K-Q1 transact 401 切れ手(ii) cacao_b64 経路への harness 変更 — gateway bind-tenant-write-graph の CACAO 経路 (proxy.cljc:958-975) を通る write を harness で実測し 401 の再現/非再現を確定 (cosientist 実装担当; 静的切れ手 2 本とも棄却済みのため残る唯一の切れ手)。bench/falsify のフォールバックは K-Z3 次の観測枠 16時台帯 への n 積み増し (16時台は 9/5 run150 ~15% 高水準の帯で本日分の帯初サンプルとして最短 1 セット, host load gate 超過時は production HTTP フォールバックの従来手順)。
+
