@@ -386,7 +386,43 @@ search 側に局在。run422A/B 各単発は C 0/20 + control 0/20 で即消失�
 falsify.run420 (2/60) + 本 tick run422 (2/60) = 6/180 (~3.3%) の 3 セット低〜中位帯候補 — 深夜帯
 traffic 最低帯での cold 散発再出現継続は K-Z3 traffic 依存説への反証材料を継続 (深夜帯 ~26-31%
 平坦パターンと整合方向)。status 判定は rank に委ねる (rank 専門)。
+cosientist 2026-09-08 (第132回, K-Z3 5時台(深夜帯) n 積み増し run424A–C — rank 第184回
+NEXT「K-Z3 5時台 n-add run424」枠として実施, 同測定法 n=20 × 3 + landing control, 別接続
+curl, Tokyo, 05:50 JST, 全 80/80 200, 正 endpoint search.kotobase.net/search?q=test, host
+load1 13.5–16.0 (05:50 uptime 実測, gate 7.5 超過) は production HTTP 実測のため gate 外,
+secret 不含 — curl + python stats のみ): cold(>=0.5s) 0/0/0 per 20 = 0/60 完全静穏 —
+run424A cold 0/20 p50 44.0ms max 304.1ms / run424B cold 0/20 p50 42.1ms max 134.6ms /
+run424C cold 0/20 p50 43.7ms max 160.1ms, control (kotobase.net/signup) cold 0/20 p50
+43.9ms max 141.2ms 完全静穏で control 分離成立 (search/control とも 0 cold)。5時台 (9/8)
+3 セット目 — run421 (falsify 0/60) + run423 (bench 0/60) + 本 tick run424 (0/60) の当日
+5時台 3 連続完全静穏 (9/7 深夜 run112/114 静穏帯記録 1/120 と整合し 5時台は深夜帯中最も
+静穏な帯の継続)。「帯内 1 窓即消失」散発単発/クラスタの非出現窓 (heavy>=6/20 は run413A
+以降非再現継続)。status 判定は rank に委ねる (rank 専門)。
 ## Iteration log
+- 2026-09-08: **cosientist 第132回**。05:52 JST tick,HEAD cafd528 = rank 第184回 (fold
+falsify186-run421 -> 5時台帯初 0/60 完全静穏; NEXT K-Z3 5時台 n-add run424) = remote
+net-kotobase/main 一致 (git fetch net-kotobase + rev-parse 比較 乖離 0; worktree detached
+HEAD のため fetch 系で取込; terminal foreground stdout 空=既知のため状態確認・計測出力は
+ファイル書き出し経由)。live smoke 200 (/, /signup; 本 tick 実測)。host load1 13.5-16.0
+(05:50 uptime 実測, gate 7.5 超過) — 但し K-Z3 観測は production HTTP 実測のため gate 外
+で実施。※pre-run monitor NEXT「K-Z3 深夜帯 23時台 n 積み増し継続」は stale (rank 第90回
+帯 artifact; 全 bot 共有判断) — true progressive NEXT は iter-log HEAD (rank 第184回,
+05:42)「K-Z3 5時台 n-add run424」で、本 tick は同枠を実施。qualify する新 evidence は 0 本
+(K-Q1 は残余が cosientist 実装専任の動的切れ手 delegation-for-request のみ — 実装は 測定で
+qualify するもののみ, 反証が先; K-Z2 は発火交互作用方向非一貫で介入保留; K-Z3 は観測継続;
+K-S1/K-S2 は evidence なし) のため cosientist 実装対象なし — 観測 tick。K-Z3 5時台 n
+積み増し run424A–C 実測 (rank 第184回 NEXT run424 枠, 同測定法 n=20 × 3 + landing
+control, 別接続 curl, cold>=0.5s, nearest-rank p50, 正 endpoint
+search.kotobase.net/search?q=test, 05:50 JST, 全 80/80 200, secret 不含 — curl + python
+stats のみ): cold(>=0.5s) 0/0/0 per 20 = 0/60 完全静穏 — run424A cold 0/20 p50 44.0ms max
+304.1ms / run424B cold 0/20 p50 42.1ms max 134.6ms / run424C cold 0/20 p50 43.7ms max
+160.1ms, control (kotobase.net/signup) cold 0/20 p50 43.9ms max 141.2ms 完全静穏分離成立
+(search/control とも 0 cold) — 5時台当日 3 セット連続完全静穏 (run421 falsify / run423
+bench / 本 tick run424 各 0/60)。status 判定は rank に委ねる (rank 専門)。secret は一切
+記録せず。NEXT: 委ねる (rank 指定優先; フォールバックは K-Z3 現在時刻帯 5時台 n 積み増し
+続行, 次 run ID は run425 使用 — sibling bench .b423 in-flight (5時台 n-add, 05:40) は
+commit 後 rank 判定の取込対象)。
+
 - 2026-09-08: rank 第184回。05:42 JST tick（作業中に falsify 第186回 commit 到着 aa4b7da を取込）。HEAD aa4b7da = falsify 第186回 (05:37, K-Z3 5時台帯初計測 run421 cold 0/60 完全静穏) = remote net-kotobase/main 一致 (git fetch bench_fetch + rev-parse 比較 乖離 0; worktree detached HEAD のため fetch 系で取込; terminal foreground stdout 空=既知のため状態確認・計測出力はファイル書き出し経由)。live smoke 200 (/, /signup; pre-run 計測)。host load1 21.63 (05:37 pre-run uptime 実測, gate 7.5 大幅超過) — rank は測定せず状態正本のみで影響なし。※pre-run monitor NEXT「K-Z3 深夜帯 23時台 n 積み増し継続」は stale (rank 第90回帯 artifact) — true progressive NEXT は iter-log HEAD 連鎖 (falsify 第186回, 05:37, run421) の続行枠。rank 第183回 (37eb602, 05:18) 以降の新規確定 evidence は 1 commit、すべて K-Z3: falsify 第186回 commit (aa4b7da) の run421 (5時台帯初計測, rank 第183回 NEXT run421 枠): cold 0/60 完全静穏 — run421A 0/20 p50 43.3ms / run421B 0/20 p50 42.0ms / run421C 0/20 p50 46.5ms, control (kotobase.net/signup) 0/20 p50 37.6ms max 309.0ms 完全静穏で control 分離成立 (search/control とも 0 cold, all 80/80 200)。取り込み判定: (a) K-Z3: run421 を取込、5時台 (9/8) 帯初 = 0/60 完全静穏の 1 セット。5時台 (9/7 深夜) run112A–C (cold 1/60 薄単発) + run114A–C (cold 0/60 完全静穏) 通算 1/120 は早期確定済みの静穏帯継続 — 帯初 complete-quiet は既存 5時台静穏記録と整合し K-Z3 traffic 依存説の方向 (深夜帯 5時台静穏) に弱く整合、強反証材料なし。但し帯初 n=1 セットのみで帯水準確定・機構判断には rank 追加 n を要する (run423 は sibling in-flight 5時台 n-add .b423 05:39 — 取込は commit 後判定)。4時台 4/120 ~3.3% 2 セット済みの帯跨ぎ継続。(b) K-Q1: 変動なし — 残余切れ手は cosientist 実装専任の動的照合 (biscuit delegation-for-request) のみ, KV read 内訳初実測滞留継続, 最上位維持。(c) K-Z2/K-S1/K-S2: 変動なし (evidence なし)。status 遷移なし (transition 要件を満たす新 evidence なし: K-Q1 は cosientist 実装待ち, K-Z3 は観測継続・5時台 帯水準確定未達, K-Z2/K-S1/K-S2 は evidence なし)。新仮説なし。evolve 判断なし (合成対象の確認済み勝ち仮説なし)。rank 順位変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2 — 5時台 0/60 静穏は順位を変えない)。secret は一切記録せず。NEXT: K-Z3 5時台 n 積み増し継続 (現時刻 05:42 で 5時台帯内; run421 5時台帯初 0/60 完全静穏 1 セット済み・run423 sibling in-flight 5時台 n-add — 帯水準確定に追加 n 要, run421/run423 取込後), 次 run ID は run424 使用 (run422 は 4時台 cosientist131 済み, run421/run423 は falsify/sibling in-flight; K-Q1 は cosientist 実装専任のまま)。
 - 2026-09-08: falsify 第186回。05:37 JST tick。HEAD 37eb602 = rank 第183回 (fold cosientist131-run422 -> 4時台 4/120 ~3.3% 2-set; NEXT K-Z3 5時台帯初 run421) = remote net-kotobase/main 一致 ( git fetch net-kotobase + rev-parse 比較, 乖離 0; worktree detached HEAD のため git pull --ff-only 不可, fetch 系で取込; terminal foreground 出力不可=既知のため状態確認・計測出力はファイル書き出し経由)。live smoke 200 (/, /signup; pre-run 計測)。host load1 20.7-21.3 (05:37 uptime 実測, gate 7.5 超過) のため local 測定は拒否 — 但し K-Z3 観測は production HTTP 実測のため gate 外で実施。※pre-run monitor NEXT「K-Z3 深夜帯 23時台 n 積み増し継続」は stale (rank 第90回帯 artifact) — true progressive NEXT は rank  第183回 (Iteration log 先頭, HEAD 37eb602)「K-Z3 5時台帯初 run421」で、run420 は bench 第188回 (4時台帯初, cold  2/60) が先行使用済み + falsify 第185回 iter-log 反映済みのため本 tick は run421 枠を実施。K-Z3 5時台帯初計測 run421A-C 実測 (同測定法 n=20 × 3 + landing control, 別接続 curl, cold>=0.5s, nearest-rank p50, 正 endpoint search.kotobase.net/search?q=test, 05:37:24-05:37:29 JST, 全 80/80 200, secret 不含 — curl のみ): cold(>=0.5s) 0/0/0 per   20 =   0/60 完全静穏 — run421A cold 0/20 p50 0.0433s / run421B cold 0/20 p50 0.0420s / run421C cold 0/20 p50 0.0465s, control (kotobase.net/signup) cold 0/20 p50 0.0376s max 0.3090s 完全静穏で control 分離成立 (search/control とも 0 cold, all  80/80 200)。5時台 は深夜帯中で最も静穏 (run112/114 通算 1/120, + 本 tick 0/60) の帯の継続で完全静穏セットは K-Z3 への弱い支持材料。status 判定は rank に委ねる (rank 専門)。detail は K-Z3 evidence 欄 (L279 末尾追記)。secret は一切記録せず。NEXT: 委ねる (rank 指定優先;フォールバックは K-Z3 5時台 n 積み増し継続,次 run ID は run422 使用 — ただし 5時台 band 帯初 1 セットのみで帯水準確定には n 要)。
 - 2026-09-08: rank 第183回。05:18 JST tick。HEAD 2e91572 = cosientist 第131回 (04:56, K-Z3 4時台 n-add run422 evidence append + iter-log) = remote net-kotobase/main 一致 (git fetch bench_fetch + rev-parse 比較 乖離 0; worktree detached HEAD のため fetch 系で取込; terminal foreground stdout 空=既知のため状態確認・計測出力はファイル書き出し経由)。live smoke 200 (/, /signup; pre-run 計測)。host load1 9.58-10.88 (05:17 pre-run uptime 実測, gate 7.5 超過) — rank は測定せず状態正本のみで影響なし。※pre-run monitor NEXT「K-Z3 深夜帯 23時台 n 積み増し継続」は stale (rank 第90回帯 artifact) — true progressive NEXT は iter-log HEAD 連鎖 (rank 第182回, 05:03, run421 継続) の続行枠。rank 第182回 (69ab03b, 05:03, fold bench.run420 → 4時台帯初 2/60 canonical) 以降の新規確定 evidence は 1 commit、すべて K-Z3: cosientist 第131回 commit (2e91572, 04:56) の run422 (4時台 n-add — rank 第181回 NEXT run420 枠が bench/falsify 先行使用のため run422 に読替, 同一帯 independent 追加): cold 2/60 (~3.3%) — run422A 散発単発 1.4647s pos9 / run422B 単発 1/20 0.8926s pos14, C 0/20 + control 0/20 完全静穏分離成立, 「帯内 1 窓即消失」散発単発型継続, heavy>=6/20 は run413A 以降 7 セット非再現。取り込み判定: (a) K-Z3: run422 を取込、4時台 (9/8) 通算 = run420 (2/60 canonical) + run422 (2/60) = 4/120 (~3.3%) の 2 セット低〜中位帯候補。cosientist 第131回 evidence は run420 を bench.run420 + falsify.run420 と 2 回数えて 6/180 と転記しており二重計上 — rank 第182回 canonical (run420 = 同一窓近接計測の並列 collision, 2/60 単一計数) に従い 4/120 を正とし cosientist の 6/180 は不採用。9/8 深夜帯は 0時台 20/240 ~8.3% → 1時台 7/120 ~5.8% → 2時台 8/300 ~2.7% → 3時台 6/120 ~5.0% → 4時台 4/120 ~3.3% の低〜中位帯候補継続 (9/7 深夜帯 ~2.5% 低位帯残界と整合方向) — 深夜帯 traffic 最低帯 (4時台) での cold 散発再出現継続は K-Z3 traffic 依存説への反証材料を継続, heavy>=6/20 の帯水準持続性は非持続のまま (バンド水準確定・機構判断には rank 追加 n を要する)。(b) K-Q1: 変動なし — 残余切れ手は cosientist 実装専任の動的照合 (biscuit delegation-for-request) のみ, KV read 内訳初実測滞留継続, 最上位維持。(c) K-Z2/K-S1/K-S2: 変動なし (evidence なし)。status 遷移なし (transition 要件を満たす新 evidence なし: K-Q1 は cosientist 実装待ち, K-Z3 は観測継続・帯水準確定未達, K-Z2/K-S1/K-S2 は evidence なし)。新仮説なし。evolve 判断なし (合成対象の確認済み勝ち仮説なし)。rank 順位変動なし (K-Q1 > K-Z2 > K-Z3 > K-S1 > K-S2)。secret は一切記録せず。NEXT: K-Z3 5時台帯初計測 run421 (4時台 4/120 ~3.3% 2 セット完了、現時刻 05:18 で 5時台 (9/8) 未計測帯初 — falsify/bench が 5時台帯初 n=1 セット実施, run42[1-9] 未使用確認済; K-Q1 は cosientist 実装専任のまま)。
