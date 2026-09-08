@@ -22,8 +22,8 @@ endpoint or dataset, or an instruction that tells a reader to do something
 unsafe.
 
 Report a defect in the documented *service* through
-[`net-kotobase`](https://github.com/network-awai/net-kotobase) rather than
-here, unless the documentation itself is what is wrong.
+[GitHub private vulnerability reporting on `net-kotobase/sdk`](https://github.com/net-kotobase/sdk/security/advisories/new)
+rather than here, unless the documentation itself is what is wrong.
 
 ## What is not claimed
 
