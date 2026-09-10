@@ -1,0 +1,24 @@
+# This repository had no .gitignore at all, so every artifact the query/worker
+# co-scientist loop drops here has been turning up as a landing candidate on
+# every cleanup sweep (5,919 of them on 2026-09-10).
+#
+# Only shapes main tracks NONE of are listed. main tracks .py, .txt, .sh, .md,
+# .json, .mjs and .cljs at the root and those are deliberately not matched --
+# the untracked files share both the naming (_b<N>_*) and the extensions of the
+# 238 tracked ones, so that corpus cannot be separated by a pattern and is left
+# alone for a person to decide.
+*.ttfb
+*.code
+*.log
+*.raw
+*.pyc
+*.pl
+*.out
+*.sorted
+*.tt
+*.err
+*.tmp
+__pycache__/
+# Per-run capture directories. main tracks no path with a dot-prefixed component.
+/.b[0-9]*/
+/.run[0-9]*_raw/
