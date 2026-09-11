@@ -100,7 +100,7 @@ boundary.
 `docs/DEPENDENCY-LICENSES.md`. New direct dependencies with GPL, AGPL, LGPL,
 SSPL, BUSL, proprietary, unknown, or missing licenses require owner review and
 an ADR before release. The Worker mirror only syntax-checks
-`bb scripts/license-check.cljc --syntax-check`; the full license gate runs on
+`kbb scripts/license-check.cljk --syntax-check`; the full license gate runs on
 Murakumo.
 
 `pnpm contract:check` verifies that the documented public HTTP route contract,
@@ -144,19 +144,19 @@ before evidence can be accepted.
 `pnpm examples:check` verifies that public curl/IPFS examples use safe
 placeholders, refer only to documented routes, and stay aligned with agent docs
 and public-smoke no-write boundaries. The Worker mirror only syntax-checks
-`bb scripts/examples-check.cljc --syntax-check`; the full examples gate runs on
+`kbb scripts/examples-check.cljk --syntax-check`; the full examples gate runs on
 Murakumo.
 
 `pnpm site:check` verifies that the embedded landing page, `llms.txt`,
 `llms-full.txt`, DID document branch, public smoke, and user-facing docs stay
 aligned on the canonical `kotobase.net` identity, `did:web:kotobase.net`, and
 the legacy `kotobase.gftd.ai` alias. The Worker mirror only syntax-checks
-`bb scripts/site-check.cljc --syntax-check`; the full site gate runs on Murakumo.
+`kbb scripts/site-check.cljk --syntax-check`; the full site gate runs on Murakumo.
 
 `pnpm api-compat:check` verifies that API versioning, deprecation,
 breaking-change, legacy alias, migration-note, examples, public smoke, PR
 review, and release evidence rules stay aligned. The Worker mirror only checks
-`bb scripts/api-compat-check.cljc --syntax-check`; the full API compatibility gate runs
+`kbb scripts/api-compat-check.cljk --syntax-check`; the full API compatibility gate runs
 on Murakumo through `pnpm check:quick` and `pnpm check:release`.
 
 `pnpm submodule:check` verifies the `kotoba/` submodule URL and gitlink
@@ -165,7 +165,7 @@ HEAD/dirty counts in release evidence. `pnpm submodule:check --require-clean`
 fails closed when an initialized `kotoba/` checkout has local changes, without
 initializing the submodule. Submodule provenance is tracked by gitlink; upstream
 source is not silently vendored into the Worker bundle.
-The Worker mirror only syntax-checks `bb scripts/submodule-check.cljc --syntax-check`;
+The Worker mirror only syntax-checks `kbb scripts/submodule-check.cljk --syntax-check`;
 the full submodule gate runs on Murakumo.
 
 `pnpm security:check` verifies that the threat model, auth boundaries, public
@@ -175,13 +175,13 @@ CodeQL, and GitHub mirror wiring stay aligned.
 `pnpm observability:check` verifies that request-id echo, safe runtime metadata,
 strict-smoke correlation, runbook/service-level references, and the no-raw-error
 logging boundary stay aligned.
-The Worker mirror only syntax-checks `bb scripts/observability-check.cljc --syntax-check`;
+The Worker mirror only syntax-checks `kbb scripts/observability-check.cljk --syntax-check`;
 the full observability gate runs on Murakumo.
 
 `pnpm recovery:check` verifies that rollback drills, B2 metadata audit drills,
 cleanup safeguards, data-handling boundaries, release evidence, and Murakumo
 release gates stay aligned. The Worker mirror only syntax-checks
-`bb scripts/recovery-check.cljc --syntax-check`; the full recovery gate runs on
+`kbb scripts/recovery-check.cljk --syntax-check`; the full recovery gate runs on
 Murakumo.
 
 `pnpm runbook:check` verifies that operational runbook procedures, service-level
@@ -193,7 +193,7 @@ Wrangler deploy or rollback commands: production stays on explicit `--env=""`,
 B2 staging stays on explicit `--env b2`, routes and workers.dev posture match
 the environment contract, observability remains enabled, Durable Object bindings
 are present, and operator secret values are not committed.
-The Worker mirror only syntax-checks `bb scripts/predeploy-check.cljc --syntax-check`;
+The Worker mirror only syntax-checks `kbb scripts/predeploy-check.cljk --syntax-check`;
 the full predeploy posture gate runs on Murakumo.
 
 `pnpm check:quick` runs whitespace checks, metadata checks, ops-script checks,
@@ -237,10 +237,10 @@ uploaded through `security-events`. This is advisory visibility; Murakumo
 `deploy-ready` is the clean-worktree gate for actual deploy candidates.
 
 Committed JS/MJS/TS is treated as generated or adapter mechanism, never as the
-semantic authority. From `kotobase-api-gateway-cljs`, `clojure -M:render-components` derives the
+semantic authority. From `kotobase-api-gateway-cljs`, `kbb -M:render-components` derives the
 tracked provider-source inventory from Git, records each file's role,
 language, provider, byte count and SHA-256, and refreshes the two committed
-Worker bundle digests. `clojure -M:test` fails when a tracked provider file is
+Worker bundle digests. `kbb -M:test` fails when a tracked provider file is
 uncataloged, a cataloged file drifts, or either Worker ESM no longer matches
 its checked artifact record. The Worker workflow additionally rebuilds both
 bundles from the authoritative ClojureScript and regenerates the catalog; CI
