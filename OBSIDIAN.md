@@ -22,7 +22,7 @@ Datalog、SPARQL、Cypher、GraphQLから実行できます。
 ## 1. ローカルで変換する
 
 ```sh
-npx nbb scripts/edn-datomize.cljs obsidian-vault ~/Documents/MyVault ./out/obsidian
+kbb --backend sci scripts/edn-datomize.cljk obsidian-vault ~/Documents/MyVault ./out/obsidian
 ```
 
 `out/obsidian/vault.edn` と `schema.edn` が生成されます。変換はローカルで
