@@ -29,7 +29,7 @@ That is a real cost of publishing this way, and it is stated here rather than
 discovered later: **a copy can drift from its original.** Two things bound the
 drift:
 
-- `sync-check.cljs` compares every file here against the private original and
+- `sync-check.cljk` compares every file here against the private original and
   reports differences. It requires access to the private repository, so it is
   an operator tool, not a CI gate you can run.
 - Each file is published verbatim except for redactions described below.

@@ -4,8 +4,8 @@
 ;; この repo は「公開コピー」であって正本ではない(README 参照)。コピー方式を
 ;; 選んだ以上 drift は必ず起きるので、起きたことを検出できる状態にしておく。
 ;;
-;;   nbb sync-check.cljs            ;; 差分のあるファイルを一覧
-;;   nbb sync-check.cljs --diff     ;; 中身の差分も出す
+;;   nbb sync-check.cljk            ;; 差分のあるファイルを一覧
+;;   nbb sync-check.cljk --diff     ;; 中身の差分も出す
 ;;
 ;; private repo への読み取り権限が要る(= operator 専用。CI gate にはできない)。
 ;; ENTERPRISE-READINESS.md は意図的な redaction があるので、差分が出るのが正常。

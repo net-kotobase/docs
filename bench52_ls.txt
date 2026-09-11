@@ -864,7 +864,7 @@ drwxr-xr-x@  15 junkawasaki  staff     480 Sep  5 18:16 .git
 -rw-r--r--@   1 junkawasaki  staff     380 Sep  5 00:16 rk_wc.py
 -rw-r--r--@   1 junkawasaki  staff      28 Sep  5 00:16 rk_wc_out.txt
 drwxr-xr-x@   8 junkawasaki  staff     256 Sep  5 00:22 scripts
--rw-r--r--@   1 junkawasaki  staff    3437 Aug 12 19:20 sync-check.cljs
+-rw-r--r--@   1 junkawasaki  staff    3437 Aug 12 19:20 sync-check.cljk
 -rw-r--r--@   1 junkawasaki  staff   15269 Aug 12 19:20 terms.md
 -rw-r--r--@   1 junkawasaki  staff   16243 Sep  5 13:29 tick151_a.txt
 -rw-r--r--@   1 junkawasaki  staff    3288 Sep  5 13:29 tick151_b.txt
